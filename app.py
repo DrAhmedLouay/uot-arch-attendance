@@ -147,6 +147,16 @@ def init_db():
     )
     """)
     
+    # فحص وإضافة الأعمدة الجديدة تلقائياً إذا كانت مفقودة (Auto-Migration)
+    cur.execute("PRAGMA table_info(attendance_logs)")
+    existing_cols = [col[1] for col in cur.fetchall()]
+    if "device_fingerprint" not in existing_cols:
+        cur.execute("ALTER TABLE attendance_logs ADD COLUMN device_fingerprint TEXT")
+    if "distance_meters" not in existing_cols:
+        cur.execute("ALTER TABLE attendance_logs ADD COLUMN distance_meters REAL")
+    if "verification_details" not in existing_cols:
+        cur.execute("ALTER TABLE attendance_logs ADD COLUMN verification_details TEXT")
+    
     cur.execute("SELECT COUNT(*) FROM branches")
     if cur.fetchone()[0] == 0:
         branches_data = [

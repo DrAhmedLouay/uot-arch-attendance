@@ -423,31 +423,31 @@ def init_db():
         cur.executemany("INSERT INTO branches VALUES (?, ?, ?)", branches_data)
         
         courses_data = [
-            ('TECH-701', 'الإنشاء المتقدم وتكنولوجيا الأغلفة المعمارية', 'ARCH_TECH', 30, 2, 'م.د. أحمد باسل العزاوي'),
-            ('DES-702', 'استوديو التصميم المعماري المتقدم (Studio)', 'ARCH_DESIGN', 60, 4, 'أ.م.د. لمياء مهدي الدوري'),
-            ('URB-703', 'استوديو التجديد الحضري وتصميم الفضاءات', 'URBAN_DESIGN', 60, 4, 'أ.د. رغد هاشم الكرخي'),
-            ('PHD-801', 'فلسفة ومناهج البحث المعماري المتقدم (سمنار)', 'PHD_ARCH', 30, 2, 'أ.د. حيدر صباح النعيمي')
+            ('TECH-701', 'الإنشاء المتقدم وتكنولوجيا الأغلفة المعمارية', 'ARCH_TECH', 30, 2, 'م.د. أحمد باسل خليل'),
+            ('DES-702', 'استوديو التصميم المعماري المتقدم (Studio)', 'ARCH_DESIGN', 60, 4, 'أ.م.د. لمياء مهدي صالح'),
+            ('URB-703', 'استوديو التجديد الحضري وتصميم الفضاءات', 'URBAN_DESIGN', 60, 4, 'أ.د. رغد هاشم مصطفى'),
+            ('PHD-801', 'فلسفة ومناهج البحث المعماري المتقدم (سمنار)', 'PHD_ARCH', 30, 2, 'أ.د. حيدر صباح شريف')
         ]
         cur.executemany("INSERT INTO courses VALUES (?, ?, ?, ?, ?, ?)", courses_data)
         
         students_data = [
-            ('std-101', 'M-TECH-26-01', 'حيدر كريم الشمري', 'ARCH_TECH', 'TECH-701', 30, 1.0),
-            ('std-102', 'M-TECH-26-02', 'زينب عمار التميمي', 'ARCH_TECH', 'TECH-701', 30, 2.0),
-            ('std-103', 'M-TECH-26-03', 'ياسر محمد العاني', 'ARCH_TECH', 'TECH-701', 30, 0.0),
-            ('std-104', 'M-TECH-26-04', 'هدى عبد الله السعد', 'ARCH_TECH', 'TECH-701', 30, 3.5),
+            ('std-101', 'M-TECH-26-01', 'حيدر كريم كاظم', 'ARCH_TECH', 'TECH-701', 30, 1.0),
+            ('std-102', 'M-TECH-26-02', 'زينب عمار لطيف', 'ARCH_TECH', 'TECH-701', 30, 2.0),
+            ('std-103', 'M-TECH-26-03', 'ياسر محمد مجيد', 'ARCH_TECH', 'TECH-701', 30, 0.0),
+            ('std-104', 'M-TECH-26-04', 'هدى عبد الله ناصر', 'ARCH_TECH', 'TECH-701', 30, 3.5),
             
-            ('std-201', 'M-DES-26-01', 'مصطفى قاسم الجبوري', 'ARCH_DESIGN', 'DES-702', 60, 2.0),
-            ('std-202', 'M-DES-26-02', 'سارة ليث العبيدي', 'ARCH_DESIGN', 'DES-702', 60, 4.0),
+            ('std-201', 'M-DES-26-01', 'مصطفى قاسم إسماعيل', 'ARCH_DESIGN', 'DES-702', 60, 2.0),
+            ('std-202', 'M-DES-26-02', 'سارة ليث حميد', 'ARCH_DESIGN', 'DES-702', 60, 4.0),
             ('std-203', 'M-DES-26-03', 'كرار فلاح حسن', 'ARCH_DESIGN', 'DES-702', 60, 4.5),
-            ('std-204', 'M-DES-26-04', 'فاطمة جواد الكاظم', 'ARCH_DESIGN', 'DES-702', 60, 3.5),
+            ('std-204', 'M-DES-26-04', 'فاطمة جواد عبد الرضا', 'ARCH_DESIGN', 'DES-702', 60, 3.5),
             
-            ('std-301', 'M-URB-26-01', 'عمر طارق السعدي', 'URBAN_DESIGN', 'URB-703', 60, 1.0),
-            ('std-302', 'M-URB-26-02', 'مريم نبيل الخفاجي', 'URBAN_DESIGN', 'URB-703', 60, 0.0),
-            ('std-303', 'M-URB-26-03', 'بلال حازم المشهداني', 'URBAN_DESIGN', 'URB-703', 60, 4.0),
+            ('std-301', 'M-URB-26-01', 'عمر طارق رشيد', 'URBAN_DESIGN', 'URB-703', 60, 1.0),
+            ('std-302', 'M-URB-26-02', 'مريم نبيل توفيق', 'URBAN_DESIGN', 'URB-703', 60, 0.0),
+            ('std-303', 'M-URB-26-03', 'بلال حازم هادي', 'URBAN_DESIGN', 'URB-703', 60, 4.0),
             
-            ('std-401', 'D-ARCH-26-01', 'د. علي جاسم الهاشمي', 'PHD_ARCH', 'PHD-801', 30, 0.0),
-            ('std-402', 'D-ARCH-26-02', 'د. نور صفاء الزبيدي', 'PHD_ARCH', 'PHD-801', 30, 1.5),
-            ('std-403', 'D-ARCH-26-03', 'د. مهند رياض الحمداني', 'PHD_ARCH', 'PHD-801', 30, 2.0)
+            ('std-401', 'D-ARCH-26-01', 'علي جاسم فاضل', 'PHD_ARCH', 'PHD-801', 30, 0.0),
+            ('std-402', 'D-ARCH-26-02', 'نور صفاء عبد الأمير', 'PHD_ARCH', 'PHD-801', 30, 1.5),
+            ('std-403', 'D-ARCH-26-03', 'مهند رياض ظاهر', 'PHD_ARCH', 'PHD-801', 30, 2.0)
         ]
         cur.executemany("INSERT INTO students VALUES (?, ?, ?, ?, ?, ?, ?)", students_data)
 
@@ -455,10 +455,10 @@ def init_db():
     cur.execute("SELECT COUNT(*) FROM instructors")
     if cur.fetchone()[0] == 0:
         inst_seed = [
-            ('inst-01', 'أ.م.د. لمياء مهدي الدوري', 'lamia.mahdi@uot.edu.iq', 'ARCH_DESIGN', 'DES-702', 'أستاذ مشارك دكتور'),
-            ('inst-02', 'م.د. أحمد باسل العزاوي', 'ahmed.basel@uot.edu.iq', 'ARCH_TECH', 'TECH-701', 'مدرس دكتور'),
-            ('inst-03', 'أ.د. رغد هاشم الكرخي', 'raghad.hashem@uot.edu.iq', 'URBAN_DESIGN', 'URB-703', 'أستاذ دكتور'),
-            ('inst-04', 'أ.د. حيدر صباح النعيمي', 'haider.sabah@uot.edu.iq', 'PHD_ARCH', 'PHD-801', 'أستاذ دكتور')
+            ('inst-01', 'أ.م.د. لمياء مهدي صالح', 'lamia.mahdi@uot.edu.iq', 'ARCH_DESIGN', 'DES-702', 'أستاذ مشارك دكتور'),
+            ('inst-02', 'م.د. أحمد باسل خليل', 'ahmed.basel@uot.edu.iq', 'ARCH_TECH', 'TECH-701', 'مدرس دكتور'),
+            ('inst-03', 'أ.د. رغد هاشم مصطفى', 'raghad.hashem@uot.edu.iq', 'URBAN_DESIGN', 'URB-703', 'أستاذ دكتور'),
+            ('inst-04', 'أ.د. حيدر صباح شريف', 'haider.sabah@uot.edu.iq', 'PHD_ARCH', 'PHD-801', 'أستاذ دكتور')
         ]
         cur.executemany("INSERT INTO instructors VALUES (?, ?, ?, ?, ?, ?)", inst_seed)
 
@@ -467,14 +467,14 @@ def init_db():
     if cur.fetchone()[0] == 0:
         users_seed = [
             ('usr-admin', 'admin@uot.edu.iq', 'admin123', 'ADMIN', 'أ.د. رئيس القسم / إدارة الدراسات العليا', 'ALL', 'مسؤول الدراسات العليا'),
-            ('usr-inst-01', 'lamia.mahdi@uot.edu.iq', 'arch2026', 'INSTRUCTOR', 'أ.م.د. لمياء مهدي الدوري', 'DES-702', 'أستاذ مقرر التصميم المعماري'),
-            ('usr-inst-02', 'ahmed.basel@uot.edu.iq', 'arch2026', 'INSTRUCTOR', 'م.د. أحمد باسل العزاوي', 'TECH-701', 'أستاذ مقرر تكنولوجيا العمارة'),
-            ('usr-inst-03', 'raghad.hashem@uot.edu.iq', 'arch2026', 'INSTRUCTOR', 'أ.د. رغد هاشم الكرخي', 'URB-703', 'أستاذ مقرر التصميم الحضري'),
-            ('usr-inst-04', 'haider.sabah@uot.edu.iq', 'arch2026', 'INSTRUCTOR', 'أ.د. حيدر صباح النعيمي', 'PHD-801', 'أستاذ سمنار الدكتوراه'),
-            ('usr-std-101', 'std.haider@uot.edu.iq', 'student123', 'STUDENT', 'حيدر كريم الشمري', 'std-101', 'طالب ماجستير تكنولوجيا العمارة'),
-            ('usr-std-202', 'std.sara@uot.edu.iq', 'student123', 'STUDENT', 'سارة ليث العبيدي', 'std-202', 'طالبة ماجستير التصميم المعماري'),
-            ('usr-std-301', 'std.omar@uot.edu.iq', 'student123', 'STUDENT', 'عمر طارق السعدي', 'std-301', 'طالب ماجستير التصميم الحضري'),
-            ('usr-std-401', 'std.ali@uot.edu.iq', 'student123', 'STUDENT', 'د. علي جاسم الهاشمي', 'std-401', 'طالب دكتوراه هندسة العمارة')
+            ('usr-inst-01', 'lamia.mahdi@uot.edu.iq', 'arch2026', 'INSTRUCTOR', 'أ.م.د. لمياء مهدي صالح', 'DES-702', 'أستاذ مقرر التصميم المعماري'),
+            ('usr-inst-02', 'ahmed.basel@uot.edu.iq', 'arch2026', 'INSTRUCTOR', 'م.د. أحمد باسل خليل', 'TECH-701', 'أستاذ مقرر تكنولوجيا العمارة'),
+            ('usr-inst-03', 'raghad.hashem@uot.edu.iq', 'arch2026', 'INSTRUCTOR', 'أ.د. رغد هاشم مصطفى', 'URB-703', 'أستاذ مقرر التصميم الحضري'),
+            ('usr-inst-04', 'haider.sabah@uot.edu.iq', 'arch2026', 'INSTRUCTOR', 'أ.د. حيدر صباح شريف', 'PHD-801', 'أستاذ سمنار الدكتوراه'),
+            ('usr-std-101', 'std.haider@uot.edu.iq', 'student123', 'STUDENT', 'حيدر كريم كاظم', 'std-101', 'طالب ماجستير تكنولوجيا العمارة'),
+            ('usr-std-202', 'std.sara@uot.edu.iq', 'student123', 'STUDENT', 'سارة ليث حميد', 'std-202', 'طالبة ماجستير التصميم المعماري'),
+            ('usr-std-301', 'std.omar@uot.edu.iq', 'student123', 'STUDENT', 'عمر طارق رشيد', 'std-301', 'طالب ماجستير التصميم الحضري'),
+            ('usr-std-401', 'std.ali@uot.edu.iq', 'student123', 'STUDENT', 'علي جاسم فاضل', 'std-401', 'طالب دكتوراه هندسة العمارة')
         ]
         cur.executemany("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)", users_seed)
         
@@ -1029,7 +1029,7 @@ if user_role == "ADMIN":
                         - ملف الطالب / الحفظ.
                     </div>
                     <div style="text-align: center; font-size: 13px;">
-                        <strong>أ.د. سعد خضير الجميلي</strong><br>
+                        <strong>أ.د. سعد خضير عباس</strong><br>
                         معاون العميد للشؤون العلمية والدراسات العليا<br>
                         قسم هندسة العمارة - الجامعة التكنولوجية
                     </div>
@@ -1151,7 +1151,7 @@ if user_role == "ADMIN":
             with st.form("form_add_instructor"):
                 c_i1, c_i2 = st.columns(2)
                 with c_i1:
-                    new_inst_name = st.text_input("اسم الأستاذ / التدريسي:", placeholder="مثال: أ.د. عمر فاروق السعدي")
+                    new_inst_name = st.text_input("اسم الأستاذ / التدريسي:", placeholder="مثال: أ.د. عمر فاروق علي")
                     new_inst_title = st.text_input("اللقب العلمي / التخصص:", placeholder="مثال: أستاذ دكتور - استوديو التصميم المعماري")
                 with c_i2:
                     new_inst_email = st.text_input("البريد الإلكتروني الجامعي:", placeholder="مثال: omar.farouq@uot.edu.iq")
@@ -1234,7 +1234,7 @@ if user_role == "ADMIN":
                     new_crs_title = st.text_input("عنوان المقرر واستوديو العمارة:", placeholder="مثال: استوديو الإسكان المستدام وتنسيق المواقع")
                 with c_c2:
                     new_crs_branch = st.selectbox("الفرع الأكاديمي:", list(br_opts.keys()), key="crs_br_sel")
-                    new_crs_inst = st.text_input("الأستاذ المسؤول عن المقرر:", placeholder="مثال: أ.د. رغد هاشم الكرخي")
+                    new_crs_inst = st.text_input("الأستاذ المسؤول عن المقرر:", placeholder="مثال: أ.د. رغد هاشم مصطفى")
                     
                 c_c3, c_c4 = st.columns(2)
                 with c_c3:
@@ -1554,7 +1554,7 @@ else:
         active_course = "DES-702"
         active_course_name = "استوديو التصميم المعماري المتقدم"
         branch_name = "ماجستير التصميم المعماري"
-        inst_name = "أ.م.د. لمياء مهدي الدوري"
+        inst_name = "أ.م.د. لمياء مهدي صالح"
         tot_hours = 60
         mis_hours = 4.0
 

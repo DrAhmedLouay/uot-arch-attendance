@@ -448,11 +448,11 @@
               </button>
               <button type="button" onclick="quickLoginAs('instructor')" class="min-h-[44px] px-2.5 py-2 rounded-xl text-[11px] font-bold bg-blue-50 hover:bg-blue-100/80 active:scale-[0.98] text-blue-900 border border-blue-200 transition text-center flex flex-col items-center justify-center shadow-2xs">
                 <span>👨‍🏫 دخول كـ تدريسي</span>
-                <span class="text-[9px] text-blue-700 font-mono">د. لمياء الدوري</span>
+                <span class="text-[9px] text-blue-700 font-mono">د. لمياء مهدي</span>
               </button>
               <button type="button" onclick="quickLoginAs('student')" class="min-h-[44px] px-2.5 py-2 rounded-xl text-[11px] font-bold bg-emerald-50 hover:bg-emerald-100/80 active:scale-[0.98] text-emerald-900 border border-emerald-200 transition text-center flex flex-col items-center justify-center shadow-2xs">
                 <span>📱 دخول كـ طالب</span>
-                <span class="text-[9px] text-emerald-700 font-mono">سارة ليث العبيدي</span>
+                <span class="text-[9px] text-emerald-700 font-mono">سارة ليث حميد</span>
               </button>
             </div>
           </div>
@@ -820,7 +820,7 @@
             بوابة التدريسي المعتمد
           </span>
           <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)] mt-1" id="currentInstructorName">
-            أ.م.د. لمياء مهدي الدوري
+            أ.م.د. لمياء مهدي صالح
           </h2>
           <p class="text-xs text-[var(--muted-foreground)]" id="currentInstructorTitle">
             المشرف على: استوديو التصميم المعماري المتقدم (فرع التصميم المعماري)
@@ -831,10 +831,10 @@
         <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
           <span class="text-xs font-semibold text-[var(--muted-foreground)] whitespace-nowrap">تبديل التدريسي للاختبار:</span>
           <select id="instructorSelect" onchange="changeInstructor(this.value)" class="grow lg:grow-0 bg-[var(--background)] border border-[var(--border)] min-h-[44px] text-base sm:text-xs rounded-xl px-3 py-2 text-[var(--foreground)] focus:ring-2 focus:ring-blue-600 focus:outline-none">
-            <option value="inst-01">أ.م.د. لمياء مهدي (استوديو التصميم المعماري)</option>
-            <option value="inst-02">م.د. أحمد باسل (تكنولوجيا وإنشاء الأغلفة)</option>
-            <option value="inst-03">أ.د. رغد هاشم (استوديو التجديد الحضري)</option>
-            <option value="inst-04">أ.د. حيدر صباح (مناهج البحث المعماري - دكتوراه)</option>
+            <option value="inst-01">أ.م.د. لمياء مهدي صالح (استوديو التصميم المعماري)</option>
+            <option value="inst-02">م.د. أحمد باسل خليل (تكنولوجيا وإنشاء الأغلفة)</option>
+            <option value="inst-03">أ.د. رغد هاشم مصطفى (استوديو التجديد الحضري)</option>
+            <option value="inst-04">أ.د. حيدر صباح شريف (مناهج البحث المعماري - دكتوراه)</option>
           </select>
         </div>
       </div>
@@ -1165,7 +1165,7 @@
             <div class="p-3.5 sm:p-4 rounded-2xl bg-[var(--background)] border border-[var(--border)] space-y-2.5 sm:space-y-3">
               <div class="flex items-center justify-between">
                 <div>
-                  <h4 id="spName" class="font-extrabold text-xs sm:text-sm text-[var(--foreground)]">حيدر كريم الشمري</h4>
+                  <h4 id="spName" class="font-extrabold text-xs sm:text-sm text-[var(--foreground)]">حيدر كريم كاظم</h4>
                   <div id="spReg" class="text-[11px] sm:text-xs text-[var(--muted-foreground)] font-mono mt-0.5">M-TECH-26-01</div>
                 </div>
                 <span id="spBranchBadge" class="text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200">
@@ -1509,53 +1509,53 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       },
 
       courses: [
-        { code: 'TECH-701', title: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', branch: 'ARCH_TECH', weeklyHours: 2, totalHours: 30, instructor: 'م.د. أحمد باسل العزاوي' },
-        { code: 'DES-702', title: 'استوديو التصميم المعماري المتقدم', branch: 'ARCH_DESIGN', weeklyHours: 4, totalHours: 60, instructor: 'أ.م.د. لمياء مهدي الدوري' },
-        { code: 'URB-703', title: 'استوديو التجديد الحضري وفضاءات المدن', branch: 'URBAN_DESIGN', weeklyHours: 4, totalHours: 60, instructor: 'أ.د. رغد هاشم الكرخي' },
-        { code: 'PHD-801', title: 'فلسفة مناهج البحث المعماري (سمنار)', branch: 'PHD_ARCH', weeklyHours: 2, totalHours: 30, instructor: 'أ.د. حيدر صباح النعيمي' }
+        { code: 'TECH-701', title: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', branch: 'ARCH_TECH', weeklyHours: 2, totalHours: 30, instructor: 'م.د. أحمد باسل خليل' },
+        { code: 'DES-702', title: 'استوديو التصميم المعماري المتقدم', branch: 'ARCH_DESIGN', weeklyHours: 4, totalHours: 60, instructor: 'أ.م.د. لمياء مهدي صالح' },
+        { code: 'URB-703', title: 'استوديو التجديد الحضري وفضاءات المدن', branch: 'URBAN_DESIGN', weeklyHours: 4, totalHours: 60, instructor: 'أ.د. رغد هاشم مصطفى' },
+        { code: 'PHD-801', title: 'فلسفة مناهج البحث المعماري (سمنار)', branch: 'PHD_ARCH', weeklyHours: 2, totalHours: 30, instructor: 'أ.د. حيدر صباح شريف' }
       ],
 
       instructors: [
-        { id: 'inst-01', name: 'أ.م.د. لمياء مهدي الدوري', title: 'أستاذ مشارك - استوديو التصميم المعماري المتقدم', branch: 'ARCH_DESIGN', course: 'استوديو التصميم المعماري المتقدم', courseHours: 60 },
-        { id: 'inst-02', name: 'م.د. أحمد باسل العزاوي', title: 'مدرس دكتور - تكنولوجيا وإنشاء الأغلفة المعمارية', branch: 'ARCH_TECH', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', courseHours: 30 },
-        { id: 'inst-03', name: 'أ.د. رغد هاشم الكرخي', title: 'أستاذ دكتور - استوديو التصميم والتجديد الحضري', branch: 'URBAN_DESIGN', course: 'استوديو التجديد الحضري وفضاءات المدن', courseHours: 60 },
-        { id: 'inst-04', name: 'أ.د. حيدر صباح النعيمي', title: 'أستاذ دكتور - مناهج البحث المعماري المتقدم', branch: 'PHD_ARCH', course: 'فلسفة مناهج البحث المعماري (سمنار)', courseHours: 30 }
+        { id: 'inst-01', name: 'أ.م.د. لمياء مهدي صالح', title: 'أستاذ مشارك - استوديو التصميم المعماري المتقدم', branch: 'ARCH_DESIGN', course: 'استوديو التصميم المعماري المتقدم', courseHours: 60 },
+        { id: 'inst-02', name: 'م.د. أحمد باسل خليل', title: 'مدرس دكتور - تكنولوجيا وإنشاء الأغلفة المعمارية', branch: 'ARCH_TECH', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', courseHours: 30 },
+        { id: 'inst-03', name: 'أ.د. رغد هاشم مصطفى', title: 'أستاذ دكتور - استوديو التصميم والتجديد الحضري', branch: 'URBAN_DESIGN', course: 'استوديو التجديد الحضري وفضاءات المدن', courseHours: 60 },
+        { id: 'inst-04', name: 'أ.د. حيدر صباح شريف', title: 'أستاذ دكتور - مناهج البحث المعماري المتقدم', branch: 'PHD_ARCH', course: 'فلسفة مناهج البحث المعماري (سمنار)', courseHours: 30 }
       ],
 
       users: [
         { id: 'usr-admin', email: 'admin@uot.edu.iq', password: 'admin123', role: 'admin', name: 'أ.د. رئيس القسم / إدارة الدراسات العليا', title: 'مسؤول الدراسات العليا' },
-        { id: 'usr-inst-01', email: 'lamia.mahdi@uot.edu.iq', password: 'arch2026', role: 'instructor', name: 'أ.م.د. لمياء مهدي الدوري', title: 'أستاذ مقرر التصميم المعماري', instructorId: 'inst-01', course: 'استوديو التصميم المعماري المتقدم' },
-        { id: 'usr-inst-02', email: 'ahmed.basel@uot.edu.iq', password: 'arch2026', role: 'instructor', name: 'م.د. أحمد باسل العزاوي', title: 'أستاذ مقرر تكنولوجيا العمارة', instructorId: 'inst-02', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة' },
-        { id: 'usr-inst-03', email: 'raghad.hashim@uot.edu.iq', password: 'arch2026', role: 'instructor', name: 'أ.د. رغد هاشم الكرخي', title: 'أستاذ مقرر التصميم الحضري', instructorId: 'inst-03', course: 'استوديو التجديد الحضري وفضاءات المدن' },
-        { id: 'usr-inst-04', email: 'haider.sabah@uot.edu.iq', password: 'arch2026', role: 'instructor', name: 'أ.د. حيدر صباح النعيمي', title: 'أستاذ سمنار الدكتوراه', instructorId: 'inst-04', course: 'فلسفة مناهج البحث المعماري (سمنار)' },
-        { id: 'usr-std-101', email: 'std.haider@uot.edu.iq', password: 'student123', role: 'student', name: 'حيدر كريم الشمري', title: 'طالب ماجستير', studentId: 'std-101', regNum: 'M-TECH-26-01', branch: 'ARCH_TECH' },
-        { id: 'usr-std-202', email: 'std.sara@uot.edu.iq', password: 'student123', role: 'student', name: 'سارة ليث العبيدي', title: 'طالبة ماجستير', studentId: 'std-202', regNum: 'M-DES-26-02', branch: 'ARCH_DESIGN' },
-        { id: 'usr-std-301', email: 'std.omar@uot.edu.iq', password: 'student123', role: 'student', name: 'عمر طارق السعدي', title: 'طالب ماجستير', studentId: 'std-301', regNum: 'M-URB-26-01', branch: 'URBAN_DESIGN' },
-        { id: 'usr-std-401', email: 'std.ali@uot.edu.iq', password: 'student123', role: 'student', name: 'د. علي جاسم الهاشمي', title: 'طالب دكتوراه', studentId: 'std-401', regNum: 'D-ARCH-26-01', branch: 'PHD_ARCH' }
+        { id: 'usr-inst-01', email: 'lamia.mahdi@uot.edu.iq', password: 'arch2026', role: 'instructor', name: 'أ.م.د. لمياء مهدي صالح', title: 'أستاذ مقرر التصميم المعماري', instructorId: 'inst-01', course: 'استوديو التصميم المعماري المتقدم' },
+        { id: 'usr-inst-02', email: 'ahmed.basel@uot.edu.iq', password: 'arch2026', role: 'instructor', name: 'م.د. أحمد باسل خليل', title: 'أستاذ مقرر تكنولوجيا العمارة', instructorId: 'inst-02', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة' },
+        { id: 'usr-inst-03', email: 'raghad.hashim@uot.edu.iq', password: 'arch2026', role: 'instructor', name: 'أ.د. رغد هاشم مصطفى', title: 'أستاذ مقرر التصميم الحضري', instructorId: 'inst-03', course: 'استوديو التجديد الحضري وفضاءات المدن' },
+        { id: 'usr-inst-04', email: 'haider.sabah@uot.edu.iq', password: 'arch2026', role: 'instructor', name: 'أ.د. حيدر صباح شريف', title: 'أستاذ سمنار الدكتوراه', instructorId: 'inst-04', course: 'فلسفة مناهج البحث المعماري (سمنار)' },
+        { id: 'usr-std-101', email: 'std.haider@uot.edu.iq', password: 'student123', role: 'student', name: 'حيدر كريم كاظم', title: 'طالب ماجستير', studentId: 'std-101', regNum: 'M-TECH-26-01', branch: 'ARCH_TECH' },
+        { id: 'usr-std-202', email: 'std.sara@uot.edu.iq', password: 'student123', role: 'student', name: 'سارة ليث حميد', title: 'طالبة ماجستير', studentId: 'std-202', regNum: 'M-DES-26-02', branch: 'ARCH_DESIGN' },
+        { id: 'usr-std-301', email: 'std.omar@uot.edu.iq', password: 'student123', role: 'student', name: 'عمر طارق رشيد', title: 'طالب ماجستير', studentId: 'std-301', regNum: 'M-URB-26-01', branch: 'URBAN_DESIGN' },
+        { id: 'usr-std-401', email: 'std.ali@uot.edu.iq', password: 'student123', role: 'student', name: 'علي جاسم فاضل', title: 'طالب دكتوراه', studentId: 'std-401', regNum: 'D-ARCH-26-01', branch: 'PHD_ARCH' }
       ],
 
       students: [
         // Architectural Technology (8)
-        { id: 'std-101', name: 'حيدر كريم الشمري', regNum: 'M-TECH-26-01', branch: 'ARCH_TECH', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', totalHours: 30, missedHours: 1, currentSessionStatus: 'ABSENT' },
-        { id: 'std-102', name: 'زينب عمار التميمي', regNum: 'M-TECH-26-02', branch: 'ARCH_TECH', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', totalHours: 30, missedHours: 2, currentSessionStatus: 'ABSENT' },
-        { id: 'std-103', name: 'ياسر محمد العاني', regNum: 'M-TECH-26-03', branch: 'ARCH_TECH', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', totalHours: 30, missedHours: 0, currentSessionStatus: 'ABSENT' },
-        { id: 'std-104', name: 'هدى عبد الله السعد', regNum: 'M-TECH-26-04', branch: 'ARCH_TECH', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', totalHours: 30, missedHours: 3.5, currentSessionStatus: 'ABSENT' }, // > 10%
+        { id: 'std-101', name: 'حيدر كريم كاظم', regNum: 'M-TECH-26-01', branch: 'ARCH_TECH', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', totalHours: 30, missedHours: 1, currentSessionStatus: 'ABSENT' },
+        { id: 'std-102', name: 'زينب عمار لطيف', regNum: 'M-TECH-26-02', branch: 'ARCH_TECH', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', totalHours: 30, missedHours: 2, currentSessionStatus: 'ABSENT' },
+        { id: 'std-103', name: 'ياسر محمد مجيد', regNum: 'M-TECH-26-03', branch: 'ARCH_TECH', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', totalHours: 30, missedHours: 0, currentSessionStatus: 'ABSENT' },
+        { id: 'std-104', name: 'هدى عبد الله ناصر', regNum: 'M-TECH-26-04', branch: 'ARCH_TECH', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', totalHours: 30, missedHours: 3.5, currentSessionStatus: 'ABSENT' }, // > 10%
         
         // Architectural Design (10)
-        { id: 'std-201', name: 'مصطفى قاسم الجبوري', regNum: 'M-DES-26-01', branch: 'ARCH_DESIGN', course: 'استوديو التصميم المعماري المتقدم', totalHours: 60, missedHours: 2, currentSessionStatus: 'ABSENT' },
-        { id: 'std-202', name: 'سارة ليث العبيدي', regNum: 'M-DES-26-02', branch: 'ARCH_DESIGN', course: 'استوديو التصميم المعماري المتقدم', totalHours: 60, missedHours: 4, currentSessionStatus: 'ABSENT' },
+        { id: 'std-201', name: 'مصطفى قاسم إسماعيل', regNum: 'M-DES-26-01', branch: 'ARCH_DESIGN', course: 'استوديو التصميم المعماري المتقدم', totalHours: 60, missedHours: 2, currentSessionStatus: 'ABSENT' },
+        { id: 'std-202', name: 'سارة ليث حميد', regNum: 'M-DES-26-02', branch: 'ARCH_DESIGN', course: 'استوديو التصميم المعماري المتقدم', totalHours: 60, missedHours: 4, currentSessionStatus: 'ABSENT' },
         { id: 'std-203', name: 'كرار فلاح حسن', regNum: 'M-DES-26-03', branch: 'ARCH_DESIGN', course: 'استوديو التصميم المعماري المتقدم', totalHours: 60, missedHours: 5, currentSessionStatus: 'ABSENT' }, // >= 7%
-        { id: 'std-204', name: 'فاطمة جواد الكاظم', regNum: 'M-DES-26-04', branch: 'ARCH_DESIGN', course: 'استوديو التصميم المعماري المتقدم', totalHours: 60, missedHours: 3.5, currentSessionStatus: 'ABSENT' }, // >= 5%
+        { id: 'std-204', name: 'فاطمة جواد عبد الرضا', regNum: 'M-DES-26-04', branch: 'ARCH_DESIGN', course: 'استوديو التصميم المعماري المتقدم', totalHours: 60, missedHours: 3.5, currentSessionStatus: 'ABSENT' }, // >= 5%
         
         // Urban Design (7)
-        { id: 'std-301', name: 'عمر طارق السعدي', regNum: 'M-URB-26-01', branch: 'URBAN_DESIGN', course: 'استوديو التجديد الحضري وفضاءات المدن', totalHours: 60, missedHours: 1, currentSessionStatus: 'ABSENT' },
-        { id: 'std-302', name: 'مريم نبيل الخفاجي', regNum: 'M-URB-26-02', branch: 'URBAN_DESIGN', course: 'استوديو التجديد الحضري وفضاءات المدن', totalHours: 60, missedHours: 0, currentSessionStatus: 'ABSENT' },
-        { id: 'std-303', name: 'بلال حازم المشهداني', regNum: 'M-URB-26-03', branch: 'URBAN_DESIGN', course: 'استوديو التجديد الحضري وفضاءات المدن', totalHours: 60, missedHours: 4, currentSessionStatus: 'ABSENT' },
+        { id: 'std-301', name: 'عمر طارق رشيد', regNum: 'M-URB-26-01', branch: 'URBAN_DESIGN', course: 'استوديو التجديد الحضري وفضاءات المدن', totalHours: 60, missedHours: 1, currentSessionStatus: 'ABSENT' },
+        { id: 'std-302', name: 'مريم نبيل توفيق', regNum: 'M-URB-26-02', branch: 'URBAN_DESIGN', course: 'استوديو التجديد الحضري وفضاءات المدن', totalHours: 60, missedHours: 0, currentSessionStatus: 'ABSENT' },
+        { id: 'std-303', name: 'بلال حازم هادي', regNum: 'M-URB-26-03', branch: 'URBAN_DESIGN', course: 'استوديو التجديد الحضري وفضاءات المدن', totalHours: 60, missedHours: 4, currentSessionStatus: 'ABSENT' },
         
         // PhD Architecture (6)
-        { id: 'std-401', name: 'د. علي جاسم الهاشمي', regNum: 'D-ARCH-26-01', branch: 'PHD_ARCH', course: 'فلسفة مناهج البحث المعماري (سمنار)', totalHours: 30, missedHours: 0, currentSessionStatus: 'ABSENT' },
-        { id: 'std-402', name: 'د. نور صفاء الزبيدي', regNum: 'D-ARCH-26-02', branch: 'PHD_ARCH', course: 'فلسفة مناهج البحث المعماري (سمنار)', totalHours: 30, missedHours: 1.5, currentSessionStatus: 'ABSENT' },
-        { id: 'std-403', name: 'د. مهند رياض الحمداني', regNum: 'D-ARCH-26-03', branch: 'PHD_ARCH', course: 'فلسفة مناهج البحث المعماري (سمنار)', totalHours: 30, missedHours: 2, currentSessionStatus: 'ABSENT' }
+        { id: 'std-401', name: 'علي جاسم فاضل', regNum: 'D-ARCH-26-01', branch: 'PHD_ARCH', course: 'فلسفة مناهج البحث المعماري (سمنار)', totalHours: 30, missedHours: 0, currentSessionStatus: 'ABSENT' },
+        { id: 'std-402', name: 'نور صفاء عبد الأمير', regNum: 'D-ARCH-26-02', branch: 'PHD_ARCH', course: 'فلسفة مناهج البحث المعماري (سمنار)', totalHours: 30, missedHours: 1.5, currentSessionStatus: 'ABSENT' },
+        { id: 'std-403', name: 'مهند رياض ظاهر', regNum: 'D-ARCH-26-03', branch: 'PHD_ARCH', course: 'فلسفة مناهج البحث المعماري (سمنار)', totalHours: 30, missedHours: 2, currentSessionStatus: 'ABSENT' }
       ]
     };
 
@@ -2050,6 +2050,15 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
     function loadMasterData() {
       try {
+        const CURRENT_DATA_VER = '2026.4_tripartite';
+        if (localStorage.getItem('uot_arch_data_ver') !== CURRENT_DATA_VER) {
+          localStorage.removeItem('uot_arch_students');
+          localStorage.removeItem('uot_arch_instructors');
+          localStorage.removeItem('uot_arch_courses');
+          localStorage.removeItem('uot_arch_users');
+          localStorage.setItem('uot_arch_data_ver', CURRENT_DATA_VER);
+          return;
+        }
         const s = localStorage.getItem('uot_arch_students');
         if (s) appState.students = JSON.parse(s);
         const inst = localStorage.getItem('uot_arch_instructors');
@@ -2891,12 +2900,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             </div>
             <div>
               <div class="text-slate-600 font-medium">مقرر الدراسات العليا بالقسم</div>
-              <div class="mt-0.5 font-bold text-slate-900">أ.م.د. بسام عدنان</div>
+              <div class="mt-0.5 font-bold text-slate-900">أ.م.د. بسام عدنان مجيد</div>
               <div class="mt-3 font-bold text-slate-800">التوقيع: .....................</div>
             </div>
             <div>
               <div class="text-slate-600 font-medium">رئيس قسم هندسة العمارة</div>
-              <div class="mt-0.5 font-bold text-slate-900">أ.د. خليل إبراهيم</div>
+              <div class="mt-0.5 font-bold text-slate-900">أ.د. خليل إبراهيم علي</div>
               <div class="mt-3 font-bold text-slate-800">التوقيع والختم: .....................</div>
             </div>
           </div>
@@ -3008,7 +3017,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             - ملف الطالب / الحفظ.
           </div>
           <div style="text-align: center; font-size: 11px;">
-            <strong>أ.د. سعد خضير الجميلي</strong><br>
+            <strong>أ.د. سعد خضير عباس</strong><br>
             <span style="font-size: 10px; color: #64748b;">معاون العميد للشؤون العلمية والدراسات العليا<br>قسم هندسة العمارة - الجامعة التكنولوجية</span>
           </div>
         </div>

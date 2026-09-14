@@ -346,20 +346,29 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+ROLE_ADMIN = "🏛️ لوحة الإدارة (Admin Dashboard)"
+ROLE_INSTRUCTOR = "👨‍🏫 بوابة التدريسي (Instructor Portal)"
+ROLE_STUDENT = "📱 بوابة الطالب (Student Portal)"
+ROLE_LIST = [ROLE_ADMIN, ROLE_INSTRUCTOR, ROLE_STUDENT]
+
+if "active_portal_role" not in st.session_state:
+    st.session_state.active_portal_role = ROLE_ADMIN
+
 # 6. الشريط الجانبي
 with st.sidebar:
     st.image("https://upload.wikimedia.org/wikipedia/ar/thumb/0/07/University_of_Technology_Iraq_logo.png/250px-University_of_Technology_Iraq_logo.png", width=105)
     st.markdown("### 🎛️ بوابة التنقل والصلاحيات")
     
-    role = st.radio(
+    current_idx = ROLE_LIST.index(st.session_state.active_portal_role) if st.session_state.active_portal_role in ROLE_LIST else 0
+    selected_role = st.radio(
         "اختر الشاشة النشطة:",
-        (
-            "🏛️ إدارة الدراسات العليا (Admin Dashboard)",
-            "👨‍🏫 بوابة التدريسي / شاشة القاعة (Instructor Portal)",
-            "📱 بوابة مسح وحضور الطالب (Student Check-in)"
-        ),
-        index=0
+        ROLE_LIST,
+        index=current_idx,
+        key="sidebar_role_select"
     )
+    if selected_role != st.session_state.active_portal_role:
+        st.session_state.active_portal_role = selected_role
+        st.rerun()
     
     st.divider()
     st.markdown("#### 📐 الفروع الأكاديمية للدراسات العليا:")
@@ -372,6 +381,105 @@ with st.sidebar:
     st.caption("المنصة متوافقة تماماً مع تعليمات وضوابط الدراسات العليا النافذة لوزارة التعليم العالي والبحث العلمي العراقية.")
     st.info("💡 **هذه المنصة قيد التطوير وبمبادرة شخصية من المهندس المعماري الدكتور أحمد لؤي أحمد**")
 
+
+# ==============================================================================
+# واجهة الاختيارات الثلاثة الرئيسية لنظام الحضور (3-PORTAL SELECTION GATEWAY)
+# ==============================================================================
+current_role = st.session_state.active_portal_role
+is_admin = ("Admin" in current_role)
+is_instructor = ("Instructor" in current_role)
+is_student = ("Student" in current_role)
+active_portal_name = "لوحة الإدارة (Admin)" if is_admin else ("بوابة التدريسي (Instructor)" if is_instructor else "بوابة الطالب (Student)")
+
+st.markdown(f"""
+<div style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.04);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+            <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(217, 119, 6, 0.12); color: #b45309; padding: 4px 14px; border-radius: 9999px; font-size: 12px; font-weight: 800; border: 1px solid rgba(217, 119, 6, 0.25);">
+                <span>🏛️</span> الواجهة المركزية الموحدة
+            </div>
+            <h2 style="margin: 8px 0 2px 0; font-size: 19px; font-weight: 800; color: #1e293b; letter-spacing: -0.3px;">
+                بوابات منظومة الحضور الثلاث - قسم هندسة العمارة
+            </h2>
+            <p style="margin: 0; font-size: 13px; color: #64748b;">
+                اختر البوابة المناسبة لعرض وظائفها وصلاحياتها مباشرة (الإدارة • التدريسي • الطالب)
+            </p>
+        </div>
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px 16px; font-size: 12.5px; color: #334155; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            البوابة النشطة حالياً: <strong style="color: #b45309;">{active_portal_name}</strong>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+col_g1, col_g2, col_g3 = st.columns(3)
+
+with col_g1:
+    admin_border = "#f59e0b" if is_admin else "#e2e8f0"
+    admin_bg = "linear-gradient(180deg, rgba(245, 158, 11, 0.08) 0%, rgba(255, 255, 255, 1) 100%)" if is_admin else "#ffffff"
+    admin_badge = '<span style="background:#f59e0b; color:#ffffff; padding:2px 10px; border-radius:9999px; font-size:11px; font-weight:800;">نشط حالياً ✓</span>' if is_admin else '<span style="background:#f1f5f9; color:#64748b; padding:2px 10px; border-radius:9999px; font-size:11px; font-weight:700;">لوحة الإدارة</span>'
+    st.markdown(f"""
+    <div style="border: 2px solid {admin_border}; background: {admin_bg}; border-radius: 18px; padding: 18px; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+        <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-size: 26px; background: rgba(245, 158, 11, 0.15); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">🏛️</div>
+                {admin_badge}
+            </div>
+            <h3 style="margin: 12px 0 4px 0; font-size: 16px; font-weight: 800; color: #1e293b;">1. لوحة الإدارة (Admin)</h3>
+            <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.5;">متابعة طلبة الفروع الأربعة، نسب الغياب، رصيد الإنذارات (5% و 7%)، قرارات الحرمان (10%)، وطباعة كشف المجلس.</p>
+        </div>
+        <div style="font-size: 11.5px; font-weight: 700; color: #b45309; text-align: left; margin-top: 10px;">صلاحيات إدارة القسم ←</div>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("دخول لوحة الإدارة (Admin)", key="gate_admin_btn", use_container_width=True, type="primary" if is_admin else "secondary"):
+        st.session_state.active_portal_role = ROLE_ADMIN
+        st.rerun()
+
+with col_g2:
+    inst_border = "#3b82f6" if is_instructor else "#e2e8f0"
+    inst_bg = "linear-gradient(180deg, rgba(59, 130, 246, 0.08) 0%, rgba(255, 255, 255, 1) 100%)" if is_instructor else "#ffffff"
+    inst_badge = '<span style="background:#3b82f6; color:#ffffff; padding:2px 10px; border-radius:9999px; font-size:11px; font-weight:800;">نشط حالياً ✓</span>' if is_instructor else '<span style="background:#f1f5f9; color:#64748b; padding:2px 10px; border-radius:9999px; font-size:11px; font-weight:700;">بوابة التدريسي</span>'
+    st.markdown(f"""
+    <div style="border: 2px solid {inst_border}; background: {inst_bg}; border-radius: 18px; padding: 18px; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+        <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-size: 26px; background: rgba(59, 130, 246, 0.15); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">👨‍🏫</div>
+                {inst_badge}
+            </div>
+            <h3 style="margin: 12px 0 4px 0; font-size: 16px; font-weight: 800; color: #1e293b;">2. بوابة التدريسي (Instructor)</h3>
+            <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.5;">شاشة العارض (Projector) لتوليد الـ QR المتجدد كل 8 ثوانٍ، التحضير السريع بالقاعة، وإدخال الأعذار الرسمية.</p>
+        </div>
+        <div style="font-size: 11.5px; font-weight: 700; color: #2563eb; text-align: left; margin-top: 10px;">شاشة القاعة والنداء ←</div>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("دخول بوابة التدريسي (Instructor)", key="gate_inst_btn", use_container_width=True, type="primary" if is_instructor else "secondary"):
+        st.session_state.active_portal_role = ROLE_INSTRUCTOR
+        st.rerun()
+
+with col_g3:
+    std_border = "#10b981" if is_student else "#e2e8f0"
+    std_bg = "linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, rgba(255, 255, 255, 1) 100%)" if is_student else "#ffffff"
+    std_badge = '<span style="background:#10b981; color:#ffffff; padding:2px 10px; border-radius:9999px; font-size:11px; font-weight:800;">نشط حالياً ✓</span>' if is_student else '<span style="background:#f1f5f9; color:#64748b; padding:2px 10px; border-radius:9999px; font-size:11px; font-weight:700;">بوابة الطالب</span>'
+    st.markdown(f"""
+    <div style="border: 2px solid {std_border}; background: {std_bg}; border-radius: 18px; padding: 18px; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+        <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-size: 26px; background: rgba(16, 185, 129, 0.15); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">📱</div>
+                {std_badge}
+            </div>
+            <h3 style="margin: 12px 0 4px 0; font-size: 16px; font-weight: 800; color: #1e293b;">3. بوابة الطالب (Student)</h3>
+            <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.5;">مسح كود الحضور اللحظي، التحقق من التواجد الجغرافي وبصمة الهاتف، وكشف رصيد الغيابات وهامش الأمان.</p>
+        </div>
+        <div style="font-size: 11.5px; font-weight: 700; color: #059669; text-align: left; margin-top: 10px;">تسجيل الحضور والاستعلام ←</div>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("دخول بوابة الطالب (Student)", key="gate_student_btn", use_container_width=True, type="primary" if is_student else "secondary"):
+        st.session_state.active_portal_role = ROLE_STUDENT
+        st.rerun()
+
+st.markdown("<hr style='margin: 22px 0 26px 0; border: 0; border-top: 1px solid #e2e8f0;'>", unsafe_allow_html=True)
+
+role = st.session_state.active_portal_role
 
 # ==============================================================================
 # 1. لوحة إدارة الدراسات العليا (ADMIN DASHBOARD) - 4 تبويبات متطورة

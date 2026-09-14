@@ -43,7 +43,7 @@
       }
 
       /* Hide web shell, navigation, header, tabs, and interactive buttons */
-      header, nav, #adminView, #instructorView, #offlineToggleBtn,
+      header, nav, #adminView, #instructorView, #studentView, #portalGateway, #offlineToggleBtn,
       #toastNotification, footer, .no-print, button, #securityTestModal {
         display: none !important;
       }
@@ -190,11 +190,14 @@
       <!-- Role Switcher & Live Status -->
       <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
         <div class="flex items-center gap-1 bg-[var(--background)] p-1.5 rounded-xl border border-[var(--border)]">
-          <button id="btnRoleAdmin" onclick="switchRole('admin')" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-amber-600 text-white shadow-sm">
+          <button id="btnRoleAdmin" onclick="switchRole('admin')" class="px-3.5 py-2 rounded-lg text-xs md:text-sm font-semibold transition-all duration-200 bg-amber-600 text-white shadow-sm">
             لوحة الإدارة (Admin)
           </button>
-          <button id="btnRoleInstructor" onclick="switchRole('instructor')" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+          <button id="btnRoleInstructor" onclick="switchRole('instructor')" class="px-3.5 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
             بوابة التدريسي (Instructor)
+          </button>
+          <button id="btnRoleStudent" onclick="switchRole('student')" class="px-3.5 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+            بوابة الطالب (Student)
           </button>
         </div>
 
@@ -206,6 +209,105 @@
       </div>
     </div>
   </header>
+
+  <!-- ========================================================================= -->
+  <!-- PORTAL SELECTION GATEWAY (واجهة الاختيارات الثلاثة الرئيسية لنظام الحضور) -->
+  <!-- ========================================================================= -->
+  <section id="portalGateway" class="mb-6">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-[var(--border)]">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-amber-500/10 text-amber-600 border border-amber-500/20">
+              🏛️ البوابة الرئيسية الموحدة
+            </span>
+            <span class="text-xs text-[var(--muted-foreground)]">اختر الشاشة للانتقال الفوري</span>
+          </div>
+          <h2 class="text-base md:text-lg font-extrabold text-[var(--foreground)] mt-1">
+            بوابات منظومة حضور الدراسات العليا - هندسة العمارة
+          </h2>
+          <p class="text-xs text-[var(--muted-foreground)]">
+            ثلاث بوابات إلكترونية متكاملة تدعم بروتوكول الأمان الثلاثي وتعليمات وضوابط وزارة التعليم العالي
+          </p>
+        </div>
+        <div class="flex items-center gap-2 self-start md:self-auto text-xs font-semibold text-[var(--muted-foreground)] bg-[var(--background)] px-3 py-1.5 rounded-xl border border-[var(--border)]">
+          <span>البوابة النشطة:</span>
+          <strong id="activeRoleBadge" class="text-amber-600 font-bold">لوحة الإدارة (Admin)</strong>
+        </div>
+      </div>
+
+      <!-- The 3 Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+        
+        <!-- Option 1: Admin Dashboard -->
+        <div id="portalCardAdmin" onclick="switchRole('admin')" class="group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-gradient-to-b from-amber-500/10 to-transparent border-amber-500 shadow-sm">
+          <div class="flex items-start justify-between">
+            <div class="w-11 h-11 rounded-xl bg-amber-500/15 text-amber-700 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+              🏛️
+            </div>
+            <span id="badgeAdmin" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500 text-white shadow-sm">
+              نشط حالياً ✓
+            </span>
+          </div>
+          <h3 class="font-extrabold text-sm md:text-base text-[var(--foreground)] mt-3 group-hover:text-amber-600 transition-colors">
+            لوحة الإدارة (Admin)
+          </h3>
+          <p class="text-xs text-[var(--muted-foreground)] mt-1 leading-relaxed">
+            متابعة شاملة لطلبة الدراسات العليا في الفروع الأربعة، نسب الغياب، رصيد الإنذارات (5% و 7%)، قرارات الحرمان (10%)، وطباعة كشوفات مجلس القسم والكتب الرسمية.
+          </p>
+          <div class="mt-3.5 pt-2.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-bold text-amber-700">
+            <span>دخول لوحة الإدارة</span>
+            <span class="group-hover:translate-x-[-4px] transition-transform">←</span>
+          </div>
+        </div>
+
+        <!-- Option 2: Instructor Portal -->
+        <div id="portalCardInstructor" onclick="switchRole('instructor')" class="group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-[var(--background)] border-[var(--border)] hover:border-blue-500/60">
+          <div class="flex items-start justify-between">
+            <div class="w-11 h-11 rounded-xl bg-blue-500/15 text-blue-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+              👨‍🏫
+            </div>
+            <span id="badgeInstructor" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]">
+              بوابة التدريسي
+            </span>
+          </div>
+          <h3 class="font-extrabold text-sm md:text-base text-[var(--foreground)] mt-3 group-hover:text-blue-600 transition-colors">
+            بوابة التدريسي (Instructor)
+          </h3>
+          <p class="text-xs text-[var(--muted-foreground)] mt-1 leading-relaxed">
+            شاشة العارض بالقاعة (Projector) لتوليد رمز الـ QR المتجدد كل 8 ثوانٍ، قائمة النداء والتحضير السريع، التسجيل اللامتزامن، وإدخال الإجازات الطبية والأعذار.
+          </p>
+          <div class="mt-3.5 pt-2.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-bold text-blue-600">
+            <span>دخول بوابة التدريسي</span>
+            <span class="group-hover:translate-x-[-4px] transition-transform">←</span>
+          </div>
+        </div>
+
+        <!-- Option 3: Student Portal -->
+        <div id="portalCardStudent" onclick="switchRole('student')" class="group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-[var(--background)] border-[var(--border)] hover:border-emerald-500/60">
+          <div class="flex items-start justify-between">
+            <div class="w-11 h-11 rounded-xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+              📱
+            </div>
+            <span id="badgeStudent" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]">
+              بوابة الطالب
+            </span>
+          </div>
+          <h3 class="font-extrabold text-sm md:text-base text-[var(--foreground)] mt-3 group-hover:text-emerald-600 transition-colors">
+            بوابة الطالب (Student)
+          </h3>
+          <p class="text-xs text-[var(--muted-foreground)] mt-1 leading-relaxed">
+            مسح كود الحضور الحي داخل القاعة، الفحص التلقائي للموقع الجغرافي (GPS محيط 80م) وبصمة الهاتف، وكشف الموقف الأكاديمي ورصيد الساعات المتبقية حتى الإنذار.
+          </p>
+          <div class="mt-3.5 pt-2.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-bold text-emerald-600">
+            <span>دخول بوابة الطالب</span>
+            <span class="group-hover:translate-x-[-4px] transition-transform">←</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
 
   <!-- ========================================================================= -->
   <!-- 1. ADMIN DASHBOARD VIEW -->
@@ -558,6 +660,270 @@
     </div>
   </section>
 
+  <!-- ========================================================================= -->
+  <!-- 3. STUDENT PORTAL VIEW (بوابة مسح وحضور الطالب) -->
+  <!-- ========================================================================= -->
+  <section id="studentView" class="hidden space-y-6">
+    <!-- Student Hero Welcome Banner -->
+    <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white rounded-3xl p-6 md:p-8 shadow-lg relative overflow-hidden">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              📱 بوابة التحضير الذكي للدراسات العليا
+            </span>
+            <span class="text-xs text-emerald-200">القسم: هندسة العمارة</span>
+          </div>
+          <h2 class="text-xl md:text-2xl font-extrabold mt-2">
+            بوابة تسجيل الحضور ومتابعة الموقف الأكاديمي
+          </h2>
+          <p class="text-xs md:text-sm text-slate-300 mt-1 max-w-xl leading-relaxed">
+            امسح كود الجلسة الحي من شاشة القاعة المعروضة، تحقق من تواجدك الجغرافي داخل قسم العمارة، واطلع على رصيد غياباتك التراكمي وساعات الأمان المتبقية.
+          </p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 text-xs text-center shrink-0 w-full md:w-auto">
+          <div class="text-slate-300">حالة الربط والأمان</div>
+          <div class="font-extrabold text-sm text-emerald-300 mt-0.5">🔒 بروتوكول الحماية نشط</div>
+          <div class="text-[11px] text-slate-300 mt-1">GPS (80م) • QR (8ث) • هاتف فريد</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Grid: Check-in Box + Academic Status -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Right Side: Check-in Form (7 cols) -->
+      <div class="lg:col-span-7 bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-5 md:p-7 shadow-sm space-y-5">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">📸</span>
+            <div>
+              <h3 class="font-bold text-base text-[var(--foreground)]">تسجيل الحضور في القاعة (Interactive Check-In)</h3>
+              <p class="text-xs text-[var(--muted-foreground)]">المسح اللحظي لكود الـ QR وفحص الموقع وبصمة الهاتف</p>
+            </div>
+          </div>
+          <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+            جلسة نشطة
+          </span>
+        </div>
+
+        <!-- Student Form -->
+        <div class="space-y-4">
+          <!-- 1. Student Selection -->
+          <div>
+            <label class="block text-xs font-bold text-[var(--foreground)] mb-1.5">
+              1. اختر اسم الطالب / الباحث:
+            </label>
+            <select id="studentSelectCheckin" onchange="onStudentSelectChange(this.value)" class="w-full text-xs bg-[var(--background)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] font-semibold focus:outline-none focus:border-emerald-500 transition">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+
+          <!-- 2. QR Token Input & Live Seed -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-bold text-[var(--foreground)]">
+                2. كود الحضور اللحظي (QR Token):
+              </label>
+              <span class="text-[11px] text-amber-600 font-bold">يتجدد كل 8 ثوانٍ على شاشة القاعة</span>
+            </div>
+            <div class="flex gap-2">
+              <input id="studentTokenInput" type="text" placeholder="مثال: UOT-ARCH-TECH-xxx" class="grow text-xs bg-[var(--background)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] font-mono font-bold focus:outline-none focus:border-emerald-500 transition">
+              <button onclick="fillActiveToken()" class="px-3.5 py-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30 text-xs font-bold transition shrink-0">
+                🔄 مسح الكود الحي
+              </button>
+            </div>
+            <p class="text-[11px] text-[var(--muted-foreground)] mt-1">
+              ملاحظة: الرمز ينتهي فوراً بعد 8 ثوانٍ لإبطال لقطات الشاشة ومجموعات الواتساب.
+            </p>
+          </div>
+
+          <!-- 3. GPS Geofence Check -->
+          <div>
+            <label class="block text-xs font-bold text-[var(--foreground)] mb-1.5">
+              3. التحقق من الموقع الجغرافي (GPS Geofence):
+            </label>
+            <select id="studentGeoSelect" class="w-full text-xs bg-[var(--background)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] font-medium focus:outline-none focus:border-emerald-500 transition">
+              <option value="INSIDE">📍 داخل قسم هندسة العمارة (14 متراً من النقطة المركزية - متواجد بالقاعة ✅)</option>
+              <option value="OUTSIDE">🛑 خارج الحرم الجامعي / في المنزل (4.8 كم بعيداً - محاكاة الغياب ❌)</option>
+            </select>
+          </div>
+
+          <!-- 4. Device Fingerprint -->
+          <div>
+            <label class="block text-xs font-bold text-[var(--foreground)] mb-1.5">
+              4. فحص بصمة الجهاز الفريدة (One-Device Check):
+            </label>
+            <select id="studentDeviceSelect" class="w-full text-xs bg-[var(--background)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] font-medium focus:outline-none focus:border-emerald-500 transition">
+              <option value="UNIQUE">📱 جهاز هاتف شخصي فريد (هاتف الطالب غير مكرر ✅)</option>
+              <option value="DUPLICATE">🛑 جهاز مسجل لطالب آخر في نفس الجلسة (محاكاة تحضير الزميل ❌)</option>
+            </select>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-2">
+            <button onclick="submitStudentCheckin()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
+              <span>✅</span>
+              <span>توثيق وتأكيد الحضور في الجلسة الآن</span>
+            </button>
+          </div>
+
+          <!-- Result Feedback Box -->
+          <div id="studentCheckinFeedback" class="hidden transition-all duration-300">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Left Side: Student Academic Ledger (5 cols) -->
+      <div class="lg:col-span-5 bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-5 md:p-7 shadow-sm space-y-5 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between border-b border-[var(--border)] pb-4">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🎓</span>
+              <div>
+                <h3 class="font-bold text-base text-[var(--foreground)]">الموقف الأكاديمي ورصيد الغيابات</h3>
+                <p class="text-xs text-[var(--muted-foreground)]">الموقف الفصلي وحدود الإنذار والحرمان</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Student Profile Details -->
+          <div class="mt-4 space-y-4">
+            <div class="p-4 rounded-2xl bg-[var(--background)] border border-[var(--border)] space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h4 id="spName" class="font-extrabold text-sm text-[var(--foreground)]">حيدر كريم الشمري</h4>
+                  <div id="spReg" class="text-xs text-[var(--muted-foreground)] font-mono mt-0.5">M-TECH-26-01</div>
+                </div>
+                <span id="spBranchBadge" class="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                  ماجستير: تكنولوجيا العمارة
+                </span>
+              </div>
+              <div id="spCourse" class="text-xs text-[var(--muted-foreground)] border-t border-[var(--border)] pt-2">
+                المقرر: الإنشاء المتقدم وتكنولوجيا الأغلفة
+              </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 gap-3">
+              <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-center">
+                <span class="text-[11px] text-[var(--muted-foreground)] block">ساعات الغياب المسجلة</span>
+                <strong id="spMissed" class="text-xl font-extrabold text-rose-600 block mt-1">1 س</strong>
+                <span id="spTotal" class="text-[10px] text-[var(--muted-foreground)]">من إجمالي 30 س</span>
+              </div>
+              <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-center">
+                <span class="text-[11px] text-[var(--muted-foreground)] block">نسبة الغياب التراكمية</span>
+                <strong id="spPct" class="text-xl font-extrabold text-amber-600 block mt-1">3.3%</strong>
+                <span id="spStatusLabel" class="text-[10px] text-emerald-600 font-bold">طبيعي ومستقر ✅</span>
+              </div>
+              <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-center">
+                <span class="text-[11px] text-[var(--muted-foreground)] block">رصيد الأمان للإنذار (5%)</span>
+                <strong id="spTo5" class="text-base font-extrabold text-slate-800 dark:text-slate-200 block mt-1">0.5 ساعة</strong>
+                <span class="text-[10px] text-slate-400">هامش أمان أكاديمي</span>
+              </div>
+              <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-center">
+                <span class="text-[11px] text-[var(--muted-foreground)] block">المتبقي حتى الحرمان (10%)</span>
+                <strong id="spTo10" class="text-base font-extrabold text-slate-800 dark:text-slate-200 block mt-1">2.0 ساعة</strong>
+                <span class="text-[10px] text-slate-400">الحد الأقصى المسموح</span>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="space-y-1.5 pt-1">
+              <div class="flex justify-between text-xs font-semibold">
+                <span class="text-[var(--muted-foreground)]">مؤشر الالتزام بالحضور:</span>
+                <span id="spCommitment" class="text-emerald-600 font-bold">96.7%</span>
+              </div>
+              <div class="w-full bg-[var(--background)] rounded-full h-2.5 border border-[var(--border)] overflow-hidden">
+                <div id="spProgressBar" class="bg-gradient-to-r from-emerald-500 to-teal-500 h-2.5 rounded-full transition-all duration-500" style="width: 96.7%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-[var(--border)] text-center">
+          <p class="text-[11px] text-[var(--muted-foreground)]">
+            🔒 تُحسب النسب وفق المادة الامتحانية النافذة لوزارة التعليم العالي والبحث العلمي العراقية للدراسات العليا.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Triple Security Anti-Fraud Lab Banner Inside Student Portal -->
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-5 md:p-6 shadow-sm">
+      <div class="flex items-center justify-between border-b border-[var(--border)] pb-4 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🛡️</span>
+          <div>
+            <h3 class="font-bold text-sm md:text-base text-[var(--foreground)]">مختبر اختبار الردع ومنظومة مكافحة التحضير بالإنابة</h3>
+            <p class="text-xs text-[var(--muted-foreground)]">جرب السيناريوهات المختلفة وشاهد كيفية تصدي المنصة لمحاولات الغش</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col justify-between space-y-2">
+          <div>
+            <div class="text-xs font-bold text-emerald-600 flex items-center gap-1">
+              <span>✅</span> سيناريو 1: حضور نظامي
+            </div>
+            <div class="text-[11px] text-[var(--muted-foreground)] mt-1">
+              كود حي نشط + داخل القاعة (14م) + هاتف الطالب الأصلي.
+            </div>
+          </div>
+          <button onclick="simulateStudentScenario('LEGIT')" class="w-full py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+            تجربة القبول ✅
+          </button>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col justify-between space-y-2">
+          <div>
+            <div class="text-xs font-bold text-rose-600 flex items-center gap-1">
+              <span>🛑</span> سيناريو 2: صورة واتساب
+            </div>
+            <div class="text-[11px] text-[var(--muted-foreground)] mt-1">
+              تصوير كود القاعة وإرساله ➔ انتهاء الصلاحية بعد 8 ثوانٍ.
+            </div>
+          </div>
+          <button onclick="simulateStudentScenario('EXPIRED')" class="w-full py-1.5 text-xs font-bold rounded-lg bg-rose-600 hover:bg-rose-700 text-white transition">
+            تجربة الردع 🛑
+          </button>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col justify-between space-y-2">
+          <div>
+            <div class="text-xs font-bold text-rose-600 flex items-center gap-1">
+              <span>🛑</span> سيناريو 3: طالب بالمنزل
+            </div>
+            <div class="text-[11px] text-[var(--muted-foreground)] mt-1">
+              المسافة 4.8 كم بعيداً ➔ حظر بالـ GPS Geofence (80م).
+            </div>
+          </div>
+          <button onclick="simulateStudentScenario('GPS')" class="w-full py-1.5 text-xs font-bold rounded-lg bg-rose-600 hover:bg-rose-700 text-white transition">
+            تجربة الردع 🛑
+          </button>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col justify-between space-y-2">
+          <div>
+            <div class="text-xs font-bold text-rose-600 flex items-center gap-1">
+              <span>🛑</span> سيناريو 4: هاتف مكرر
+            </div>
+            <div class="text-[11px] text-[var(--muted-foreground)] mt-1">
+              تسجيل حضور زميل من نفس الجهاز ➔ حظر البصمة المكررة.
+            </div>
+          </div>
+          <button onclick="simulateStudentScenario('DEVICE')" class="w-full py-1.5 text-xs font-bold rounded-lg bg-rose-600 hover:bg-rose-700 text-white transition">
+            تجربة الردع 🛑
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
   <!-- Platform Global Footer -->
   <footer class="mt-12 py-6 px-4 bg-[var(--card)] border border-[var(--border)] rounded-2xl text-center shadow-sm">
     <div class="font-bold text-sm text-amber-700 dark:text-amber-500 mb-1">
@@ -812,27 +1178,252 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       return { label: 'طبيعي ومستقر', class: 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/30', level: 'NORMAL' };
     }
 
-    // Switch Role (Admin / Instructor)
+    // Switch Role (Admin / Instructor / Student)
     function switchRole(role) {
       appState.currentRole = role;
       const adminView = document.getElementById('adminView');
       const instructorView = document.getElementById('instructorView');
+      const studentView = document.getElementById('studentView');
+
       const btnAdmin = document.getElementById('btnRoleAdmin');
       const btnInstructor = document.getElementById('btnRoleInstructor');
+      const btnStudent = document.getElementById('btnRoleStudent');
+
+      const cardAdmin = document.getElementById('portalCardAdmin');
+      const cardInstructor = document.getElementById('portalCardInstructor');
+      const cardStudent = document.getElementById('portalCardStudent');
+
+      const badgeAdmin = document.getElementById('badgeAdmin');
+      const badgeInstructor = document.getElementById('badgeInstructor');
+      const badgeStudent = document.getElementById('badgeStudent');
+
+      const activeRoleBadge = document.getElementById('activeRoleBadge');
+
+      // Hide all views first
+      adminView.classList.add('hidden');
+      instructorView.classList.add('hidden');
+      if (studentView) studentView.classList.add('hidden');
+
+      // Reset top buttons
+      const btnBase = "px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all duration-200";
+      const btnInactive = `${btnBase} font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)]`;
+      btnAdmin.className = btnInactive;
+      btnInstructor.className = btnInactive;
+      if (btnStudent) btnStudent.className = btnInactive;
+
+      // Reset portal gateway cards
+      const cardBase = "group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-[var(--background)] border-[var(--border)]";
+      if (cardAdmin) cardAdmin.className = `${cardBase} hover:border-amber-500/60`;
+      if (cardInstructor) cardInstructor.className = `${cardBase} hover:border-blue-500/60`;
+      if (cardStudent) cardStudent.className = `${cardBase} hover:border-emerald-500/60`;
+
+      const badgeBase = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]";
+      if (badgeAdmin) { badgeAdmin.className = badgeBase; badgeAdmin.innerText = "بوابة الإدارة"; }
+      if (badgeInstructor) { badgeInstructor.className = badgeBase; badgeInstructor.innerText = "بوابة التدريسي"; }
+      if (badgeStudent) { badgeStudent.className = badgeBase; badgeStudent.innerText = "بوابة الطالب"; }
 
       if (role === 'admin') {
         adminView.classList.remove('hidden');
-        instructorView.classList.add('hidden');
-        btnAdmin.className = "px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-amber-600 text-white shadow-sm";
-        btnInstructor.className = "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-[var(--muted-foreground)] hover:text-[var(--foreground)]";
+        btnAdmin.className = `${btnBase} font-semibold bg-amber-600 text-white shadow-sm`;
+        if (cardAdmin) cardAdmin.className = "group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-gradient-to-b from-amber-500/10 to-transparent border-amber-500 shadow-sm";
+        if (badgeAdmin) { badgeAdmin.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500 text-white shadow-sm"; badgeAdmin.innerText = "نشط حالياً ✓"; }
+        if (activeRoleBadge) { activeRoleBadge.className = "text-amber-600 font-bold"; activeRoleBadge.innerText = "لوحة الإدارة (Admin)"; }
         renderAdminDashboard();
-      } else {
-        adminView.classList.add('hidden');
+      } else if (role === 'instructor') {
         instructorView.classList.remove('hidden');
-        btnInstructor.className = "px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-amber-600 text-white shadow-sm";
-        btnAdmin.className = "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-[var(--muted-foreground)] hover:text-[var(--foreground)]";
+        btnInstructor.className = `${btnBase} font-semibold bg-blue-600 text-white shadow-sm`;
+        if (cardInstructor) cardInstructor.className = "group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-gradient-to-b from-blue-500/10 to-transparent border-blue-500 shadow-sm";
+        if (badgeInstructor) { badgeInstructor.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-600 text-white shadow-sm"; badgeInstructor.innerText = "نشط حالياً ✓"; }
+        if (activeRoleBadge) { activeRoleBadge.className = "text-blue-600 font-bold"; activeRoleBadge.innerText = "بوابة التدريسي (Instructor)"; }
         renderInstructorPortal();
-    updateActiveTokenAndQr();
+        updateActiveTokenAndQr();
+      } else if (role === 'student') {
+        if (studentView) studentView.classList.remove('hidden');
+        if (btnStudent) btnStudent.className = `${btnBase} font-semibold bg-emerald-600 text-white shadow-sm`;
+        if (cardStudent) cardStudent.className = "group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-gradient-to-b from-emerald-500/10 to-transparent border-emerald-500 shadow-sm";
+        if (badgeStudent) { badgeStudent.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white shadow-sm"; badgeStudent.innerText = "نشط حالياً ✓"; }
+        if (activeRoleBadge) { activeRoleBadge.className = "text-emerald-600 font-bold"; activeRoleBadge.innerText = "بوابة الطالب (Student)"; }
+        renderStudentPortal();
+      }
+    }
+
+    // Render Student Portal
+    function renderStudentPortal() {
+      const select = document.getElementById('studentSelectCheckin');
+      if (!select) return;
+
+      select.innerHTML = '';
+      appState.students.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.innerText = `${s.name} (${s.regNum}) - ${appState.branches[s.branch].name}`;
+        select.appendChild(opt);
+      });
+
+      // Default to first student
+      if (appState.students.length > 0) {
+        onStudentSelectChange(appState.students[0].id);
+      }
+
+      // Pre-fill active live token
+      fillActiveToken();
+    }
+
+    function onStudentSelectChange(studentId) {
+      renderStudentAcademicProfile(studentId);
+    }
+
+    function renderStudentAcademicProfile(studentId) {
+      const student = appState.students.find(s => s.id === studentId);
+      if (!student) return;
+
+      const pct = ((student.missedHours / student.totalHours) * 100).toFixed(1);
+      const to5 = Math.max(0, (student.totalHours * 0.05) - student.missedHours).toFixed(1);
+      const to10 = Math.max(0, (student.totalHours * 0.10) - student.missedHours).toFixed(1);
+      const commitment = (100 - parseFloat(pct)).toFixed(1);
+      const badge = getStatusBadge(student.missedHours, student.totalHours);
+
+      const spName = document.getElementById('spName');
+      const spReg = document.getElementById('spReg');
+      const spBranchBadge = document.getElementById('spBranchBadge');
+      const spCourse = document.getElementById('spCourse');
+      const spMissed = document.getElementById('spMissed');
+      const spTotal = document.getElementById('spTotal');
+      const spPct = document.getElementById('spPct');
+      const spStatusLabel = document.getElementById('spStatusLabel');
+      const spTo5 = document.getElementById('spTo5');
+      const spTo10 = document.getElementById('spTo10');
+      const spCommitment = document.getElementById('spCommitment');
+      const spProgressBar = document.getElementById('spProgressBar');
+
+      if (spName) spName.innerText = student.name;
+      if (spReg) spReg.innerText = student.regNum;
+      if (spBranchBadge) spBranchBadge.innerText = appState.branches[student.branch].name;
+      if (spCourse) spCourse.innerText = `المقرر: ${student.course}`;
+      if (spMissed) spMissed.innerText = `${student.missedHours} س`;
+      if (spTotal) spTotal.innerText = `من إجمالي ${student.totalHours} س`;
+      if (spPct) spPct.innerText = `${pct}%`;
+      if (spStatusLabel) {
+        spStatusLabel.innerText = badge.label;
+        spStatusLabel.className = `text-[10px] font-bold ${pct >= 10 ? 'text-rose-600' : (pct >= 5 ? 'text-amber-600' : 'text-emerald-600')}`;
+      }
+      if (spTo5) spTo5.innerText = parseFloat(to5) > 0 ? `${to5} س` : 'تجاوز الإنذار';
+      if (spTo10) spTo10.innerText = parseFloat(to10) > 0 ? `${to10} س` : 'محروم رسمياً';
+      if (spCommitment) spCommitment.innerText = `${commitment}%`;
+      if (spProgressBar) {
+        spProgressBar.style.width = `${Math.max(0, Math.min(100, commitment))}%`;
+        if (pct >= 10) {
+          spProgressBar.className = "bg-rose-600 h-2.5 rounded-full transition-all duration-500";
+        } else if (pct >= 5) {
+          spProgressBar.className = "bg-amber-500 h-2.5 rounded-full transition-all duration-500";
+        } else {
+          spProgressBar.className = "bg-gradient-to-r from-emerald-500 to-teal-500 h-2.5 rounded-full transition-all duration-500";
+        }
+      }
+    }
+
+    function fillActiveToken() {
+      const input = document.getElementById('studentTokenInput');
+      if (input) {
+        const activeCourse = 'ARCH-TECH';
+        input.value = `UOT-ARCH-${activeCourse}-${appState.tokenSeed}`;
+      }
+    }
+
+    function submitStudentCheckin() {
+      const select = document.getElementById('studentSelectCheckin');
+      const tokenInput = document.getElementById('studentTokenInput');
+      const geoSelect = document.getElementById('studentGeoSelect');
+      const deviceSelect = document.getElementById('studentDeviceSelect');
+      const resDiv = document.getElementById('studentCheckinFeedback');
+
+      if (!select || !resDiv) return;
+
+      const studentId = select.value;
+      const token = tokenInput ? tokenInput.value.trim() : '';
+      const geo = geoSelect ? geoSelect.value : 'INSIDE';
+      const device = deviceSelect ? deviceSelect.value : 'UNIQUE';
+
+      resDiv.classList.remove('hidden');
+
+      const student = appState.students.find(s => s.id === studentId);
+      if (!student) return;
+
+      const isTokenValid = token.includes('UOT-ARCH-') && token.includes(String(appState.tokenSeed));
+      const isGeoValid = geo === 'INSIDE';
+      const isDeviceValid = device === 'UNIQUE';
+
+      if (!isTokenValid) {
+        resDiv.innerHTML = `
+          <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-400 text-xs space-y-1">
+            <div class="font-bold flex items-center gap-1.5"><span class="text-base">🛑</span> تم رفض التوثيق: الرمز اللحظي منتهي الصلاحية!</div>
+            <div>لقد مضت أكثر من 8 ثوانٍ على هذا الرمز أو تم تصويره مسبقاً. يرجى مسح الكود الحي المعروض على شاشة العارض بالقاعة مباشرة.</div>
+          </div>
+        `;
+        showToast("🛑 فشل التحقق", "الكود منتهي الصلاحية - مكافحة لقطات الشاشة");
+        return;
+      }
+
+      if (!isGeoValid) {
+        resDiv.innerHTML = `
+          <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-400 text-xs space-y-1">
+            <div class="font-bold flex items-center gap-1.5"><span class="text-base">🛑</span> تم رفض التوثيق: تم رصد موقعك خارج قاعات قسم العمارة!</div>
+            <div>نظام تحديد المواقع (GPS) يرصد تواجدك على بعد 4.8 كم. يُشترط التواجد الفعلي داخل نطاق مبنى قسم هندسة العمارة (محيط 80 متراً).</div>
+          </div>
+        `;
+        showToast("🛑 فشل التحقق", "الموقع الجغرافي خارج نطاق قسم العمارة");
+        return;
+      }
+
+      if (!isDeviceValid) {
+        resDiv.innerHTML = `
+          <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-400 text-xs space-y-1">
+            <div class="font-bold flex items-center gap-1.5"><span class="text-base">🛑</span> تم رفض التوثيق: تكرار بصمة الجهاز (Duplicate Device)!</div>
+            <div>تم استخدام هذا الهاتف مسبقاً لتسجيل حضور طالب آخر في هذه الجلسة. النظام يمنع التحضير بالإنابة نهائياً.</div>
+          </div>
+        `;
+        showToast("🛑 فشل التحقق", "تكرار بصمة الهاتف - منع التحضير بالإنابة");
+        return;
+      }
+
+      // All passed!
+      student.currentSessionStatus = 'PRESENT';
+      resDiv.innerHTML = `
+        <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs space-y-1.5">
+          <div class="font-bold text-sm flex items-center gap-1.5"><span class="text-base">🎉</span> تم توثيق حضورك بنجاح يا مهندس/ة [${student.name}]!</div>
+          <div>اجتياز كامل لبروتوكول الأمان: كود حي نشط + تواجد داخل قسم العمارة (14م) + بصمة هاتف موثقة فريدة.</div>
+          <div class="text-[11px] opacity-85">تم إشعار أستاذ المقرر وتثبيت حضورك بالجلسة الأكاديمية.</div>
+        </div>
+      `;
+      showToast("🎉 تم الحضور بنجاح", `تم تسجيل حضور المهندس/ة [${student.name}] في الجلسة`);
+      renderStudentAcademicProfile(student.id);
+    }
+
+    function simulateStudentScenario(scenario) {
+      const tokenInput = document.getElementById('studentTokenInput');
+      const geoSelect = document.getElementById('studentGeoSelect');
+      const deviceSelect = document.getElementById('studentDeviceSelect');
+
+      if (scenario === 'LEGIT') {
+        fillActiveToken();
+        if (geoSelect) geoSelect.value = 'INSIDE';
+        if (deviceSelect) deviceSelect.value = 'UNIQUE';
+        submitStudentCheckin();
+      } else if (scenario === 'EXPIRED') {
+        if (tokenInput) tokenInput.value = 'UOT-ARCH-EXPIRED-OLD-9999';
+        if (geoSelect) geoSelect.value = 'INSIDE';
+        if (deviceSelect) deviceSelect.value = 'UNIQUE';
+        submitStudentCheckin();
+      } else if (scenario === 'GPS') {
+        fillActiveToken();
+        if (geoSelect) geoSelect.value = 'OUTSIDE';
+        if (deviceSelect) deviceSelect.value = 'UNIQUE';
+        submitStudentCheckin();
+      } else if (scenario === 'DEVICE') {
+        fillActiveToken();
+        if (geoSelect) geoSelect.value = 'INSIDE';
+        if (deviceSelect) deviceSelect.value = 'DUPLICATE';
+        submitStudentCheckin();
       }
     }
 
@@ -1643,27 +2234,27 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       }, 3500);
     }
 
-    // Auto-detect phone camera check-in via QR query parameters
+    // Auto-detect phone camera check-in via QR query parameters or role parameter
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('action') === 'checkin' || urlParams.get('token')) {
-        const token = urlParams.get('token') || 'UOT-LIVE';
-        openSecurityModal();
-        const resBox = document.getElementById('securityTestResult');
-        if (resBox) {
-          resBox.classList.remove('hidden');
-          resBox.innerHTML = `
-            <div class="text-emerald-400 font-bold text-sm">📱 تم مسح كود الحضور بنجاح عبر كاميرا هاتفك!</div>
-            <div class="text-white mt-1">رمز الجلسة المقروء: <code class="bg-black/50 px-2 py-0.5 rounded text-amber-300 font-mono">${token}</code></div>
-            <div class="text-emerald-300 mt-2 font-bold">اضغط على "تجربة الآن" في الحالة 1 لتأكيد الحضور ومطابقة الموقع الجغرافي.</div>
-          `;
+      const roleParam = urlParams.get('role');
+      const token = urlParams.get('token');
+
+      if (urlParams.get('action') === 'checkin' || token || roleParam === 'student') {
+        switchRole('student');
+        if (token) {
+          const input = document.getElementById('studentTokenInput');
+          if (input) input.value = token;
         }
+        showToast("📱 تم مسح رمز الحضور الحي", "تم تحويلك مباشرة إلى بوابة الطالب لتوثيق الحضور وتأكيد الموقع");
+      } else if (roleParam === 'instructor') {
+        switchRole('instructor');
+      } else {
+        switchRole('admin');
       }
     });
 
     // Initial Execution
-    renderAdminDashboard();
-    renderInstructorPortal();
     updateActiveTokenAndQr();
   </script>
 </body>

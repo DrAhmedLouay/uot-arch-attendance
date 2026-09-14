@@ -102,6 +102,19 @@ st.markdown("""
         position: relative;
         overflow: hidden;
     }
+
+    /* Main Gateway Card - Architectural Orange (#f5821f) */
+    .arch-hero-orange {
+        background: linear-gradient(135deg, #f5821f 0%, #e07314 100%);
+        color: #ffffff;
+        padding: 24px 28px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 25px -5px rgba(245, 130, 31, 0.35);
+        border: 2px solid #e07314;
+        position: relative;
+        overflow: hidden;
+    }
     
     .arch-hero::after {
         content: "ARCHITECTURE";
@@ -499,7 +512,7 @@ if "selected_auth_portal" not in st.session_state:
 # إذا لم يسجل المستخدم دخوله بعد، نعرض الواجهة المركزية الموحدة للتسجيل
 if st.session_state.current_user is None:
     st.markdown("""
-    <div class="arch-hero">
+    <div class="arch-hero-orange">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
             <div>
                 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">

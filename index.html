@@ -88,6 +88,78 @@
       scrollbar-width: none;
     }
 
+    /* Enhanced Table Scrolling & Drag-to-Scroll */
+    .table-scroll-container {
+      overflow-x: auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      overscroll-behavior-x: contain;
+      cursor: grab;
+    }
+    .table-scroll-container.is-dragging {
+      cursor: grabbing !important;
+      user-select: none;
+      scroll-behavior: auto;
+    }
+    .table-scroll-container::-webkit-scrollbar {
+      height: 10px;
+      width: 10px;
+    }
+    .table-scroll-container::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 8px;
+    }
+    .table-scroll-container::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 8px;
+      border: 2px solid #f1f5f9;
+    }
+    .table-scroll-container::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+    .dark .table-scroll-container::-webkit-scrollbar-track {
+      background: #1c1917;
+    }
+    .dark .table-scroll-container::-webkit-scrollbar-thumb {
+      background: #57534e;
+      border: 2px solid #1c1917;
+    }
+    .dark .table-scroll-container::-webkit-scrollbar-thumb:hover {
+      background: #78716c;
+    }
+
+    /* Pinned First Column in RTL for Crystal Clear Navigation */
+    .sticky-col-header {
+      position: sticky;
+      right: 0;
+      z-index: 30;
+      box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.08);
+    }
+    .sticky-col-cell {
+      position: sticky;
+      right: 0;
+      z-index: 20;
+      background-color: #ffffff;
+      box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.08);
+    }
+    tr:nth-child(even) .sticky-col-cell {
+      background-color: #f8fafc;
+    }
+    tr:hover .sticky-col-cell {
+      background-color: #fef3c7 !important;
+    }
+    .dark .sticky-col-cell {
+      background-color: #1c1917;
+      box-shadow: -4px 0 8px -2px rgba(0, 0, 0, 0.3);
+    }
+    .dark tr:nth-child(even) .sticky-col-cell {
+      background-color: #292524;
+    }
+    .dark tr:hover .sticky-col-cell {
+      background-color: #451a03 !important;
+    }
+
     /* Minimum touch targets for accessibility and thumb-friendly taps */
     button, [role="button"], select, a.btn-touch {
       min-height: 44px;
@@ -583,18 +655,29 @@
           </div>
         </div>
 
-        <!-- Mobile Table Swipe Hint -->
-        <div class="block lg:hidden text-xs font-bold text-amber-900 bg-amber-100/80 px-3.5 py-2 rounded-xl border border-amber-300 mt-3 flex items-center justify-between">
-          <span>👈 اسحب الجدول أفقياً لمعاينة جميع الأعمدة والمواقف بدقة</span>
-          <span class="text-sm">👉</span>
+        <!-- Quick Navigation & Scroll Controls Strip -->
+        <div class="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 p-3 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 shadow-2xs">
+          <div class="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
+            <span class="text-base text-amber-700 dark:text-amber-400">🖐️</span>
+            <span>تحريك وتمرير السجل:</span>
+            <span class="font-normal text-slate-600 dark:text-slate-300">يمكنك سحب الجدول بالماوس/اللمس، أو استخدام أزرار التحريك السريع:</span>
+          </div>
+          <div class="flex items-center gap-1.5 self-end sm:self-auto shrink-0">
+            <button onclick="scrollAdminTable('right')" type="button" title="تحريك لليمين (بداية الجدول - الأسماء)" class="min-h-[34px] px-3 py-1.5 rounded-lg bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-slate-900 dark:text-slate-100 text-xs font-bold border border-slate-300 dark:border-stone-600 flex items-center gap-1 transition shadow-2xs active:scale-95">
+              <span>▶</span> يمين (الأسماء)
+            </button>
+            <button onclick="scrollAdminTable('left')" type="button" title="تحريك لليسار (المواقف الأكاديمية والإجراءات)" class="min-h-[34px] px-3 py-1.5 rounded-lg bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-slate-900 dark:text-slate-100 text-xs font-bold border border-slate-300 dark:border-stone-600 flex items-center gap-1 transition shadow-2xs active:scale-95">
+              يسار (الإجراءات) <span>◀</span>
+            </button>
+          </div>
         </div>
 
-        <!-- Students Table -->
-        <div class="overflow-x-auto mt-3 rounded-xl border border-slate-300 dark:border-stone-700 shadow-sm relative -webkit-overflow-scrolling: touch">
+        <!-- Students Table with Pinned Sticky First Column and Smooth Drag-to-Scroll -->
+        <div id="adminTableContainer" class="table-scroll-container mt-2.5 rounded-xl border border-slate-300 dark:border-stone-700 shadow-sm max-h-[620px] relative">
           <table class="w-full text-right text-xs sm:text-sm whitespace-nowrap">
-            <thead class="text-xs sm:text-sm text-slate-900 dark:text-slate-100 bg-stone-100 dark:bg-stone-800 border-b-2 border-stone-200 dark:border-stone-700 font-black">
+            <thead class="sticky top-0 z-20 text-xs sm:text-sm text-slate-900 dark:text-slate-100 bg-stone-100 dark:bg-stone-800 border-b-2 border-stone-200 dark:border-stone-700 font-black shadow-xs">
               <tr>
-                <th class="py-3.5 px-4 font-black">الطالب / الرقم الجامعي</th>
+                <th class="py-3.5 px-4 font-black sticky-col-header bg-stone-100 dark:bg-stone-800 border-l border-slate-200 dark:border-stone-700">الطالب / الرقم الجامعي</th>
                 <th class="py-3.5 px-3 font-black">الفرع الأكاديمي</th>
                 <th class="py-3.5 px-3 font-black">المقرر الدراسي</th>
                 <th class="py-3.5 px-3 font-black">إجمالي الساعات</th>
@@ -2325,7 +2408,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const tr = document.createElement('tr');
         tr.className = `transition-colors hover:bg-amber-50/60 dark:hover:bg-amber-950/30 ${idx % 2 === 1 ? 'bg-stone-50/60 dark:bg-stone-800/40' : 'bg-white dark:bg-stone-900'}`;
         tr.innerHTML = `
-          <td class="py-3.5 px-4 text-right">
+          <td class="py-3.5 px-4 text-right sticky-col-cell border-l border-slate-200 dark:border-stone-700">
             <div class="font-black text-sm text-slate-900 dark:text-slate-100">${student.name}</div>
             <div class="text-[11px] font-mono font-bold text-slate-600 dark:text-slate-400 mt-0.5">${student.regNum}</div>
           </td>
@@ -2405,6 +2488,58 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       }).length;
       const overallAvg = (totalAttPct / (filtered.length || 1)).toFixed(1);
       document.getElementById('kpiAttendanceRate').innerText = `${overallAvg}%`;
+    }
+
+    // Smooth Horizontal Navigation for Attendance Table
+    function scrollAdminTable(direction) {
+      const container = document.getElementById('adminTableContainer');
+      if (!container) return;
+      const step = 320;
+      if (direction === 'left') {
+        container.scrollBy({ left: -step, behavior: 'smooth' });
+      } else if (direction === 'right') {
+        container.scrollBy({ left: step, behavior: 'smooth' });
+      }
+    }
+
+    // Drag-to-Scroll Support for Desktop Mouse Interaction
+    function initTableDragScroll() {
+      const slider = document.getElementById('adminTableContainer');
+      if (!slider) return;
+
+      let isDown = false;
+      let startX;
+      let scrollLeft;
+
+      slider.addEventListener('mousedown', (e) => {
+        if (e.target.closest('button, a, input, select, textarea')) return;
+        isDown = true;
+        slider.classList.add('is-dragging');
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDown) {
+          isDown = false;
+          slider.classList.remove('is-dragging');
+        }
+      });
+
+      slider.addEventListener('mouseleave', () => {
+        if (isDown) {
+          isDown = false;
+          slider.classList.remove('is-dragging');
+        }
+      });
+
+      slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        slider.scrollLeft = scrollLeft - walk;
+      });
     }
 
     // Change Instructor
@@ -3042,7 +3177,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
           <div style="font-size: 10px; color: #64748b;">
             <strong>نسخة منه إلى:</strong><br>
-            - مقرر الدراسات العليا بالقسم.<br>
+            - مقرر الدراسات العليا بالكلية.<br>
             - أستاذ ومسؤول المقرر.<br>
             - ملف الطالب / الحفظ.
           </div>
@@ -3106,6 +3241,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       const token = urlParams.get('token');
 
       initAuthSession();
+      initTableDragScroll();
 
       if (urlParams.get('action') === 'checkin' || token || roleParam === 'student') {
         if (!appState.currentUser) {

@@ -898,7 +898,7 @@ if user_role == "ADMIN":
         df_display = pd.DataFrame(table_rows)
         st.dataframe(df_display, use_container_width=True, hide_index=True)
         
-        # تصدير كشف Excel / CSV واستعراض كشف مجلس القسم
+        # تصدير كشف Excel / CSV واستعراض كشف مجلس الكلية
         c_exp1, c_exp2 = st.columns([1.2, 1.8])
         with c_exp1:
             csv_data = df_display.to_csv(index=False).encode('utf-8-sig')
@@ -910,18 +910,18 @@ if user_role == "ADMIN":
                 use_container_width=True
             )
         with c_exp2:
-            with st.expander("🖨️ استعراض وطباعة كشف مجلس القسم للغيابات (PDF)", expanded=False):
+            with st.expander("🖨️ استعراض وطباعة كشف مجلس الكلية للغيابات (PDF)", expanded=False):
                 warned_council = df_students[df_students['pct'] >= 5.0]
                 if warned_council.empty:
                     st.success("🎉 لا توجد حالات تجاوز لنسبة 5% حالياً. جميع الطلبة ضمن الموقف السليم.")
                 else:
-                    st.markdown(f"**الحالات المرفوعة لمجلس القسم للبت بالحرمان والإنذار ({len(warned_council)} باحثاً):**")
+                    st.markdown(f"**الحالات المرفوعة لمجلس الكلية للبت بالحرمان والإنذار ({len(warned_council)} باحثاً):**")
                     st.dataframe(warned_council[['name', 'reg_num', 'branch_name', 'course_name', 'missed_hours', 'pct']], use_container_width=True, hide_index=True)
                     import streamlit.components.v1 as components
                     components.html("""
                     <div style="direction: rtl; text-align: right;">
                         <button onclick="window.parent.print()" style="background:#b45309; color:white; border:none; padding:8px 18px; border-radius:10px; font-weight:700; cursor:pointer; font-size:12px; font-family:sans-serif;">
-                            🖨️ طباعة كشف مجلس القسم / حفظ PDF
+                            🖨️ طباعة كشف مجلس الكلية / حفظ PDF
                         </button>
                     </div>
                     """, height=45)
@@ -983,7 +983,7 @@ if user_role == "ADMIN":
             
     # --- التبويب 4: مولّد كتب الإنذار الرسمية ---
     with tab_letters:
-        st.markdown("#### 📜 إصدار كتب وتنبيهات الغياب الرسمية لمجلس القسم")
+        st.markdown("#### 📜 إصدار كتب وتنبيهات الغياب الرسمية لمجلس الكلية")
         warned_students = df_students[df_students['pct'] >= 5.0]
         
         if warned_students.empty:
@@ -1018,13 +1018,13 @@ if user_role == "ADMIN":
                 </p>
                 
                 <p style="line-height: 1.8; font-size: 14px; color: #b91c1c; font-weight: bold;">
-                    يرجى الالتزام التام بتسجيل الحضور، وفي حال بلوغ نسبة الغياب 10% سيتم حرمانكم نهائياً من أداء الامتحان النهائي للمقرر وإشعار مجلس القسم لاتخاذ الإجراءات الأكاديمية والقانونية.
+                    يرجى الالتزام التام بتسجيل الحضور، وفي حال بلوغ نسبة الغياب 10% سيتم حرمانكم نهائياً من أداء الامتحان النهائي للمقرر وإشعار مجلس الكلية لاتخاذ الإجراءات الأكاديمية والقانونية.
                 </p>
                 
                 <div style="display: flex; justify-content: space-between; margin-top: 30px; padding-top: 15px; border-top: 1px dashed #d6d3d1;">
                     <div style="text-align: right; font-size: 12px;">
                         <strong>نسخة منه إلى:</strong><br>
-                        - مقرر الدراسات العليا بالقسم.<br>
+                        - مقرر الدراسات العليا بالكلية.<br>
                         - أستاذ ومسؤول المقرر.<br>
                         - ملف الطالب / الحفظ.
                     </div>

@@ -40,7 +40,27 @@ def haversine_distance(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return R * c
 
-# 3. الهوية البصرية المعمارية والتصميم المتقدم (CSS RTL)
+# 3. محرك التحديث التلقائي اللحظي للـ QR (Real-time Auto-Refresh Engine)
+if hasattr(st, "fragment"):
+    live_qr_fragment = st.fragment(run_every=1)
+elif hasattr(st, "experimental_fragment"):
+    live_qr_fragment = st.experimental_fragment(run_every=1)
+else:
+    def live_qr_fragment(func):
+        return func
+
+@st.cache_data(ttl=8)
+def generate_qr_image_cached(token):
+    """توليد كود الـ QR وتخزينه مؤقتاً لمدة 8 ثوانٍ لتفادي استهلاك المعالج"""
+    qr = qrcode.QRCode(version=1, box_size=9, border=2)
+    qr.add_data(token)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="#78350f", back_color="white")
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return buf.getvalue()
+
+# 4. الهوية البصرية المعمارية والتصميم المتقدم (CSS RTL)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
@@ -576,78 +596,86 @@ elif "Instructor" in role:
         "📝 التسجيل اللامتزامن وإدخال الأعذار الرسمية"
     ])
     
-    # --- تبويب شاشة القاعة والـ QR ---
+    # --- تبويب شاشة القاعة والـ QR بالتحديث الآلي المستمر ---
     with inst_tab1:
-        current_time_slot = int(time.time() // 8)
-        qr_secret_token = f"UOT-ARCH-{selected_course_code}-{current_time_slot}"
-        st.session_state.active_qr_token = qr_secret_token
-        st.session_state.active_course_code = selected_course_code
-        st.session_state.active_session_date = str(session_date)
-        st.session_state.active_session_hours = session_hours
+        @live_qr_fragment
+        def render_live_qr_panel():
+            current_time_slot = int(time.time() // 8)
+            qr_secret_token = f"UOT-ARCH-{selected_course_code}-{current_time_slot}"
+            st.session_state.active_qr_token = qr_secret_token
+            st.session_state.active_course_code = selected_course_code
+            st.session_state.active_session_date = str(session_date)
+            st.session_state.active_session_hours = session_hours
 
-        col_qr_disp, col_live_feed = st.columns([1.1, 1.9])
-        
-        with col_qr_disp:
-            st.markdown("#### 📺 شاشة العارض بالقاعة (Projector View)")
+            col_qr_disp, col_live_feed = st.columns([1.1, 1.9])
             
-            # صورة QR عالية الدقة
-            qr = qrcode.QRCode(version=1, box_size=9, border=2)
-            qr.add_data(qr_secret_token)
-            qr.make(fit=True)
-            img = qr.make_image(fill_color="#78350f", back_color="white")
-            
-            buf = io.BytesIO()
-            img.save(buf, format="PNG")
-            st.image(buf.getvalue(), width=260)
-            
-            time_left = 8 - int(time.time() % 8)
-            st.markdown(f"⏳ **يتجدد الرمز خلال:** `{time_left} ثوانٍ`")
-            st.code(f"رمز الأمان اللحظي: {qr_secret_token}", language="text")
-            
-            st.markdown("""
-            <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:10px; border-radius:12px; font-size:12px; color:#15803d;">
-                🔒 <strong>التحقق الجغرافي:</strong> مفعل (محيط 80م)<br>
-                📱 <strong>فحص الجهاز:</strong> هاتف واحد لكل طالب
-            </div>
-            """, unsafe_allow_html=True)
-            
-            if st.button("🔄 تحديث شاشة الـ QR يدوياً", use_container_width=True):
-                st.rerun()
+            with col_qr_disp:
+                st.markdown("#### 📺 شاشة العارض بالقاعة (Projector View)")
+                
+                # جلب صورة الـ QR اللحظية من الكاش فائق السرعة
+                qr_bytes = generate_qr_image_cached(qr_secret_token)
+                st.image(qr_bytes, width=260)
+                
+                time_left = 8 - int(time.time() % 8)
+                pct_bar = max(0.0, min(1.0, time_left / 8.0))
+                st.progress(pct_bar, text=f"⏳ يتجدد الرمز آلياً كل 8 ثوانٍ (متبقي: {time_left} ثانية)")
+                st.code(f"رمز الأمان اللحظي: {qr_secret_token}", language="text")
+                
+                st.markdown("""
+                <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:10px; border-radius:12px; font-size:12px; color:#15803d;">
+                    🔒 <strong>التحقق الجغرافي:</strong> مفعل (محيط 80م)<br>
+                    📱 <strong>فحص الجهاز:</strong> هاتف واحد لكل طالب<br>
+                    ⚡ <strong>التحديث التلقائي:</strong> يعمل آلياً كل ثانية
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # آلية احتياطية للتحديث الآلي في حال عدم دعم st.fragment بالمتصفح
+                if not hasattr(st, "fragment") and not hasattr(st, "experimental_fragment"):
+                    import streamlit.components.v1 as components
+                    components.html("""
+                    <script>
+                        setTimeout(function() {
+                            window.parent.postMessage({type: 'streamlit:rerun'}, '*');
+                        }, 1000);
+                    </script>
+                    """, height=0)
 
-        with col_live_feed:
-            st.markdown("#### 📡 شريط الحضور اللحظي في القاعة")
-            
-            conn = get_db_connection()
-            cur_logs = pd.read_sql_query("""
-            SELECT s.name, s.reg_num, al.status, al.distance_meters, al.device_fingerprint, al.verification_details, al.created_at
-            FROM attendance_logs al
-            JOIN students s ON al.student_id = s.id
-            WHERE al.session_date = ? AND al.course_code = ?
-            ORDER BY al.id DESC
-            """, conn, params=(str(session_date), selected_course_code))
-            conn.close()
-            
-            present_count = len(cur_logs[cur_logs['status'] == 'حاضر']) if not cur_logs.empty else 0
-            total_count = len(students_in_course)
-            
-            # شريط نسبة الحضور اللحظي
-            pct_live = (present_count / total_count * 100) if total_count > 0 else 0
-            st.progress(pct_live / 100, text=f"نسبة الحضور الموثقة بالقاعة: {present_count} من {total_count} ({pct_live:.0f}%)")
-            
-            if not cur_logs.empty:
-                st.markdown("##### 👥 آخر الطلبة الذين سجلوا حضورهم الآن:")
-                for _, log in cur_logs.head(6).iterrows():
-                    st.markdown(f"""
-                    <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:8px 12px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <strong>{log['name']}</strong> <span style="font-size:11px; color:#64748b;">({log['reg_num']})</span><br>
-                            <span style="font-size:11px; color:#16a34a;">{log['verification_details']}</span>
+            with col_live_feed:
+                st.markdown("#### 📡 شريط الحضور اللحظي في القاعة")
+                
+                conn = get_db_connection()
+                cur_logs = pd.read_sql_query("""
+                SELECT s.name, s.reg_num, al.status, al.distance_meters, al.device_fingerprint, al.verification_details, al.created_at
+                FROM attendance_logs al
+                JOIN students s ON al.student_id = s.id
+                WHERE al.session_date = ? AND al.course_code = ?
+                ORDER BY al.id DESC
+                """, conn, params=(str(session_date), selected_course_code))
+                conn.close()
+                
+                present_count = len(cur_logs[cur_logs['status'] == 'حاضر']) if not cur_logs.empty else 0
+                total_count = len(students_in_course)
+                
+                # شريط نسبة الحضور اللحظي
+                pct_live = (present_count / total_count * 100) if total_count > 0 else 0
+                st.progress(pct_live / 100, text=f"نسبة الحضور الموثقة بالقاعة: {present_count} من {total_count} ({pct_live:.0f}%)")
+                
+                if not cur_logs.empty:
+                    st.markdown("##### 👥 آخر الطلبة الذين سجلوا حضورهم الآن:")
+                    for _, log in cur_logs.head(6).iterrows():
+                        st.markdown(f"""
+                        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:8px 12px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <strong>{log['name']}</strong> <span style="font-size:11px; color:#64748b;">({log['reg_num']})</span><br>
+                                <span style="font-size:11px; color:#16a34a;">{log['verification_details']}</span>
+                            </div>
+                            <span class="sec-pill">حاضر ✅ ({log['distance_meters']:.0f}م)</span>
                         </div>
-                        <span class="sec-pill">حاضر ✅ ({log['distance_meters']:.0f}م)</span>
-                    </div>
-                    """, unsafe_allow_html=True)
-            else:
-                st.info("بانتظار مسح الطلبة للكود الظاهر على الشاشة... يمكن تجربة المسح عبر تبويب 'بوابة مسح وحضور الطالب'.")
+                        """, unsafe_allow_html=True)
+                else:
+                    st.info("بانتظار مسح الطلبة للكود الظاهر على الشاشة... يتم التحديث اللحظي تلقائياً كل ثانية.")
+
+        render_live_qr_panel()
                 
     # --- تبويب قائمة النداء والتحضير السريع ---
     with inst_tab2:

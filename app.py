@@ -5,6 +5,7 @@ Postgraduate Attendance Management System - Department of Architecture Engineeri
 الإصدار المطور (Enterprise Edition) - مظهر معماري فاخر، تحليلات بيانية، ومكافحة احتيال ثلاثية
 """
 
+import os
 import streamlit as st
 import pandas as pd
 import sqlite3
@@ -19,7 +20,7 @@ from PIL import Image
 # 1. إعدادات الصفحة
 st.set_page_config(
     page_title="منظومة حضور الدراسات العليا - هندسة العمارة | الجامعة التكنولوجية",
-    page_icon="🏛️",
+    page_icon="logo.png" if os.path.exists("logo.png") else "🏛️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -526,7 +527,10 @@ if st.session_state.current_user is None:
     """, unsafe_allow_html=True)
 
     with st.sidebar:
-        st.image("https://upload.wikimedia.org/wikipedia/ar/thumb/0/07/University_of_Technology_Iraq_logo.png/250px-University_of_Technology_Iraq_logo.png", width=105)
+        if os.path.exists("logo.png"):
+            st.image("logo.png", width=120)
+        else:
+            st.image("https://upload.wikimedia.org/wikipedia/ar/thumb/0/07/University_of_Technology_Iraq_logo.png/250px-University_of_Technology_Iraq_logo.png", width=105)
         st.markdown("### 🔐 تسجيل الدخول المركزي")
         st.caption("الرجاء اختيار بوابتك وإدخال البريد الإلكتروني الرسمي ورمز الدخول المعتمد.")
         st.divider()
@@ -725,7 +729,10 @@ role_ar = "مدير النظام (Admin)" if user_role == "ADMIN" else ("عضو 
 
 # إعداد الشريط الجانبي للمستخدم المسجل
 with st.sidebar:
-    st.image("https://upload.wikimedia.org/wikipedia/ar/thumb/0/07/University_of_Technology_Iraq_logo.png/250px-University_of_Technology_Iraq_logo.png", width=105)
+    if os.path.exists("logo.png"):
+        st.image("logo.png", width=120)
+    else:
+        st.image("https://upload.wikimedia.org/wikipedia/ar/thumb/0/07/University_of_Technology_Iraq_logo.png/250px-University_of_Technology_Iraq_logo.png", width=105)
     
     st.markdown(f"""
     <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-top: 10px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.03);">

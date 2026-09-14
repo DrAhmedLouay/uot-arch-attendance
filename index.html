@@ -2,14 +2,68 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="حضور العمارة">
+  <meta name="theme-color" content="#78350f">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="description" content="منظومة حضور وغياب طلبة الدراسات العليا - قسم هندسة العمارة | الجامعة التكنولوجية">
   <title>منصة حضور الدراسات العليا - هندسة العمارة | الجامعة التكنولوجية</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
-    body {
-      font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif;
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+    
+    :root {
+      --sat: env(safe-area-inset-top, 0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+      --sal: env(safe-area-inset-left, 0px);
+      --sar: env(safe-area-inset-right, 0px);
     }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      padding-top: max(8px, var(--sat));
+      padding-bottom: max(16px, var(--sab));
+      padding-left: max(8px, var(--sal));
+      padding-right: max(8px, var(--sar));
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    /* iOS Safari Auto-Zoom Fix: On mobile screens, form inputs must be >= 16px */
+    @media screen and (max-width: 768px) {
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+    }
+
+    /* Smooth Momentum Touch Scrolling for all scrollable boxes on iOS & Android */
+    .overflow-x-auto, .overflow-y-auto, [data-scrollable] {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+
+    /* Hide scrollbars for slick horizontal swipe tabs while keeping functionality */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Minimum touch targets for accessibility and thumb-friendly taps */
+    button, [role="button"], select, a.btn-touch {
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+
     .pulse-ring {
       animation: pulse-border 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
@@ -162,61 +216,63 @@
     }
   </style>
 </head>
-<body class="bg-[var(--background)] text-[var(--foreground)] antialiased min-h-screen p-3 md:p-6 selection:bg-amber-500 selection:text-white">
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased min-h-screen p-2.5 sm:p-4 md:p-6 selection:bg-amber-500 selection:text-white">
+  <!-- Top-level responsive container to prevent overstretch on ultra-wide screens -->
+  <div class="max-w-7xl mx-auto w-full">
 
   <!-- Header & Top Navigation -->
-  <header class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 md:p-6 mb-6 shadow-sm">
-    <div class="flex flex-col lg:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-4 text-right w-full lg:w-auto">
-        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-700 via-amber-600 to-yellow-500 flex items-center justify-center text-white font-bold text-2xl shadow-md shrink-0">
+  <header class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-3.5 sm:p-4 md:p-6 mb-4 sm:mb-6 shadow-sm">
+    <div class="flex flex-col lg:flex-row items-center justify-between gap-3 sm:gap-4">
+      <div class="flex items-center gap-3 sm:gap-4 text-right w-full lg:w-auto">
+        <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-amber-700 via-amber-600 to-yellow-500 flex items-center justify-center text-white font-bold text-xl sm:text-2xl shadow-md shrink-0">
           🏛️
         </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
+        <div class="min-w-0">
+          <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <span class="px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
               الجامعة التكنولوجية - بغداد
             </span>
-            <span class="text-xs text-[var(--muted-foreground)]">العام الدراسي 2026-2027</span>
+            <span class="text-[10px] sm:text-xs text-[var(--muted-foreground)]">العام الدراسي 2026-2027</span>
           </div>
-          <h1 class="text-xl md:text-2xl font-bold text-[var(--foreground)] mt-1">
+          <h1 class="text-base sm:text-xl md:text-2xl font-bold text-[var(--foreground)] mt-0.5 sm:mt-1 truncate sm:whitespace-normal">
             منظومة حضور الدراسات العليا - قسم هندسة العمارة
           </h1>
-          <p class="text-xs md:text-sm text-[var(--muted-foreground)] mt-0.5">
+          <p class="text-[11px] sm:text-xs md:text-sm text-[var(--muted-foreground)] mt-0.5">
             ماجستير (تكنولوجيا، تصميم معماري، تصميم حضري) • دكتوراه هندسة العمارة
           </p>
         </div>
       </div>
 
       <!-- Authentication & Profile Controls -->
-      <div id="headerAuthControls" class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
+      <div id="headerAuthControls" class="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto justify-between lg:justify-end pt-2 lg:pt-0 border-t lg:border-t-0 border-[var(--border)]">
         <!-- Logged-in State (Initially hidden) -->
         <div id="userProfileHeader" class="hidden flex items-center gap-2">
-          <div class="bg-[var(--background)] px-3 py-1.5 rounded-xl border border-[var(--border)] text-xs text-right">
-            <div id="headerUserName" class="font-extrabold text-[var(--foreground)]">اسم المستخدم</div>
+          <div class="bg-[var(--background)] px-2.5 sm:px-3 py-1.5 rounded-xl border border-[var(--border)] text-xs text-right">
+            <div id="headerUserName" class="font-extrabold text-[var(--foreground)] text-xs sm:text-sm">اسم المستخدم</div>
             <div id="headerUserRole" class="text-[10px] text-amber-600 font-bold">الدور والصلاحية</div>
           </div>
-          <button onclick="logoutUser()" class="px-3 py-2 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition flex items-center gap-1 shadow-sm">
-            <span>🚪</span> تسجيل الخروج
+          <button onclick="logoutUser()" class="px-3 py-2 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition flex items-center gap-1 shadow-sm min-h-[40px]">
+            <span>🚪</span> <span class="hidden xs:inline">تسجيل</span> الخروج
           </button>
         </div>
 
         <!-- Role Switcher (Visible only to Admin for QA/Testing) -->
-        <div id="adminRoleSwitcher" class="hidden flex items-center gap-1 bg-[var(--background)] p-1.5 rounded-xl border border-[var(--border)]">
-          <button id="btnRoleAdmin" onclick="switchRole('admin')" class="px-3.5 py-2 rounded-lg text-xs md:text-sm font-semibold transition-all duration-200 bg-amber-600 text-white shadow-sm">
+        <div id="adminRoleSwitcher" class="hidden flex flex-wrap sm:flex-nowrap items-center gap-1 bg-[var(--background)] p-1.5 rounded-xl border border-[var(--border)] w-full sm:w-auto justify-center sm:justify-start">
+          <button id="btnRoleAdmin" onclick="switchRole('admin')" class="flex-1 sm:flex-initial px-2.5 sm:px-3.5 py-2 rounded-lg text-xs md:text-sm font-semibold transition-all duration-200 bg-amber-600 text-white shadow-sm min-h-[40px] text-center whitespace-nowrap">
             لوحة الإدارة (Admin)
           </button>
-          <button id="btnRoleInstructor" onclick="switchRole('instructor')" class="px-3.5 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+          <button id="btnRoleInstructor" onclick="switchRole('instructor')" class="flex-1 sm:flex-initial px-2.5 sm:px-3.5 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 text-[var(--muted-foreground)] hover:text-[var(--foreground)] min-h-[40px] text-center whitespace-nowrap">
             بوابة التدريسي (Instructor)
           </button>
-          <button id="btnRoleStudent" onclick="switchRole('student')" class="px-3.5 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+          <button id="btnRoleStudent" onclick="switchRole('student')" class="flex-1 sm:flex-initial px-2.5 sm:px-3.5 py-2 rounded-lg text-xs md:text-sm font-medium transition-all duration-200 text-[var(--muted-foreground)] hover:text-[var(--foreground)] min-h-[40px] text-center whitespace-nowrap">
             بوابة الطالب (Student)
           </button>
         </div>
 
         <!-- Offline Mode Simulation Indicator -->
-        <button id="offlineToggleBtn" onclick="toggleOfflineMode()" class="flex items-center gap-2 px-3 py-2 rounded-xl border border-[var(--border)] text-xs font-semibold bg-[var(--card)] hover:bg-[var(--background)] transition">
+        <button id="offlineToggleBtn" onclick="toggleOfflineMode()" class="flex items-center gap-1.5 sm:gap-2 px-3 py-2 rounded-xl border border-[var(--border)] text-xs font-semibold bg-[var(--card)] hover:bg-[var(--background)] transition min-h-[40px]">
           <span id="offlineDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span id="offlineStatusText">متصل بالشبكة (Online)</span>
+          <span id="offlineStatusText" class="text-[11px] sm:text-xs">متصل بالشبكة (Online)</span>
         </button>
       </div>
     </div>
@@ -226,83 +282,83 @@
   <!-- CENTRAL AUTHENTICATION & LOGIN GATEWAY (الواجهة المركزية الموحدة لتسجيل الدخول) -->
   <!-- ========================================================================= -->
   <section id="authGateway" class="mb-6">
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-7 shadow-sm">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-3.5 sm:p-5 md:p-7 shadow-sm">
       <!-- Top Title -->
-      <div class="text-center max-w-2xl mx-auto mb-6">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-extrabold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/25 mb-2">
+      <div class="text-center max-w-2xl mx-auto mb-4 sm:mb-6">
+        <div class="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1 rounded-full text-[11px] sm:text-xs font-extrabold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/25 mb-2">
           <span>🏛️</span> الواجهة المركزية الموحدة لتسجيل الدخول
         </div>
-        <h2 class="text-xl md:text-2xl font-extrabold text-[var(--foreground)]">
+        <h2 class="text-lg sm:text-xl md:text-2xl font-extrabold text-[var(--foreground)]">
           بوابات منظومة حضور الدراسات العليا - قسم هندسة العمارة
         </h2>
-        <p class="text-xs md:text-sm text-[var(--muted-foreground)] mt-1">
+        <p class="text-xs sm:text-sm text-[var(--muted-foreground)] mt-1">
           يتم الدخول إلى المنظومة وتحديد الصلاحيات عبر اسم المستخدم (البريد الإلكتروني) ورمز الدخول (Password)
         </p>
       </div>
 
       <!-- 3 Portal Selection Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4 mb-5 sm:mb-6">
         <!-- Option 1: Admin Dashboard -->
-        <div id="authCardAdmin" onclick="selectAuthRole('admin')" class="group relative cursor-pointer rounded-2xl p-5 border-2 transition-all duration-300 hover:shadow-md bg-gradient-to-b from-amber-500/15 to-transparent border-amber-500 shadow-sm text-right">
+        <div id="authCardAdmin" onclick="selectAuthRole('admin')" class="group relative cursor-pointer rounded-2xl p-4 sm:p-5 border-2 transition-all duration-200 active:scale-[0.98] hover:shadow-md bg-gradient-to-b from-amber-500/15 to-transparent border-amber-500 shadow-sm text-right">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-700 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-500/20 text-amber-700 flex items-center justify-center text-xl sm:text-2xl group-hover:scale-105 transition-transform shrink-0">
               🏛️
             </div>
-            <span id="authBadgeAdmin" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500 text-white shadow-sm">
+            <span id="authBadgeAdmin" class="text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500 text-white shadow-sm">
               محدد للدخول ✓
             </span>
           </div>
-          <h3 class="font-extrabold text-base text-[var(--foreground)] mt-3">
+          <h3 class="font-extrabold text-sm sm:text-base text-[var(--foreground)] mt-2.5 sm:mt-3">
             1. لوحة الإدارة (Admin)
           </h3>
           <p class="text-xs text-[var(--muted-foreground)] mt-1 leading-relaxed">
             صلاحيات كاملة لإدارة الدراسات العليا: إضافة وحذف الطلبة والتدريسيين، إضافة المواد الدراسية، متابعة الحضور والغياب، وإصدار كشوفات مجلس القسم.
           </p>
-          <div class="mt-3.5 pt-2.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-bold text-amber-700 dark:text-amber-400">
+          <div class="mt-3 pt-2.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-bold text-amber-700 dark:text-amber-400">
             <span>اختيار بوابة الإدارة</span>
             <span class="group-hover:translate-x-[-4px] transition-transform">←</span>
           </div>
         </div>
 
         <!-- Option 2: Instructor Portal -->
-        <div id="authCardInstructor" onclick="selectAuthRole('instructor')" class="group relative cursor-pointer rounded-2xl p-5 border-2 transition-all duration-300 hover:shadow-md bg-[var(--background)] border-[var(--border)] hover:border-blue-500/60 text-right">
+        <div id="authCardInstructor" onclick="selectAuthRole('instructor')" class="group relative cursor-pointer rounded-2xl p-4 sm:p-5 border-2 transition-all duration-200 active:scale-[0.98] hover:shadow-md bg-[var(--background)] border-[var(--border)] hover:border-blue-500/60 text-right">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-blue-500/15 text-blue-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-500/15 text-blue-600 flex items-center justify-center text-xl sm:text-2xl group-hover:scale-105 transition-transform shrink-0">
               👨‍🏫
             </div>
-            <span id="authBadgeInstructor" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]">
+            <span id="authBadgeInstructor" class="text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]">
               بوابة التدريسي
             </span>
           </div>
-          <h3 class="font-extrabold text-base text-[var(--foreground)] mt-3">
+          <h3 class="font-extrabold text-sm sm:text-base text-[var(--foreground)] mt-2.5 sm:mt-3">
             2. بوابة التدريسي (Instructor)
           </h3>
           <p class="text-xs text-[var(--muted-foreground)] mt-1 leading-relaxed">
             صلاحيات أستاذ المادة: تقتصر فقط على المقرر المكلف به؛ شاشة عارض القاعة (Projector) للـ QR المتجدد كل 8 ثوانٍ، النداء السريع، وتوثيق الأعذار.
           </p>
-          <div class="mt-3.5 pt-2.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-bold text-blue-600">
+          <div class="mt-3 pt-2.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-bold text-blue-600">
             <span>اختيار بوابة التدريسي</span>
             <span class="group-hover:translate-x-[-4px] transition-transform">←</span>
           </div>
         </div>
 
         <!-- Option 3: Student Portal -->
-        <div id="authCardStudent" onclick="selectAuthRole('student')" class="group relative cursor-pointer rounded-2xl p-5 border-2 transition-all duration-300 hover:shadow-md bg-[var(--background)] border-[var(--border)] hover:border-emerald-500/60 text-right">
+        <div id="authCardStudent" onclick="selectAuthRole('student')" class="group relative cursor-pointer rounded-2xl p-4 sm:p-5 border-2 transition-all duration-200 active:scale-[0.98] hover:shadow-md bg-[var(--background)] border-[var(--border)] hover:border-emerald-500/60 text-right">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center text-xl sm:text-2xl group-hover:scale-105 transition-transform shrink-0">
               📱
             </div>
-            <span id="authBadgeStudent" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]">
+            <span id="authBadgeStudent" class="text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]">
               بوابة الطالب
             </span>
           </div>
-          <h3 class="font-extrabold text-base text-[var(--foreground)] mt-3">
+          <h3 class="font-extrabold text-sm sm:text-base text-[var(--foreground)] mt-2.5 sm:mt-3">
             3. بوابة الطالب (Student)
           </h3>
           <p class="text-xs text-[var(--muted-foreground)] mt-1 leading-relaxed">
             صلاحيات الطالب الشخصية: مسح كود الحضور اللحظي داخل القاعة مع فحص الـ GPS والبصمة، وكشف موقفه الأكاديمي ورصيد ساعات الأمان حتى الإنذار.
           </p>
-          <div class="mt-3.5 pt-2.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-bold text-emerald-600">
+          <div class="mt-3 pt-2.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-bold text-emerald-600">
             <span>اختيار بوابة الطالب</span>
             <span class="group-hover:translate-x-[-4px] transition-transform">←</span>
           </div>
@@ -310,7 +366,7 @@
       </div>
 
       <!-- Login Form Box -->
-      <div class="max-w-xl mx-auto bg-[var(--background)] border border-[var(--border)] rounded-2xl p-5 md:p-6 shadow-sm">
+      <div class="max-w-xl mx-auto bg-[var(--background)] border border-[var(--border)] rounded-2xl p-4 sm:p-6 shadow-sm">
         <div class="flex items-center justify-between border-b border-[var(--border)] pb-3 mb-4">
           <div class="flex items-center gap-2">
             <span class="text-xl">🔑</span>
@@ -319,43 +375,43 @@
               <p class="text-[11px] text-[var(--muted-foreground)]">البوابة المستهدفة: <strong id="selectedPortalTargetText" class="text-amber-600 font-bold">لوحة الإدارة (Admin)</strong></p>
             </div>
           </div>
-          <span class="text-[11px] font-mono text-[var(--muted-foreground)] bg-[var(--card)] px-2.5 py-1 rounded-lg border border-[var(--border)]">RBAC Auth</span>
+          <span class="text-[10px] sm:text-[11px] font-mono text-[var(--muted-foreground)] bg-[var(--card)] px-2.5 py-1 rounded-lg border border-[var(--border)]">RBAC Auth</span>
         </div>
 
         <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-3.5 text-right">
           <div>
             <label class="block text-xs font-bold text-[var(--foreground)] mb-1">اسم المستخدم / البريد الإلكتروني الجامعي:</label>
-            <input type="text" id="inputAuthEmail" required placeholder="admin@uot.edu.iq أو اسم المستخدم..." value="admin@uot.edu.iq" class="w-full text-xs bg-[var(--card)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] font-mono focus:outline-none focus:ring-2 focus:ring-amber-500">
+            <input type="text" id="inputAuthEmail" required placeholder="admin@uot.edu.iq أو اسم المستخدم..." value="admin@uot.edu.iq" class="w-full min-h-[44px] text-base sm:text-xs md:text-sm bg-[var(--card)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] font-mono focus:outline-none focus:ring-2 focus:ring-amber-500">
           </div>
 
           <div>
             <label class="block text-xs font-bold text-[var(--foreground)] mb-1">رمز الدخول (Password):</label>
-            <input type="password" id="inputAuthPassword" required placeholder="••••••••" value="admin123" class="w-full text-xs bg-[var(--card)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-amber-500">
+            <input type="password" id="inputAuthPassword" required placeholder="••••••••" value="admin123" class="w-full min-h-[44px] text-base sm:text-xs md:text-sm bg-[var(--card)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-amber-500">
           </div>
 
           <div id="authErrorMessage" class="hidden p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 text-xs font-bold text-center"></div>
 
-          <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white font-extrabold text-xs md:text-sm shadow-md hover:shadow-lg transition flex items-center justify-center gap-2">
+          <button type="submit" class="w-full min-h-[46px] py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm shadow-md hover:shadow-lg transition flex items-center justify-center gap-2">
             <span>🚀</span>
             <span>تسجيل الدخول ومتابعة الصلاحيات</span>
           </button>
         </form>
 
         <!-- Quick Demo Accounts (1-Click Test) -->
-        <div class="mt-5 pt-4 border-t border-[var(--border)]">
+        <div class="mt-4 sm:mt-5 pt-3.5 sm:pt-4 border-t border-[var(--border)]">
           <div class="text-[11px] font-bold text-[var(--muted-foreground)] mb-2.5 text-center">
             ⚡ حسابات تجريبية سريعة بنقرة واحدة (للفحص والتجربة المباشرة):
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <button type="button" onclick="quickLoginAs('admin')" class="px-2.5 py-2 rounded-xl text-[11px] font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30 transition text-center flex flex-col items-center">
+            <button type="button" onclick="quickLoginAs('admin')" class="min-h-[44px] px-2.5 py-2 rounded-xl text-[11px] font-bold bg-amber-500/10 hover:bg-amber-500/20 active:scale-[0.98] text-amber-700 dark:text-amber-400 border border-amber-500/30 transition text-center flex flex-col items-center justify-center">
               <span>🏛️ دخول كـ Admin</span>
               <span class="text-[9px] opacity-75">admin@uot.edu.iq</span>
             </button>
-            <button type="button" onclick="quickLoginAs('instructor')" class="px-2.5 py-2 rounded-xl text-[11px] font-bold bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-500/30 transition text-center flex flex-col items-center">
+            <button type="button" onclick="quickLoginAs('instructor')" class="min-h-[44px] px-2.5 py-2 rounded-xl text-[11px] font-bold bg-blue-500/10 hover:bg-blue-500/20 active:scale-[0.98] text-blue-700 dark:text-blue-400 border border-blue-500/30 transition text-center flex flex-col items-center justify-center">
               <span>👨‍🏫 دخول كـ تدريسي</span>
               <span class="text-[9px] opacity-75">د. لمياء الدوري</span>
             </button>
-            <button type="button" onclick="quickLoginAs('student')" class="px-2.5 py-2 rounded-xl text-[11px] font-bold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 transition text-center flex flex-col items-center">
+            <button type="button" onclick="quickLoginAs('student')" class="min-h-[44px] px-2.5 py-2 rounded-xl text-[11px] font-bold bg-emerald-500/10 hover:bg-emerald-500/20 active:scale-[0.98] text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 transition text-center flex flex-col items-center justify-center">
               <span>📱 دخول كـ طالب</span>
               <span class="text-[9px] opacity-75">سارة ليث العبيدي</span>
             </button>
@@ -370,125 +426,131 @@
   <!-- ========================================================================= -->
   <section id="adminView" class="space-y-6">
     <!-- Admin Sub-Navigation Tabs -->
-    <div class="flex items-center gap-2 border-b border-[var(--border)] pb-3">
-      <button id="adminTabRosterBtn" onclick="switchAdminSubTab('roster')" class="px-4 py-2 rounded-xl text-xs md:text-sm font-bold bg-amber-600 text-white shadow-sm transition">
+    <div class="flex flex-wrap items-center gap-2 border-b border-[var(--border)] pb-3">
+      <button id="adminTabRosterBtn" onclick="switchAdminSubTab('roster')" class="flex-1 sm:flex-initial min-h-[44px] text-center px-3.5 sm:px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-amber-600 text-white shadow-sm transition">
         📋 كشوفات الحضور ومتابعة الفروع
       </button>
-      <button id="adminTabMasterDataBtn" onclick="switchAdminSubTab('master_data')" class="px-4 py-2 rounded-xl text-xs md:text-sm font-bold text-[var(--muted-foreground)] bg-[var(--card)] border border-[var(--border)] hover:text-[var(--foreground)] transition">
+      <button id="adminTabMasterDataBtn" onclick="switchAdminSubTab('master_data')" class="flex-1 sm:flex-initial min-h-[44px] text-center px-3.5 sm:px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-[var(--muted-foreground)] bg-[var(--card)] border border-[var(--border)] hover:text-[var(--foreground)] transition">
         ⚙️ إدارة الهيئة التدريسية والطلبة والمقررات (Master Data)
       </button>
     </div>
 
     <!-- 1.1 ROSTER SUB-TAB (Attendance & Warnings Tracking) -->
-    <div id="adminSubTabRoster" class="space-y-6">
+    <div id="adminSubTabRoster" class="space-y-4 sm:space-y-6">
       <!-- Quick Statistics KPI Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-sm">
           <div class="flex items-center justify-between">
             <span class="text-xs font-medium text-[var(--muted-foreground)]">إجمالي طلبة الدراسات العليا</span>
             <span class="p-2 rounded-xl bg-blue-500/10 text-blue-600">🎓</span>
           </div>
-          <div class="mt-3 flex items-baseline gap-2">
-            <span class="text-3xl font-extrabold text-[var(--foreground)]" id="kpiTotalStudents">31</span>
+          <div class="mt-2.5 sm:mt-3 flex items-baseline gap-2">
+            <span class="text-2xl sm:text-3xl font-extrabold text-[var(--foreground)]" id="kpiTotalStudents">31</span>
             <span class="text-xs text-[var(--muted-foreground)]">طالباً مسجلاً</span>
           </div>
-          <div class="mt-2 text-xs text-[var(--muted-foreground)] flex items-center gap-1">
+          <div class="mt-1.5 sm:mt-2 text-xs text-[var(--muted-foreground)] flex items-center gap-1">
             <span>4 فروع أكاديمية متخصصة</span>
           </div>
         </div>
 
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-sm">
           <div class="flex items-center justify-between">
             <span class="text-xs font-medium text-[var(--muted-foreground)]">متوسط نسبة الالتزام بالحضور</span>
             <span class="p-2 rounded-xl bg-emerald-500/10 text-emerald-600">📈</span>
           </div>
-          <div class="mt-3 flex items-baseline gap-2">
-            <span class="text-3xl font-extrabold text-emerald-600" id="kpiAttendanceRate">94.2%</span>
-            <span class="text-xs text-emerald-700 bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.5 rounded">مستوى ممتاز</span>
+          <div class="mt-2.5 sm:mt-3 flex items-baseline gap-2">
+            <span class="text-2xl sm:text-3xl font-extrabold text-emerald-600" id="kpiAttendanceRate">94.2%</span>
+            <span class="text-[11px] sm:text-xs text-emerald-700 bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.5 rounded font-bold">مستوى ممتاز</span>
           </div>
-          <div class="mt-2 text-xs text-[var(--muted-foreground)]">
+          <div class="mt-1.5 sm:mt-2 text-xs text-[var(--muted-foreground)]">
             محسوبة وفق الساعات المعتمدة بالفصل
           </div>
         </div>
 
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-sm">
           <div class="flex items-center justify-between">
             <span class="text-xs font-medium text-[var(--muted-foreground)]">تنبيهات الإنذار (5% - 7%)</span>
             <span class="p-2 rounded-xl bg-amber-500/10 text-amber-600">⚠️</span>
           </div>
-          <div class="mt-3 flex items-baseline gap-2">
-            <span class="text-3xl font-extrabold text-amber-600" id="kpiWarningCount">3</span>
+          <div class="mt-2.5 sm:mt-3 flex items-baseline gap-2">
+            <span class="text-2xl sm:text-3xl font-extrabold text-amber-600" id="kpiWarningCount">3</span>
             <span class="text-xs text-[var(--muted-foreground)]">حالات إنذار أولي</span>
           </div>
-          <div class="mt-2 text-xs text-amber-600">
+          <div class="mt-1.5 sm:mt-2 text-xs text-amber-600">
             تنبيه مباشر للتدريسي ومقرر الفرع
           </div>
         </div>
 
-        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-sm">
           <div class="flex items-center justify-between">
             <span class="text-xs font-medium text-[var(--muted-foreground)]">حالات الحرمان (تجاوز 10%)</span>
             <span class="p-2 rounded-xl bg-rose-500/10 text-rose-600">🛑</span>
           </div>
-          <div class="mt-3 flex items-baseline gap-2">
-            <span class="text-3xl font-extrabold text-rose-600" id="kpiDeprivedCount">1</span>
-            <span class="text-xs text-rose-600 bg-rose-100 dark:bg-rose-950 px-1.5 py-0.5 rounded">إجراء وزاري</span>
+          <div class="mt-2.5 sm:mt-3 flex items-baseline gap-2">
+            <span class="text-2xl sm:text-3xl font-extrabold text-rose-600" id="kpiDeprivedCount">1</span>
+            <span class="text-[11px] sm:text-xs text-rose-600 bg-rose-100 dark:bg-rose-950 px-1.5 py-0.5 rounded font-bold">إجراء وزاري</span>
           </div>
-          <div class="mt-2 text-xs text-[var(--muted-foreground)]">
+          <div class="mt-1.5 sm:mt-2 text-xs text-[var(--muted-foreground)]">
             يُعرض على مجلس القسم لاتخاذ القرار
           </div>
         </div>
       </div>
 
       <!-- Department Branches Filter Tabs -->
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[var(--border)]">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-3.5 sm:p-5 shadow-sm">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-[var(--border)]">
           <div>
-            <h2 class="text-lg font-bold text-[var(--foreground)]">سجل متابعة الحضور والإنذارات حسب الفروع الأكاديمية</h2>
+            <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)]">سجل متابعة الحضور والإنذارات حسب الفروع الأكاديمية</h2>
             <p class="text-xs text-[var(--muted-foreground)]">تتبع غيابات وساعات الاستوديوهات والمحاضرات النظرية بدقة</p>
           </div>
           
-          <div class="flex items-center gap-2">
-            <button onclick="exportToCSV()" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-[var(--background)] border border-[var(--border)] hover:bg-amber-500/10 hover:text-amber-600 transition flex items-center gap-1.5">
+          <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+            <button onclick="exportToCSV()" class="flex-1 md:flex-initial min-h-[40px] px-3.5 py-2 text-xs font-semibold rounded-xl bg-[var(--background)] border border-[var(--border)] hover:bg-amber-500/10 hover:text-amber-600 transition flex items-center justify-center gap-1.5">
               <span>📥</span> تصدير Excel
             </button>
-            <button onclick="printOfficialReport()" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-amber-600 text-white hover:bg-amber-700 transition flex items-center gap-1.5 shadow-sm">
+            <button onclick="printOfficialReport()" class="flex-1 md:flex-initial min-h-[40px] px-3.5 py-2 text-xs font-semibold rounded-xl bg-amber-600 text-white hover:bg-amber-700 transition flex items-center justify-center gap-1.5 shadow-sm">
               <span>🖨️</span> طباعة كشف مجلس القسم
             </button>
           </div>
         </div>
 
         <!-- Tabs for 4 Branches -->
-        <div class="flex flex-wrap gap-2 mt-4">
-          <button onclick="filterBranch('ALL')" class="branch-tab px-4 py-2 rounded-xl text-xs font-bold transition bg-amber-600 text-white" data-branch="ALL">
+        <div class="flex flex-wrap gap-1.5 sm:gap-2 mt-3.5 sm:mt-4">
+          <button onclick="filterBranch('ALL')" class="branch-tab min-h-[38px] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-bold transition bg-amber-600 text-white" data-branch="ALL">
             كافة الدراسات العليا (31)
           </button>
-          <button onclick="filterBranch('ARCH_TECH')" class="branch-tab px-4 py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="ARCH_TECH">
+          <button onclick="filterBranch('ARCH_TECH')" class="branch-tab min-h-[38px] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="ARCH_TECH">
             📐 ماجستير: تكنولوجيا العمارة (8)
           </button>
-          <button onclick="filterBranch('ARCH_DESIGN')" class="branch-tab px-4 py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="ARCH_DESIGN">
+          <button onclick="filterBranch('ARCH_DESIGN')" class="branch-tab min-h-[38px] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="ARCH_DESIGN">
             🏛️ ماجستير: التصميم المعماري (10)
           </button>
-          <button onclick="filterBranch('URBAN_DESIGN')" class="branch-tab px-4 py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="URBAN_DESIGN">
+          <button onclick="filterBranch('URBAN_DESIGN')" class="branch-tab min-h-[38px] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="URBAN_DESIGN">
             🏙️ ماجستير: التصميم الحضري (7)
           </button>
-          <button onclick="filterBranch('PHD_ARCH')" class="branch-tab px-4 py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="PHD_ARCH">
+          <button onclick="filterBranch('PHD_ARCH')" class="branch-tab min-h-[38px] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="PHD_ARCH">
             🎖️ دكتوراه: هندسة العمارة (6)
           </button>
         </div>
 
         <!-- Search Bar & Filters -->
-        <div class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <input type="text" id="adminSearchInput" oninput="renderAdminDashboard()" placeholder="🔍 بحث فوري بالاسم، الرقم الجامعي، أو المقرر الدراسي..." class="w-full sm:w-80 px-3.5 py-2 rounded-xl bg-[var(--background)] border border-[var(--border)] text-xs text-[var(--foreground)] focus:ring-2 focus:ring-amber-500 focus:outline-none">
-          <div class="text-xs text-[var(--muted-foreground)]">
+        <div class="mt-3 sm:mt-4 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3">
+          <input type="text" id="adminSearchInput" oninput="renderAdminDashboard()" placeholder="🔍 بحث فوري بالاسم، الرقم الجامعي، أو المقرر..." class="w-full sm:w-80 min-h-[44px] px-3.5 py-2 rounded-xl bg-[var(--background)] border border-[var(--border)] text-base sm:text-xs text-[var(--foreground)] focus:ring-2 focus:ring-amber-500 focus:outline-none">
+          <div class="text-[11px] sm:text-xs text-[var(--muted-foreground)] text-center sm:text-right">
             يتم احتساب الإنذار عند <strong class="text-amber-600">5%</strong>، والحرمان عند <strong class="text-rose-600">10%</strong> من إجمالي الساعات
           </div>
         </div>
 
+        <!-- Mobile Table Swipe Hint -->
+        <div class="block lg:hidden text-[11px] text-amber-700 dark:text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-lg border border-amber-500/20 mt-3 flex items-center justify-between">
+          <span>👈 اسحب الجدول أفقياً لمعاينة جميع الأعمدة والمواقف</span>
+          <span class="text-xs">👉</span>
+        </div>
+
         <!-- Students Table -->
-        <div class="overflow-x-auto mt-3">
-          <table class="w-full text-right text-sm">
-            <thead class="text-xs text-[var(--muted-foreground)] bg-[var(--background)] border-y border-[var(--border)]">
+        <div class="overflow-x-auto mt-2 rounded-xl border border-[var(--border)] relative -webkit-overflow-scrolling: touch">
+          <table class="w-full text-right text-xs sm:text-sm whitespace-nowrap">
+            <thead class="text-xs text-[var(--muted-foreground)] bg-[var(--background)] border-b border-[var(--border)]">
               <tr>
                 <th class="py-3 px-4">الطالب / الرقم الجامعي</th>
                 <th class="py-3 px-3">الفرع الأكاديمي</th>
@@ -510,30 +572,30 @@
     </div>
 
     <!-- 1.2 MASTER DATA MANAGEMENT SUB-TAB (Add/Delete Students, Instructors, Courses) -->
-    <div id="adminSubTabMasterData" class="hidden space-y-6">
+    <div id="adminSubTabMasterData" class="hidden space-y-4 sm:space-y-6">
       <!-- 2.1 Students CRUD Management -->
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-sm space-y-3 sm:space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 sm:gap-3 border-b border-[var(--border)] pb-3">
           <div>
-            <h3 class="font-bold text-base text-[var(--foreground)]">🎓 إدارة قيود طلبة الدراسات العليا (إضافة وحذف)</h3>
+            <h3 class="font-bold text-sm sm:text-base text-[var(--foreground)]">🎓 إدارة قيود طلبة الدراسات العليا (إضافة وحذف)</h3>
             <p class="text-xs text-[var(--muted-foreground)]">تسجيل باحث جديد أو حذف قيود الطلبة من قواعد بيانات القسم</p>
           </div>
-          <span class="text-xs font-bold text-amber-600 bg-amber-500/10 px-3 py-1 rounded-xl border border-amber-500/20">صلاحية إدارة القسم فقط</span>
+          <span class="text-[11px] sm:text-xs font-bold text-amber-600 bg-amber-500/10 px-3 py-1 rounded-xl border border-amber-500/20 self-start md:self-auto">صلاحية إدارة القسم فقط</span>
         </div>
 
         <!-- Add Student Form -->
-        <form id="formAddStudent" onsubmit="addStudentMaster(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] text-xs">
+        <form id="formAddStudent" onsubmit="addStudentMaster(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2.5 sm:gap-3 bg-[var(--background)] p-3 sm:p-4 rounded-xl border border-[var(--border)] text-xs">
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">اسم الطالب الرباعي:</label>
-            <input type="text" id="mStudentName" required placeholder="مثال: أحمد عبد الحسين علي" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)] focus:ring-1 focus:ring-amber-500">
+            <input type="text" id="mStudentName" required placeholder="مثال: أحمد عبد الحسين علي" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--foreground)] focus:ring-1 focus:ring-amber-500">
           </div>
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">الرقم الجامعي / الإحصائي:</label>
-            <input type="text" id="mStudentReg" required placeholder="مثال: M-TECH-26-05" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)] font-mono focus:ring-1 focus:ring-amber-500">
+            <input type="text" id="mStudentReg" required placeholder="مثال: M-TECH-26-05" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--foreground)] font-mono focus:ring-1 focus:ring-amber-500">
           </div>
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">الفرع الأكاديمي:</label>
-            <select id="mStudentBranch" onchange="updateCourseOptionsForBranch(this.value)" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+            <select id="mStudentBranch" onchange="updateCourseOptionsForBranch(this.value)" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
               <option value="ARCH_TECH">ماجستير: تكنولوجيا العمارة</option>
               <option value="ARCH_DESIGN">ماجستير: التصميم المعماري</option>
               <option value="URBAN_DESIGN">ماجستير: التصميم الحضري</option>
@@ -542,7 +604,7 @@
           </div>
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">المقرر / الاستوديو:</label>
-            <select id="mStudentCourse" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+            <select id="mStudentCourse" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
               <option value="الإنشاء المتقدم وتكنولوجيا الأغلفة">الإنشاء المتقدم وتكنولوجيا الأغلفة (30س)</option>
               <option value="استوديو التصميم المعماري المتقدم">استوديو التصميم المعماري المتقدم (60س)</option>
               <option value="استوديو التجديد الحضري وفضاءات المدن">استوديو التجديد الحضري وفضاءات المدن (60س)</option>
@@ -550,16 +612,16 @@
             </select>
           </div>
           <div class="flex items-end">
-            <button type="submit" class="w-full py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold transition flex items-center justify-center gap-1 shadow-sm">
+            <button type="submit" class="w-full min-h-[44px] py-2.5 rounded-lg bg-amber-600 hover:bg-amber-700 active:scale-[0.98] text-white font-bold transition flex items-center justify-center gap-1 shadow-sm text-xs sm:text-sm">
               <span>➕</span> إضافة الطالب
             </button>
           </div>
         </form>
 
         <!-- Master Students Table -->
-        <div class="overflow-x-auto">
-          <table class="w-full text-right text-xs">
-            <thead class="text-[var(--muted-foreground)] bg-[var(--background)] border-y border-[var(--border)]">
+        <div class="overflow-x-auto rounded-xl border border-[var(--border)] -webkit-overflow-scrolling: touch">
+          <table class="w-full text-right text-xs whitespace-nowrap">
+            <thead class="text-[var(--muted-foreground)] bg-[var(--background)] border-b border-[var(--border)]">
               <tr>
                 <th class="py-2.5 px-3">الرقم الجامعي</th>
                 <th class="py-2.5 px-3">اسم الطالب</th>
@@ -577,28 +639,28 @@
       </div>
 
       <!-- 2.2 Instructors CRUD Management -->
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-sm space-y-3 sm:space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 sm:gap-3 border-b border-[var(--border)] pb-3">
           <div>
-            <h3 class="font-bold text-base text-[var(--foreground)]">👨‍🏫 إدارة الهيئة التدريسية ومقرري الدراسات العليا</h3>
+            <h3 class="font-bold text-sm sm:text-base text-[var(--foreground)]">👨‍🏫 إدارة الهيئة التدريسية ومقرري الدراسات العليا</h3>
             <p class="text-xs text-[var(--muted-foreground)]">إضافة تدريسي جديد وتكليفه بالمقررات واستوديوهات التصميم المعماري</p>
           </div>
-          <span class="text-xs font-bold text-blue-600 bg-blue-500/10 px-3 py-1 rounded-xl border border-blue-500/20">صلاحية إدارة القسم</span>
+          <span class="text-[11px] sm:text-xs font-bold text-blue-600 bg-blue-500/10 px-3 py-1 rounded-xl border border-blue-500/20 self-start md:self-auto">صلاحية إدارة القسم</span>
         </div>
 
         <!-- Add Instructor Form -->
-        <form id="formAddInstructor" onsubmit="addInstructorMaster(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] text-xs">
+        <form id="formAddInstructor" onsubmit="addInstructorMaster(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3 bg-[var(--background)] p-3 sm:p-4 rounded-xl border border-[var(--border)] text-xs">
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">اسم التدريسي واللقب:</label>
-            <input type="text" id="mInstName" required placeholder="مثال: أ.م.د. علي عبد الرسول" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+            <input type="text" id="mInstName" required placeholder="مثال: أ.م.د. علي عبد الرسول" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--foreground)]">
           </div>
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">اللقب والوصف:</label>
-            <input type="text" id="mInstTitle" required placeholder="مثال: أستاذ مشارك - النظريات البيئية" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+            <input type="text" id="mInstTitle" required placeholder="مثال: أستاذ مشارك - النظريات البيئية" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--foreground)]">
           </div>
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">الفرع الأكاديمي:</label>
-            <select id="mInstBranch" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+            <select id="mInstBranch" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
               <option value="ARCH_DESIGN">ماجستير: التصميم المعماري</option>
               <option value="ARCH_TECH">ماجستير: تكنولوجيا العمارة</option>
               <option value="URBAN_DESIGN">ماجستير: التصميم الحضري</option>
@@ -607,23 +669,23 @@
           </div>
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">البريد الإلكتروني:</label>
-            <input type="email" id="mInstEmail" required placeholder="name@uot.edu.iq" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)] font-mono">
+            <input type="email" id="mInstEmail" required placeholder="name@uot.edu.iq" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--foreground)] font-mono">
           </div>
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">كلمة المرور:</label>
-            <input type="text" id="mInstPassword" required placeholder="arch2026" value="arch2026" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)] font-mono">
+            <input type="text" id="mInstPassword" required placeholder="arch2026" value="arch2026" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--foreground)] font-mono">
           </div>
           <div class="flex items-end">
-            <button type="submit" class="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition flex items-center justify-center gap-1 shadow-sm">
+            <button type="submit" class="w-full min-h-[44px] py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-bold transition flex items-center justify-center gap-1 shadow-sm text-xs sm:text-sm">
               <span>➕</span> إضافة التدريسي
             </button>
           </div>
         </form>
 
         <!-- Master Instructors Table -->
-        <div class="overflow-x-auto">
-          <table class="w-full text-right text-xs">
-            <thead class="text-[var(--muted-foreground)] bg-[var(--background)] border-y border-[var(--border)]">
+        <div class="overflow-x-auto rounded-xl border border-[var(--border)] -webkit-overflow-scrolling: touch">
+          <table class="w-full text-right text-xs whitespace-nowrap">
+            <thead class="text-[var(--muted-foreground)] bg-[var(--background)] border-b border-[var(--border)]">
               <tr>
                 <th class="py-2.5 px-3">التدريسي واللقب العلمي</th>
                 <th class="py-2.5 px-3">الفرع الأكاديمي</th>
@@ -640,28 +702,28 @@
       </div>
 
       <!-- 2.3 Courses & Studios CRUD Management -->
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-sm space-y-3 sm:space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 sm:gap-3 border-b border-[var(--border)] pb-3">
           <div>
-            <h3 class="font-bold text-base text-[var(--foreground)]">📐 إدارة المواد الدراسية واستوديوهات العمارة</h3>
+            <h3 class="font-bold text-sm sm:text-base text-[var(--foreground)]">📐 إدارة المواد الدراسية واستوديوهات العمارة</h3>
             <p class="text-xs text-[var(--muted-foreground)]">إضافة وتعديل مقررات الماجستير والدكتوراه وتحديد ساعاتها الأسبوعية</p>
           </div>
-          <span class="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1 rounded-xl border border-emerald-500/20">الخطة الدراسية</span>
+          <span class="text-[11px] sm:text-xs font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1 rounded-xl border border-emerald-500/20 self-start md:self-auto">الخطة الدراسية</span>
         </div>
 
         <!-- Add Course Form -->
-        <form id="formAddCourse" onsubmit="addCourseMaster(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] text-xs">
+        <form id="formAddCourse" onsubmit="addCourseMaster(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3 bg-[var(--background)] p-3 sm:p-4 rounded-xl border border-[var(--border)] text-xs">
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">رمز المقرر (Code):</label>
-            <input type="text" id="mCourseCode" required placeholder="مثال: DES-705" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)] font-mono">
+            <input type="text" id="mCourseCode" required placeholder="مثال: DES-705" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--foreground)] font-mono">
           </div>
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">اسم المقرر / الاستوديو:</label>
-            <input type="text" id="mCourseTitle" required placeholder="مثال: استوديو الإسكان المستدام" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+            <input type="text" id="mCourseTitle" required placeholder="مثال: استوديو الإسكان المستدام" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--foreground)]">
           </div>
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">الفرع الأكاديمي:</label>
-            <select id="mCourseBranch" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+            <select id="mCourseBranch" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
               <option value="ARCH_DESIGN">ماجستير: التصميم المعماري</option>
               <option value="ARCH_TECH">ماجستير: تكنولوجيا العمارة</option>
               <option value="URBAN_DESIGN">ماجستير: التصميم الحضري</option>
@@ -670,23 +732,23 @@
           </div>
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">الساعات الأسبوعية:</label>
-            <input type="number" id="mCourseWeekly" required min="1" max="10" value="4" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+            <input type="number" id="mCourseWeekly" required min="1" max="10" value="4" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--foreground)]">
           </div>
           <div>
             <label class="block font-bold text-[var(--foreground)] mb-1">إجمالي الساعات بالفصل:</label>
-            <input type="number" id="mCourseTotal" required min="10" max="120" value="60" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+            <input type="number" id="mCourseTotal" required min="10" max="120" value="60" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--foreground)]">
           </div>
           <div class="flex items-end">
-            <button type="submit" class="w-full py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition flex items-center justify-center gap-1 shadow-sm">
+            <button type="submit" class="w-full min-h-[44px] py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold transition flex items-center justify-center gap-1 shadow-sm text-xs sm:text-sm">
               <span>➕</span> إضافة المقرر
             </button>
           </div>
         </form>
 
         <!-- Master Courses Table -->
-        <div class="overflow-x-auto">
-          <table class="w-full text-right text-xs">
-            <thead class="text-[var(--muted-foreground)] bg-[var(--background)] border-y border-[var(--border)]">
+        <div class="overflow-x-auto rounded-xl border border-[var(--border)] -webkit-overflow-scrolling: touch">
+          <table class="w-full text-right text-xs whitespace-nowrap">
+            <thead class="text-[var(--muted-foreground)] bg-[var(--background)] border-b border-[var(--border)]">
               <tr>
                 <th class="py-2.5 px-3">رمز المقرر</th>
                 <th class="py-2.5 px-3">اسم المادة / الاستوديو</th>
@@ -709,15 +771,15 @@
   <!-- ========================================================================= -->
   <!-- 2. INSTRUCTOR PORTAL VIEW -->
   <!-- ========================================================================= -->
-  <section id="instructorView" class="hidden space-y-6">
+  <section id="instructorView" class="hidden space-y-4 sm:space-y-6">
     <!-- Instructor & Course Selection Bar -->
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-      <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-sm">
+      <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <span class="text-xs text-amber-600 font-bold bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
+          <span class="text-xs text-amber-600 font-bold bg-amber-500/10 px-2.5 py-0.5 rounded-md border border-amber-500/20">
             بوابة التدريسي المعتمد
           </span>
-          <h2 class="text-lg font-bold text-[var(--foreground)] mt-1" id="currentInstructorName">
+          <h2 class="text-base sm:text-lg font-bold text-[var(--foreground)] mt-1" id="currentInstructorName">
             أ.م.د. لمياء مهدي الدوري
           </h2>
           <p class="text-xs text-[var(--muted-foreground)]" id="currentInstructorTitle">
@@ -726,9 +788,9 @@
         </div>
 
         <!-- Instructor Switcher for Demo -->
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="text-xs font-semibold text-[var(--muted-foreground)]">تبديل التدريسي للاختبار:</span>
-          <select id="instructorSelect" onchange="changeInstructor(this.value)" class="bg-[var(--background)] border border-[var(--border)] text-xs rounded-xl px-3 py-2 text-[var(--foreground)] focus:ring-2 focus:ring-amber-500 focus:outline-none">
+        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+          <span class="text-xs font-semibold text-[var(--muted-foreground)] whitespace-nowrap">تبديل التدريسي للاختبار:</span>
+          <select id="instructorSelect" onchange="changeInstructor(this.value)" class="grow lg:grow-0 bg-[var(--background)] border border-[var(--border)] min-h-[44px] text-base sm:text-xs rounded-xl px-3 py-2 text-[var(--foreground)] focus:ring-2 focus:ring-amber-500 focus:outline-none">
             <option value="inst-01">أ.م.د. لمياء مهدي (استوديو التصميم المعماري)</option>
             <option value="inst-02">م.د. أحمد باسل (تكنولوجيا وإنشاء الأغلفة)</option>
             <option value="inst-03">أ.د. رغد هاشم (استوديو التجديد الحضري)</option>
@@ -738,16 +800,16 @@
       </div>
 
       <!-- Session Parameters -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mt-4 pt-4 border-t border-[var(--border)] text-xs">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 mt-3.5 sm:mt-4 pt-3.5 sm:pt-4 border-t border-[var(--border)] text-xs">
         <div>
           <label class="block text-[var(--muted-foreground)] mb-1 font-medium">المقرر الدراسي</label>
-          <div id="courseBadge" class="p-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)] font-bold text-[var(--foreground)] truncate">
+          <div id="courseBadge" class="p-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)] font-bold text-[var(--foreground)] truncate min-h-[44px] flex items-center">
             استوديو التصميم المعماري المتقدم
           </div>
         </div>
         <div>
           <label class="block text-[var(--muted-foreground)] mb-1 font-medium">نوع المحاضرة / الساعات</label>
-          <select id="sessionTypeSelect" class="w-full p-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)] font-medium text-[var(--foreground)]">
+          <select id="sessionTypeSelect" class="w-full p-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)] font-medium text-[var(--foreground)] min-h-[44px] text-base sm:text-xs">
             <option value="4">استوديو تصميم معماري (4 ساعات معتمدة)</option>
             <option value="2">محاضرة نظرية (ساعتان)</option>
             <option value="3">سمنار / حلقة نقاشية (3 ساعات)</option>
@@ -755,15 +817,15 @@
         </div>
         <div>
           <label class="block text-[var(--muted-foreground)] mb-1 font-medium">تاريخ الجلسة</label>
-          <input type="date" id="sessionDateInput" class="w-full p-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)]">
+          <input type="date" id="sessionDateInput" class="w-full p-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] min-h-[44px] text-base sm:text-xs">
         </div>
         <div>
           <label class="block text-[var(--muted-foreground)] mb-1 font-medium">نمط التسجيل المختار</label>
-          <div class="flex rounded-xl bg-[var(--background)] p-1 border border-[var(--border)]">
-            <button onclick="setAttendanceMode('sync')" id="modeSyncBtn" class="flex-1 py-1.5 rounded-lg font-bold text-center bg-amber-600 text-white shadow-xs">
+          <div class="flex rounded-xl bg-[var(--background)] p-1 border border-[var(--border)] min-h-[44px] items-center">
+            <button onclick="setAttendanceMode('sync')" id="modeSyncBtn" class="flex-1 py-1.5 rounded-lg font-bold text-center bg-amber-600 text-white shadow-xs min-h-[36px] flex items-center justify-center text-xs">
               آني متزامن (QR)
             </button>
-            <button onclick="setAttendanceMode('async')" id="modeAsyncBtn" class="flex-1 py-1.5 rounded-lg font-medium text-[var(--muted-foreground)] text-center hover:text-[var(--foreground)]">
+            <button onclick="setAttendanceMode('async')" id="modeAsyncBtn" class="flex-1 py-1.5 rounded-lg font-medium text-[var(--muted-foreground)] text-center hover:text-[var(--foreground)] min-h-[36px] flex items-center justify-center text-xs">
               يدوي / لا متزامن
             </button>
           </div>
@@ -772,23 +834,23 @@
     </div>
 
     <!-- Synchronous Mode Panel (Live QR & Fast Roll-Call) -->
-    <div id="syncModePanel" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div id="syncModePanel" class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
       <!-- QR Screen Card -->
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm flex flex-col items-center justify-between text-center relative overflow-hidden">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-6 shadow-sm flex flex-col items-center justify-between text-center relative overflow-hidden">
         <div class="w-full flex items-center justify-between text-xs text-[var(--muted-foreground)] pb-3 border-b border-[var(--border)]">
           <span class="flex items-center gap-1.5 font-bold text-emerald-600">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
             جلسة تفاعلية نشطة
           </span>
-          <span id="qrTimerBadge" class="bg-amber-500/10 text-amber-600 px-2 py-0.5 rounded font-mono font-bold">
+          <span id="qrTimerBadge" class="bg-amber-500/10 text-amber-600 px-2 py-0.5 rounded font-mono font-bold text-[11px] sm:text-xs">
             يتجدد خلال 8 ثوانٍ
           </span>
         </div>
 
-        <div class="my-6 flex flex-col items-center">
-          <div class="p-4 bg-white rounded-2xl shadow-lg border-2 border-amber-500/30 pulse-ring relative flex flex-col items-center justify-center">
+        <div class="my-4 sm:my-6 flex flex-col items-center w-full max-w-[280px]">
+          <div class="p-3 sm:p-4 bg-white rounded-2xl shadow-lg border-2 border-amber-500/30 pulse-ring relative flex flex-col items-center justify-center w-full">
             <!-- Real Scannable ISO/IEC 18004 QR Code -->
-            <div id="realQrCodeBox" class="flex items-center justify-center p-1 bg-white rounded-xl"></div>
+            <div id="realQrCodeBox" class="flex items-center justify-center p-1 bg-white rounded-xl max-w-full"></div>
             <div class="mt-2 text-[10px] text-amber-700 font-bold bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200/60 flex items-center gap-1.5">
               <span>📷</span> كود حقيقي قابل للقراءة بكاميرا الهاتف
             </div>
@@ -804,10 +866,10 @@
 
         <!-- Student Scanner Simulation Button & Triple Security Suite -->
         <div class="w-full space-y-2 pt-2 border-t border-[var(--border)]">
-          <button onclick="openSecurityModal()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-bold hover:brightness-110 transition flex items-center justify-center gap-2 shadow-sm">
+          <button onclick="openSecurityModal()" class="w-full min-h-[44px] py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-bold hover:brightness-110 active:scale-[0.98] transition flex items-center justify-center gap-2 shadow-sm">
             <span>🛡️</span> اختبار بروتوكول الأمان الثلاثي (مكافحة الغش)
           </button>
-          <div class="flex items-center justify-center gap-2 text-[10px] text-[var(--muted-foreground)]">
+          <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[10px] text-[var(--muted-foreground)]">
             <span class="text-emerald-600 font-bold">● كود 8 ثوانٍ</span>
             <span>•</span>
             <span class="text-emerald-600 font-bold">● نطاق GPS (80م)</span>
@@ -818,27 +880,27 @@
       </div>
 
       <!-- Live Roster & Quick Roll-Call -->
-      <div class="lg:col-span-2 bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+      <div class="lg:col-span-2 bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-6 shadow-sm flex flex-col justify-between">
         <div>
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[var(--border)]">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 pb-3 sm:pb-4 border-b border-[var(--border)]">
             <div>
-              <h3 class="text-base font-bold text-[var(--foreground)] flex items-center gap-2">
+              <h3 class="text-sm sm:text-base font-bold text-[var(--foreground)] flex items-center gap-2">
                 <span>📋</span> قائمة نداء الطلبة اللحظي
               </h3>
               <p class="text-xs text-[var(--muted-foreground)]">يمكن للأستاذ تعديل الحالات يدوياً أو بنقرة سريعة</p>
             </div>
             <div class="flex items-center gap-2">
-              <button onclick="markAllPresent()" class="px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 text-xs font-bold transition">
+              <button onclick="markAllPresent()" class="min-h-[38px] px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 active:scale-[0.98] text-xs font-bold transition flex items-center gap-1">
                 ✓ تحضير الكل
               </button>
-              <button onclick="resetRoster()" class="px-3 py-1.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-xs font-medium transition">
+              <button onclick="resetRoster()" class="min-h-[38px] px-3 py-1.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] active:scale-[0.98] text-xs font-medium transition">
                 إعادة ضبط
               </button>
             </div>
           </div>
 
           <!-- Live Attendance Counter -->
-          <div class="my-4 p-3 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-between text-xs">
+          <div class="my-3 sm:my-4 p-3 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-between text-xs">
             <span class="text-[var(--muted-foreground)]">نسبة الحضور المباشر في القاعة الآن:</span>
             <div class="flex items-center gap-2">
               <span id="livePresentRatio" class="font-bold text-amber-600 text-sm">0 / 0</span>
@@ -847,14 +909,14 @@
           </div>
 
           <!-- Live Interactive List -->
-          <div id="liveRosterList" class="space-y-2 max-h-[360px] overflow-y-auto pr-1">
+          <div id="liveRosterList" class="space-y-2 max-h-[360px] overflow-y-auto pr-1 -webkit-overflow-scrolling: touch">
             <!-- Populated dynamically -->
           </div>
         </div>
 
-        <div class="pt-4 mt-4 border-t border-[var(--border)] flex items-center justify-between">
-          <span class="text-xs text-[var(--muted-foreground)]">سيتم ترحيل السجل فوراً لقاعدة البيانات المركزية</span>
-          <button onclick="saveSessionRecords()" class="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition shadow-sm">
+        <div class="pt-3.5 sm:pt-4 mt-3 sm:mt-4 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-2.5">
+          <span class="text-[11px] sm:text-xs text-[var(--muted-foreground)] text-center sm:text-right">سيتم ترحيل السجل فوراً لقاعدة البيانات المركزية</span>
+          <button onclick="saveSessionRecords()" class="w-full sm:w-auto min-h-[44px] px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 active:scale-[0.98] text-white font-bold text-xs sm:text-sm transition shadow-sm">
             اعتماد وتثبيت جلسة اليوم
           </button>
         </div>
@@ -863,15 +925,15 @@
 
     <!-- Asynchronous / Offline Mode Panel -->
     <div id="asyncModePanel" class="hidden space-y-4">
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[var(--border)]">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-4 sm:p-6 shadow-sm">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-[var(--border)]">
           <div>
             <div class="flex items-center gap-2">
               <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 border border-purple-500/20">
                 النمط اللامتزامن وغير المتصل (Async / Offline-Ready)
               </span>
             </div>
-            <h3 class="text-base font-bold text-[var(--foreground)] mt-1">
+            <h3 class="text-sm sm:text-base font-bold text-[var(--foreground)] mt-1">
               تسجيل الحضور بأثر رجعي أو بدون اتصال بالإنترنت
             </h3>
             <p class="text-xs text-[var(--muted-foreground)]">
@@ -880,27 +942,33 @@
           </div>
 
           <!-- Offline Sync Action Widget -->
-          <div class="flex items-center gap-3 bg-[var(--background)] p-3 rounded-xl border border-[var(--border)]">
+          <div class="flex items-center gap-3 bg-[var(--background)] p-3 rounded-xl border border-[var(--border)] w-full md:w-auto justify-between md:justify-start">
             <div class="text-right">
               <div class="text-xs font-bold text-[var(--foreground)]" id="pendingSyncText">0 سجلات معلقة</div>
               <div class="text-[10px] text-[var(--muted-foreground)]">تخزين محلي مؤقت</div>
             </div>
-            <button id="syncNowBtn" onclick="syncPendingRecords()" class="px-3.5 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition disabled:opacity-50" disabled>
+            <button id="syncNowBtn" onclick="syncPendingRecords()" class="min-h-[40px] px-3.5 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition disabled:opacity-50" disabled>
               مزامنة الآن 🔄
             </button>
           </div>
         </div>
 
         <!-- Offline notice banner if offline -->
-        <div id="offlineAlertBanner" class="hidden my-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-700 dark:text-amber-400 flex items-center gap-2">
+        <div id="offlineAlertBanner" class="hidden my-3 sm:my-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-700 dark:text-amber-400 flex items-center gap-2">
           <span>⚠️</span>
           <span>أنت تعمل الآن في <strong>وضع عدم الاتصال (Offline)</strong>. سيتم حفظ أي تعديل تجريه محلياً، ويمكنك مزامنته بنقرة واحدة عند العودة للإنترنت.</span>
         </div>
 
+        <!-- Mobile Swipe Hint -->
+        <div class="block md:hidden text-[11px] text-purple-700 dark:text-purple-300 bg-purple-500/10 px-3 py-1.5 rounded-lg border border-purple-500/20 mt-3 flex items-center justify-between">
+          <span>👈 اسحب الجدول أفقياً لمعاينة جميع الأعمدة</span>
+          <span class="text-xs">👉</span>
+        </div>
+
         <!-- Asynchronous Student Table -->
-        <div class="overflow-x-auto mt-4">
-          <table class="w-full text-right text-sm">
-            <thead class="text-xs text-[var(--muted-foreground)] bg-[var(--background)] border-y border-[var(--border)]">
+        <div class="overflow-x-auto mt-2 rounded-xl border border-[var(--border)] -webkit-overflow-scrolling: touch">
+          <table class="w-full text-right text-xs sm:text-sm whitespace-nowrap">
+            <thead class="text-xs text-[var(--muted-foreground)] bg-[var(--background)] border-b border-[var(--border)]">
               <tr>
                 <th class="py-3 px-4">اسم الطالب</th>
                 <th class="py-3 px-3">الرقم الجامعي</th>
@@ -915,8 +983,8 @@
           </table>
         </div>
 
-        <div class="mt-4 pt-4 border-t border-[var(--border)] flex justify-end">
-          <button onclick="saveAsyncRecords()" class="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition shadow-sm">
+        <div class="mt-3.5 sm:mt-4 pt-3.5 sm:pt-4 border-t border-[var(--border)] flex justify-end">
+          <button onclick="saveAsyncRecords()" class="w-full sm:w-auto min-h-[44px] px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 active:scale-[0.98] text-white font-bold text-xs sm:text-sm transition shadow-sm">
             حفظ وتأكيد السجل اللامتزامن
           </button>
         </div>
@@ -927,87 +995,87 @@
   <!-- ========================================================================= -->
   <!-- 3. STUDENT PORTAL VIEW (بوابة مسح وحضور الطالب) -->
   <!-- ========================================================================= -->
-  <section id="studentView" class="hidden space-y-6">
+  <section id="studentView" class="hidden space-y-4 sm:space-y-6">
     <!-- Student Hero Welcome Banner -->
-    <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white rounded-3xl p-6 md:p-8 shadow-lg relative overflow-hidden">
-      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+    <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 text-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg relative overflow-hidden">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6 relative z-10">
         <div>
-          <div class="flex items-center gap-2">
-            <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
               📱 بوابة التحضير الذكي للدراسات العليا
             </span>
             <span class="text-xs text-emerald-200">القسم: هندسة العمارة</span>
           </div>
-          <h2 class="text-xl md:text-2xl font-extrabold mt-2">
+          <h2 class="text-lg sm:text-xl md:text-2xl font-extrabold mt-1.5 sm:mt-2">
             بوابة تسجيل الحضور ومتابعة الموقف الأكاديمي
           </h2>
           <p class="text-xs md:text-sm text-slate-300 mt-1 max-w-xl leading-relaxed">
             امسح كود الجلسة الحي من شاشة القاعة المعروضة، تحقق من تواجدك الجغرافي داخل قسم العمارة، واطلع على رصيد غياباتك التراكمي وساعات الأمان المتبقية.
           </p>
         </div>
-        <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 text-xs text-center shrink-0 w-full md:w-auto">
-          <div class="text-slate-300">حالة الربط والأمان</div>
-          <div class="font-extrabold text-sm text-emerald-300 mt-0.5">🔒 بروتوكول الحماية نشط</div>
-          <div class="text-[11px] text-slate-300 mt-1">GPS (80م) • QR (8ث) • هاتف فريد</div>
+        <div class="bg-white/10 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl border border-white/15 text-xs text-center shrink-0 w-full md:w-auto">
+          <div class="text-slate-300 text-[11px] sm:text-xs">حالة الربط والأمان</div>
+          <div class="font-extrabold text-xs sm:text-sm text-emerald-300 mt-0.5">🔒 بروتوكول الحماية نشط</div>
+          <div class="text-[10px] sm:text-[11px] text-slate-300 mt-1">GPS (80م) • QR (8ث) • هاتف فريد</div>
         </div>
       </div>
     </div>
 
     <!-- Main Grid: Check-in Box + Academic Status -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
       
       <!-- Right Side: Check-in Form (7 cols) -->
-      <div class="lg:col-span-7 bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-5 md:p-7 shadow-sm space-y-5">
-        <div class="flex items-center justify-between border-b border-[var(--border)] pb-4">
+      <div class="lg:col-span-7 bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 sm:p-5 md:p-7 shadow-sm space-y-4 sm:space-y-5">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-3 sm:pb-4">
           <div class="flex items-center gap-2">
             <span class="text-2xl">📸</span>
             <div>
-              <h3 class="font-bold text-base text-[var(--foreground)]">تسجيل الحضور في القاعة (Interactive Check-In)</h3>
+              <h3 class="font-bold text-sm sm:text-base text-[var(--foreground)]">تسجيل الحضور في القاعة (Interactive Check-In)</h3>
               <p class="text-xs text-[var(--muted-foreground)]">المسح اللحظي لكود الـ QR وفحص الموقع وبصمة الهاتف</p>
             </div>
           </div>
-          <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+          <span class="px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
             جلسة نشطة
           </span>
         </div>
 
         <!-- Student Form -->
-        <div class="space-y-4">
+        <div class="space-y-3 sm:space-y-4">
           <!-- 1. Student Selection -->
           <div>
-            <label class="block text-xs font-bold text-[var(--foreground)] mb-1.5">
+            <label class="block text-xs font-bold text-[var(--foreground)] mb-1 sm:mb-1.5">
               1. اختر اسم الطالب / الباحث:
             </label>
-            <select id="studentSelectCheckin" onchange="onStudentSelectChange(this.value)" class="w-full text-xs bg-[var(--background)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] font-semibold focus:outline-none focus:border-emerald-500 transition">
+            <select id="studentSelectCheckin" onchange="onStudentSelectChange(this.value)" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--background)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] font-semibold focus:outline-none focus:border-emerald-500 transition">
               <!-- Populated by JS -->
             </select>
           </div>
 
           <!-- 2. QR Token Input & Live Seed -->
           <div>
-            <div class="flex items-center justify-between mb-1.5">
+            <div class="flex items-center justify-between mb-1 sm:mb-1.5">
               <label class="text-xs font-bold text-[var(--foreground)]">
                 2. كود الحضور اللحظي (QR Token):
               </label>
-              <span class="text-[11px] text-amber-600 font-bold">يتجدد كل 8 ثوانٍ على شاشة القاعة</span>
+              <span class="text-[10px] sm:text-[11px] text-amber-600 font-bold">يتجدد كل 8 ثوانٍ على شاشة القاعة</span>
             </div>
             <div class="flex gap-2">
-              <input id="studentTokenInput" type="text" placeholder="مثال: UOT-ARCH-TECH-xxx" class="grow text-xs bg-[var(--background)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] font-mono font-bold focus:outline-none focus:border-emerald-500 transition">
-              <button onclick="fillActiveToken()" class="px-3.5 py-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30 text-xs font-bold transition shrink-0">
-                🔄 مسح الكود الحي
+              <input id="studentTokenInput" type="text" placeholder="مثال: UOT-ARCH-TECH-xxx" class="grow min-h-[44px] text-base sm:text-xs bg-[var(--background)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] font-mono font-bold focus:outline-none focus:border-emerald-500 transition">
+              <button onclick="fillActiveToken()" class="min-h-[44px] px-3 sm:px-3.5 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 active:scale-[0.98] text-amber-700 dark:text-amber-400 border border-amber-500/30 text-xs font-bold transition shrink-0 flex items-center gap-1">
+                🔄 مسح الكود
               </button>
             </div>
-            <p class="text-[11px] text-[var(--muted-foreground)] mt-1">
+            <p class="text-[10px] sm:text-[11px] text-[var(--muted-foreground)] mt-1">
               ملاحظة: الرمز ينتهي فوراً بعد 8 ثوانٍ لإبطال لقطات الشاشة ومجموعات الواتساب.
             </p>
           </div>
 
           <!-- 3. GPS Geofence Check -->
           <div>
-            <label class="block text-xs font-bold text-[var(--foreground)] mb-1.5">
+            <label class="block text-xs font-bold text-[var(--foreground)] mb-1 sm:mb-1.5">
               3. التحقق من الموقع الجغرافي (GPS Geofence):
             </label>
-            <select id="studentGeoSelect" class="w-full text-xs bg-[var(--background)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] font-medium focus:outline-none focus:border-emerald-500 transition">
+            <select id="studentGeoSelect" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--background)] border border-[var(--border)] rounded-xl px-3 sm:px-3.5 py-2.5 text-[var(--foreground)] font-medium focus:outline-none focus:border-emerald-500 transition">
               <option value="INSIDE">📍 داخل قسم هندسة العمارة (14 متراً من النقطة المركزية - متواجد بالقاعة ✅)</option>
               <option value="OUTSIDE">🛑 خارج الحرم الجامعي / في المنزل (4.8 كم بعيداً - محاكاة الغياب ❌)</option>
             </select>
@@ -1015,10 +1083,10 @@
 
           <!-- 4. Device Fingerprint -->
           <div>
-            <label class="block text-xs font-bold text-[var(--foreground)] mb-1.5">
+            <label class="block text-xs font-bold text-[var(--foreground)] mb-1 sm:mb-1.5">
               4. فحص بصمة الجهاز الفريدة (One-Device Check):
             </label>
-            <select id="studentDeviceSelect" class="w-full text-xs bg-[var(--background)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] font-medium focus:outline-none focus:border-emerald-500 transition">
+            <select id="studentDeviceSelect" class="w-full min-h-[44px] text-base sm:text-xs bg-[var(--background)] border border-[var(--border)] rounded-xl px-3 sm:px-3.5 py-2.5 text-[var(--foreground)] font-medium focus:outline-none focus:border-emerald-500 transition">
               <option value="UNIQUE">📱 جهاز هاتف شخصي فريد (هاتف الطالب غير مكرر ✅)</option>
               <option value="DUPLICATE">🛑 جهاز مسجل لطالب آخر في نفس الجلسة (محاكاة تحضير الزميل ❌)</option>
             </select>
@@ -1026,7 +1094,7 @@
 
           <!-- Submit Button -->
           <div class="pt-2">
-            <button onclick="submitStudentCheckin()" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
+            <button onclick="submitStudentCheckin()" class="w-full min-h-[48px] py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
               <span>✅</span>
               <span>توثيق وتأكيد الحضور في الجلسة الآن</span>
             </button>
@@ -1040,56 +1108,56 @@
       </div>
 
       <!-- Left Side: Student Academic Ledger (5 cols) -->
-      <div class="lg:col-span-5 bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-5 md:p-7 shadow-sm space-y-5 flex flex-col justify-between">
+      <div class="lg:col-span-5 bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 sm:p-5 md:p-7 shadow-sm space-y-4 sm:space-y-5 flex flex-col justify-between">
         <div>
-          <div class="flex items-center justify-between border-b border-[var(--border)] pb-4">
+          <div class="flex items-center justify-between border-b border-[var(--border)] pb-3 sm:pb-4">
             <div class="flex items-center gap-2">
               <span class="text-2xl">🎓</span>
               <div>
-                <h3 class="font-bold text-base text-[var(--foreground)]">الموقف الأكاديمي ورصيد الغيابات</h3>
+                <h3 class="font-bold text-sm sm:text-base text-[var(--foreground)]">الموقف الأكاديمي ورصيد الغيابات</h3>
                 <p class="text-xs text-[var(--muted-foreground)]">الموقف الفصلي وحدود الإنذار والحرمان</p>
               </div>
             </div>
           </div>
 
           <!-- Student Profile Details -->
-          <div class="mt-4 space-y-4">
-            <div class="p-4 rounded-2xl bg-[var(--background)] border border-[var(--border)] space-y-3">
+          <div class="mt-3.5 sm:mt-4 space-y-3.5 sm:space-y-4">
+            <div class="p-3.5 sm:p-4 rounded-2xl bg-[var(--background)] border border-[var(--border)] space-y-2.5 sm:space-y-3">
               <div class="flex items-center justify-between">
                 <div>
-                  <h4 id="spName" class="font-extrabold text-sm text-[var(--foreground)]">حيدر كريم الشمري</h4>
-                  <div id="spReg" class="text-xs text-[var(--muted-foreground)] font-mono mt-0.5">M-TECH-26-01</div>
+                  <h4 id="spName" class="font-extrabold text-xs sm:text-sm text-[var(--foreground)]">حيدر كريم الشمري</h4>
+                  <div id="spReg" class="text-[11px] sm:text-xs text-[var(--muted-foreground)] font-mono mt-0.5">M-TECH-26-01</div>
                 </div>
-                <span id="spBranchBadge" class="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                <span id="spBranchBadge" class="text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
                   ماجستير: تكنولوجيا العمارة
                 </span>
               </div>
-              <div id="spCourse" class="text-xs text-[var(--muted-foreground)] border-t border-[var(--border)] pt-2">
+              <div id="spCourse" class="text-xs text-[var(--muted-foreground)] border-t border-[var(--border)] pt-2 truncate">
                 المقرر: الإنشاء المتقدم وتكنولوجيا الأغلفة
               </div>
             </div>
 
             <!-- Stats Grid -->
-            <div class="grid grid-cols-2 gap-3">
-              <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-center">
-                <span class="text-[11px] text-[var(--muted-foreground)] block">ساعات الغياب المسجلة</span>
-                <strong id="spMissed" class="text-xl font-extrabold text-rose-600 block mt-1">1 س</strong>
-                <span id="spTotal" class="text-[10px] text-[var(--muted-foreground)]">من إجمالي 30 س</span>
+            <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
+              <div class="p-3 sm:p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-center">
+                <span class="text-[10px] sm:text-[11px] text-[var(--muted-foreground)] block">ساعات الغياب المسجلة</span>
+                <strong id="spMissed" class="text-lg sm:text-xl font-extrabold text-rose-600 block mt-1">1 س</strong>
+                <span id="spTotal" class="text-[9px] sm:text-[10px] text-[var(--muted-foreground)]">من إجمالي 30 س</span>
               </div>
-              <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-center">
-                <span class="text-[11px] text-[var(--muted-foreground)] block">نسبة الغياب التراكمية</span>
-                <strong id="spPct" class="text-xl font-extrabold text-amber-600 block mt-1">3.3%</strong>
-                <span id="spStatusLabel" class="text-[10px] text-emerald-600 font-bold">طبيعي ومستقر ✅</span>
+              <div class="p-3 sm:p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-center">
+                <span class="text-[10px] sm:text-[11px] text-[var(--muted-foreground)] block">نسبة الغياب التراكمية</span>
+                <strong id="spPct" class="text-lg sm:text-xl font-extrabold text-amber-600 block mt-1">3.3%</strong>
+                <span id="spStatusLabel" class="text-[9px] sm:text-[10px] text-emerald-600 font-bold">طبيعي ومستقر ✅</span>
               </div>
-              <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-center">
-                <span class="text-[11px] text-[var(--muted-foreground)] block">رصيد الأمان للإنذار (5%)</span>
-                <strong id="spTo5" class="text-base font-extrabold text-slate-800 dark:text-slate-200 block mt-1">0.5 ساعة</strong>
-                <span class="text-[10px] text-slate-400">هامش أمان أكاديمي</span>
+              <div class="p-3 sm:p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-center">
+                <span class="text-[10px] sm:text-[11px] text-[var(--muted-foreground)] block">رصيد الأمان للإنذار (5%)</span>
+                <strong id="spTo5" class="text-sm sm:text-base font-extrabold text-slate-800 dark:text-slate-200 block mt-1">0.5 ساعة</strong>
+                <span class="text-[9px] sm:text-[10px] text-slate-400">هامش أمان أكاديمي</span>
               </div>
-              <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-center">
-                <span class="text-[11px] text-[var(--muted-foreground)] block">المتبقي حتى الحرمان (10%)</span>
-                <strong id="spTo10" class="text-base font-extrabold text-slate-800 dark:text-slate-200 block mt-1">2.0 ساعة</strong>
-                <span class="text-[10px] text-slate-400">الحد الأقصى المسموح</span>
+              <div class="p-3 sm:p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-center">
+                <span class="text-[10px] sm:text-[11px] text-[var(--muted-foreground)] block">المتبقي حتى الحرمان (10%)</span>
+                <strong id="spTo10" class="text-sm sm:text-base font-extrabold text-slate-800 dark:text-slate-200 block mt-1">2.0 ساعة</strong>
+                <span class="text-[9px] sm:text-[10px] text-slate-400">الحد الأقصى المسموح</span>
               </div>
             </div>
 
@@ -1106,8 +1174,8 @@
           </div>
         </div>
 
-        <div class="pt-4 border-t border-[var(--border)] text-center">
-          <p class="text-[11px] text-[var(--muted-foreground)]">
+        <div class="pt-3.5 sm:pt-4 border-t border-[var(--border)] text-center">
+          <p class="text-[10px] sm:text-[11px] text-[var(--muted-foreground)]">
             🔒 تُحسب النسب وفق المادة الامتحانية النافذة لوزارة التعليم العالي والبحث العلمي العراقية للدراسات العليا.
           </p>
         </div>
@@ -1116,19 +1184,19 @@
     </div>
 
     <!-- Triple Security Anti-Fraud Lab Banner Inside Student Portal -->
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-5 md:p-6 shadow-sm">
-      <div class="flex items-center justify-between border-b border-[var(--border)] pb-4 mb-4">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 sm:p-5 md:p-6 shadow-sm">
+      <div class="flex items-center justify-between border-b border-[var(--border)] pb-3 sm:pb-4 mb-3 sm:mb-4">
         <div class="flex items-center gap-2">
           <span class="text-xl">🛡️</span>
           <div>
-            <h3 class="font-bold text-sm md:text-base text-[var(--foreground)]">مختبر اختبار الردع ومنظومة مكافحة التحضير بالإنابة</h3>
-            <p class="text-xs text-[var(--muted-foreground)]">جرب السيناريوهات المختلفة وشاهد كيفية تصدي المنصة لمحاولات الغش</p>
+            <h3 class="font-bold text-xs sm:text-sm md:text-base text-[var(--foreground)]">مختبر اختبار الردع ومنظومة مكافحة التحضير بالإنابة</h3>
+            <p class="text-[11px] sm:text-xs text-[var(--muted-foreground)]">جرب السيناريوهات المختلفة وشاهد كيفية تصدي المنصة لمحاولات الغش</p>
           </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col justify-between space-y-2">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+        <div class="p-3 sm:p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col justify-between space-y-2">
           <div>
             <div class="text-xs font-bold text-emerald-600 flex items-center gap-1">
               <span>✅</span> سيناريو 1: حضور نظامي
@@ -1137,12 +1205,12 @@
               كود حي نشط + داخل القاعة (14م) + هاتف الطالب الأصلي.
             </div>
           </div>
-          <button onclick="simulateStudentScenario('LEGIT')" class="w-full py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition">
+          <button onclick="simulateStudentScenario('LEGIT')" class="w-full min-h-[38px] py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white transition">
             تجربة القبول ✅
           </button>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col justify-between space-y-2">
+        <div class="p-3 sm:p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col justify-between space-y-2">
           <div>
             <div class="text-xs font-bold text-rose-600 flex items-center gap-1">
               <span>🛑</span> سيناريو 2: صورة واتساب
@@ -1151,12 +1219,12 @@
               تصوير كود القاعة وإرساله ➔ انتهاء الصلاحية بعد 8 ثوانٍ.
             </div>
           </div>
-          <button onclick="simulateStudentScenario('EXPIRED')" class="w-full py-1.5 text-xs font-bold rounded-lg bg-rose-600 hover:bg-rose-700 text-white transition">
+          <button onclick="simulateStudentScenario('EXPIRED')" class="w-full min-h-[38px] py-1.5 text-xs font-bold rounded-lg bg-rose-600 hover:bg-rose-700 active:scale-[0.98] text-white transition">
             تجربة الردع 🛑
           </button>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col justify-between space-y-2">
+        <div class="p-3 sm:p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col justify-between space-y-2">
           <div>
             <div class="text-xs font-bold text-rose-600 flex items-center gap-1">
               <span>🛑</span> سيناريو 3: طالب بالمنزل
@@ -1165,12 +1233,12 @@
               المسافة 4.8 كم بعيداً ➔ حظر بالـ GPS Geofence (80م).
             </div>
           </div>
-          <button onclick="simulateStudentScenario('GPS')" class="w-full py-1.5 text-xs font-bold rounded-lg bg-rose-600 hover:bg-rose-700 text-white transition">
+          <button onclick="simulateStudentScenario('GPS')" class="w-full min-h-[38px] py-1.5 text-xs font-bold rounded-lg bg-rose-600 hover:bg-rose-700 active:scale-[0.98] text-white transition">
             تجربة الردع 🛑
           </button>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col justify-between space-y-2">
+        <div class="p-3 sm:p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col justify-between space-y-2">
           <div>
             <div class="text-xs font-bold text-rose-600 flex items-center gap-1">
               <span>🛑</span> سيناريو 4: هاتف مكرر
@@ -1179,7 +1247,7 @@
               تسجيل حضور زميل من نفس الجهاز ➔ حظر البصمة المكررة.
             </div>
           </div>
-          <button onclick="simulateStudentScenario('DEVICE')" class="w-full py-1.5 text-xs font-bold rounded-lg bg-rose-600 hover:bg-rose-700 text-white transition">
+          <button onclick="simulateStudentScenario('DEVICE')" class="w-full min-h-[38px] py-1.5 text-xs font-bold rounded-lg bg-rose-600 hover:bg-rose-700 active:scale-[0.98] text-white transition">
             تجربة الردع 🛑
           </button>
         </div>
@@ -1189,54 +1257,55 @@
 
 
   <!-- Platform Global Footer -->
-  <footer class="mt-12 py-6 px-4 bg-[var(--card)] border border-[var(--border)] rounded-2xl text-center shadow-sm">
-    <div class="font-bold text-sm text-amber-700 dark:text-amber-500 mb-1">
+  <footer class="mt-8 sm:mt-12 py-5 sm:py-6 px-4 bg-[var(--card)] border border-[var(--border)] rounded-2xl text-center shadow-sm">
+    <div class="font-bold text-xs sm:text-sm text-amber-700 dark:text-amber-500 mb-1">
       🏛️ الجامعة التكنولوجية - قسم هندسة العمارة | منصة حضور الدراسات العليا
     </div>
-    <div class="text-xs text-[var(--muted-foreground)] font-medium">
+    <div class="text-[11px] sm:text-xs text-[var(--muted-foreground)] font-medium leading-relaxed">
       هذه المنصة قيد التطوير وبمبادرة شخصية من المهندس المعماري الدكتور أحمد لؤي أحمد
     </div>
   </footer>
+  </div>
 
   <!-- Toast Notification System -->
-  <div id="toastNotification" class="fixed bottom-6 left-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] px-4 py-3 rounded-2xl shadow-xl flex items-center gap-3">
-    <span id="toastIcon" class="text-lg">✅</span>
-    <div>
-      <div id="toastTitle" class="text-xs font-bold">تم بنجاح</div>
-      <div id="toastDesc" class="text-[11px] text-[var(--muted-foreground)]">تم تسجيل حضور الطالب</div>
+  <div id="toastNotification" class="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl shadow-xl flex items-center gap-2.5 sm:gap-3 max-w-[calc(100vw-32px)]">
+    <span id="toastIcon" class="text-base sm:text-lg">✅</span>
+    <div class="min-w-0">
+      <div id="toastTitle" class="text-xs font-bold truncate">تم بنجاح</div>
+      <div id="toastDesc" class="text-[11px] text-[var(--muted-foreground)] truncate">تم تسجيل حضور الطالب</div>
     </div>
   </div>
 
   <!-- Official Council Attendance Report Modal -->
-  <div id="printModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 md:p-6">
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-4xl w-full p-5 md:p-6 shadow-2xl space-y-4 text-right max-h-[92vh] flex flex-col">
+  <div id="printModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 md:p-6">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-4xl w-full p-3.5 sm:p-5 md:p-6 shadow-2xl space-y-3 sm:space-y-4 text-right max-h-[92vh] flex flex-col">
       <div class="modal-header flex items-center justify-between border-b border-[var(--border)] pb-3 shrink-0">
         <div class="flex items-center gap-2">
           <span class="text-xl">🖨️</span>
           <div>
-            <h3 class="font-bold text-base text-[var(--foreground)]">كشف مواقف غيابات الدراسات العليا المرفوع لمجلس القسم</h3>
+            <h3 class="font-bold text-sm sm:text-base text-[var(--foreground)]">كشف مواقف غيابات الدراسات العليا المرفوع لمجلس القسم</h3>
             <p class="text-xs text-[var(--muted-foreground)]">معاينة المستند الرسمي المعتمد للطباعة وحفظ ملف الـ PDF</p>
           </div>
         </div>
-        <button onclick="closePrintModal()" class="text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-sm font-bold p-1">✕</button>
+        <button onclick="closePrintModal()" class="text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-base font-bold p-1 min-h-[36px] min-w-[36px] flex items-center justify-center">✕</button>
       </div>
 
-      <div id="printModalContent" class="overflow-y-auto grow p-5 md:p-7 bg-white text-slate-900 rounded-xl border border-slate-200 shadow-sm space-y-4 font-sans official-print-paper">
+      <div id="printModalContent" class="overflow-y-auto grow p-3.5 sm:p-5 md:p-7 bg-white text-slate-900 rounded-xl border border-slate-200 shadow-sm space-y-4 font-sans official-print-paper -webkit-overflow-scrolling: touch">
         <!-- Injected by JS -->
       </div>
 
-      <div class="modal-footer flex flex-wrap justify-between items-center gap-3 pt-3 border-t border-[var(--border)] shrink-0">
-        <div class="text-xs text-[var(--muted-foreground)] flex items-center gap-1.5">
+      <div class="modal-footer flex flex-wrap justify-between items-center gap-2.5 sm:gap-3 pt-3 border-t border-[var(--border)] shrink-0">
+        <div class="text-[11px] sm:text-xs text-[var(--muted-foreground)] flex items-center gap-1">
           <span>💡</span>
-          <span>يمكنك الحفظ مباشرة كملف <strong>PDF</strong> رسمي عبر اختيار <em>"Save as PDF / حفظ كـ PDF"</em> من نافذة الطباعة.</span>
+          <span>يمكنك الحفظ مباشرة كملف <strong>PDF</strong> عبر اختيار <em>"Save as PDF"</em>.</span>
         </div>
-        <div class="flex items-center gap-2">
-          <button onclick="closePrintModal()" class="px-4 py-2.5 rounded-xl text-xs bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--card)] transition font-medium">إغلاق</button>
-          <button onclick="exportCouncilReportCSV()" class="px-4 py-2.5 rounded-xl text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition flex items-center gap-1.5 shadow-sm">
+        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+          <button onclick="closePrintModal()" class="flex-1 sm:flex-initial min-h-[40px] px-3.5 py-2 rounded-xl text-xs bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--card)] transition font-medium">إغلاق</button>
+          <button onclick="exportCouncilReportCSV()" class="flex-1 sm:flex-initial min-h-[40px] px-3.5 py-2 rounded-xl text-xs bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
             <span>📥</span> تصدير Excel
           </button>
-          <button onclick="triggerCouncilPrint()" class="px-5 py-2.5 rounded-xl text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold transition flex items-center gap-1.5 shadow-md">
-            <span>🖨️</span> طباعة الكشف / حفظ كـ PDF
+          <button onclick="triggerCouncilPrint()" class="w-full sm:w-auto min-h-[40px] px-4 py-2 rounded-xl text-xs bg-amber-600 hover:bg-amber-700 active:scale-[0.98] text-white font-bold transition flex items-center justify-center gap-1.5 shadow-md">
+            <span>🖨️</span> طباعة الكشف / حفظ PDF
           </button>
         </div>
       </div>
@@ -1245,27 +1314,27 @@
 
 
   <!-- Triple Security Protocol Test Modal -->
-  <div id="securityTestModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 text-right">
-      <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+  <div id="securityTestModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-xl w-full p-4 sm:p-6 shadow-2xl space-y-3 sm:space-y-4 text-right max-h-[92vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-[var(--border)] pb-3 shrink-0">
         <div class="flex items-center gap-2">
           <span class="text-xl">🛡️</span>
           <div>
-            <h3 class="font-bold text-base text-[var(--foreground)]">اختبار بروتوكول الأمان الثلاثي (مكافحة التحضير بالإنابة)</h3>
+            <h3 class="font-bold text-sm sm:text-base text-[var(--foreground)]">اختبار بروتوكول الأمان الثلاثي (مكافحة التحضير بالإنابة)</h3>
             <p class="text-xs text-[var(--muted-foreground)]">قسم هندسة العمارة - الجامعة التكنولوجية</p>
           </div>
         </div>
-        <button onclick="closeSecurityModal()" class="text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-sm font-bold">✕</button>
+        <button onclick="closeSecurityModal()" class="text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-base font-bold min-h-[36px] min-w-[36px] flex items-center justify-center">✕</button>
       </div>
 
-      <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-700 dark:text-amber-300">
+      <div class="p-2.5 sm:p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-700 dark:text-amber-300">
         تم دمج العناصر الثلاثة (كود متجدد كل 8 ثوانٍ + GPS محيط 80م + بصمة جهاز فريدة) لإحباط كافة محاولات الغش.
       </div>
 
       <!-- Test Cases Grid -->
-      <div class="space-y-3">
+      <div class="space-y-2.5 sm:space-y-3 overflow-y-auto grow -webkit-overflow-scrolling: touch">
         <!-- Scenario 1: Legit Scan -->
-        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-between gap-3 hover:border-emerald-500/50 transition">
+        <div class="p-3 sm:p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 hover:border-emerald-500/50 transition">
           <div>
             <div class="text-xs font-bold text-[var(--foreground)] flex items-center gap-1.5">
               <span class="text-emerald-600">✅</span> الحالة 1: حضور شرعي ونظامي داخل القاعة
@@ -1274,13 +1343,13 @@
               كود نشط (خلال 8 ثوانٍ) • GPS داخل القاعة (14م) • هاتف فريد غير مكرر
             </div>
           </div>
-          <button onclick="runSecurityTest('LEGIT')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shrink-0">
+          <button onclick="runSecurityTest('LEGIT')" class="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white text-xs font-bold shrink-0 self-end sm:self-auto">
             تجربة الآن
           </button>
         </div>
 
         <!-- Scenario 2: Expired QR (WhatsApp photo) -->
-        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-between gap-3 hover:border-rose-500/50 transition">
+        <div class="p-3 sm:p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 hover:border-rose-500/50 transition">
           <div>
             <div class="text-xs font-bold text-[var(--foreground)] flex items-center gap-1.5">
               <span class="text-rose-600">🛑</span> الحالة 2: غش بتصوير الكود وإرساله بالواتساب
@@ -1289,13 +1358,13 @@
               كود تم تصويره قبل 20 ثانية ➔ انتهاء الصلاحية الزمنية (Expired Token)
             </div>
           </div>
-          <button onclick="runSecurityTest('EXPIRED_QR')" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shrink-0">
+          <button onclick="runSecurityTest('EXPIRED_QR')" class="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 active:scale-[0.98] text-white text-xs font-bold shrink-0 self-end sm:self-auto">
             اختبار الردع
           </button>
         </div>
 
         <!-- Scenario 3: Outside Geofence -->
-        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-between gap-3 hover:border-rose-500/50 transition">
+        <div class="p-3 sm:p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 hover:border-rose-500/50 transition">
           <div>
             <div class="text-xs font-bold text-[var(--foreground)] flex items-center gap-1.5">
               <span class="text-rose-600">🛑</span> الحالة 3: طالب غائب في المنزل أو خارج الحرم
@@ -1304,13 +1373,13 @@
               الطالب على بعد 4.8 كم من قسم هندسة العمارة ➔ حظر بالـ GPS Geofence
             </div>
           </div>
-          <button onclick="runSecurityTest('OUTSIDE_GPS')" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shrink-0">
+          <button onclick="runSecurityTest('OUTSIDE_GPS')" class="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 active:scale-[0.98] text-white text-xs font-bold shrink-0 self-end sm:self-auto">
             اختبار الردع
           </button>
         </div>
 
         <!-- Scenario 4: Duplicate Device -->
-        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-between gap-3 hover:border-rose-500/50 transition">
+        <div class="p-3 sm:p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 hover:border-rose-500/50 transition">
           <div>
             <div class="text-xs font-bold text-[var(--foreground)] flex items-center gap-1.5">
               <span class="text-rose-600">🛑</span> الحالة 4: محاولة تحضير زميل من نفس الهاتف
@@ -1319,7 +1388,7 @@
               نفس بصمة الجهاز (Device Fingerprint) تسجل طالبين في نفس الجلسة
             </div>
           </div>
-          <button onclick="runSecurityTest('DUPLICATE_DEVICE')" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shrink-0">
+          <button onclick="runSecurityTest('DUPLICATE_DEVICE')" class="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 active:scale-[0.98] text-white text-xs font-bold shrink-0 self-end sm:self-auto">
             اختبار الردع
           </button>
         </div>
@@ -1330,40 +1399,40 @@
         <!-- Populated dynamically -->
       </div>
 
-      <div class="flex justify-end pt-2">
-        <button onclick="closeSecurityModal()" class="px-4 py-2 rounded-xl text-xs bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)]">إغلاق</button>
+      <div class="flex justify-end pt-2 border-t border-[var(--border)] shrink-0">
+        <button onclick="closeSecurityModal()" class="min-h-[40px] px-4 py-2 rounded-xl text-xs bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]">إغلاق</button>
       </div>
     </div>
   </div>
 
   <!-- Official Warning Notice Modal -->
-  <div id="warningNoticeModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 md:p-6">
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-2xl w-full p-5 md:p-6 shadow-2xl space-y-4 text-right max-h-[92vh] flex flex-col">
+  <div id="warningNoticeModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2.5 sm:p-4 md:p-6">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-2xl w-full p-3.5 sm:p-5 md:p-6 shadow-2xl space-y-3 sm:space-y-4 text-right max-h-[92vh] flex flex-col">
       <div class="modal-header flex items-center justify-between border-b border-[var(--border)] pb-3 shrink-0">
         <div class="flex items-center gap-2">
           <span class="text-xl">📜</span>
           <div>
-            <h3 class="font-bold text-base text-[var(--foreground)]">كتاب إنذار غياب رسمي صادر عن مجلس القسم</h3>
+            <h3 class="font-bold text-sm sm:text-base text-[var(--foreground)]">كتاب إنذار غياب رسمي صادر عن مجلس القسم</h3>
             <p class="text-xs text-[var(--muted-foreground)]">معاينة الخطاب الرسمي الموجه للطالب مع خيارات الطباعة والحفظ</p>
           </div>
         </div>
-        <button onclick="closeWarningModal()" class="text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-sm font-bold p-1">✕</button>
+        <button onclick="closeWarningModal()" class="text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-base font-bold min-h-[36px] min-w-[36px] flex items-center justify-center">✕</button>
       </div>
 
-      <div id="warningNoticeContent" class="overflow-y-auto grow p-5 md:p-7 bg-white text-slate-900 rounded-xl border border-slate-200 shadow-sm text-xs leading-relaxed text-right space-y-4 font-sans official-print-paper">
+      <div id="warningNoticeContent" class="overflow-y-auto grow p-3.5 sm:p-5 md:p-7 bg-white text-slate-900 rounded-xl border border-slate-200 shadow-sm text-xs leading-relaxed text-right space-y-4 font-sans official-print-paper -webkit-overflow-scrolling: touch">
         <!-- Injected by JS -->
       </div>
 
-      <div class="modal-footer flex flex-wrap justify-between items-center gap-3 pt-3 border-t border-[var(--border)] shrink-0">
-        <div class="text-xs text-[var(--muted-foreground)]">
+      <div class="modal-footer flex flex-wrap justify-between items-center gap-2.5 sm:gap-3 pt-3 border-t border-[var(--border)] shrink-0">
+        <div class="text-[11px] sm:text-xs text-[var(--muted-foreground)]">
           💡 يمكنك طباعة هذا الخطاب أو حفظه بصيغة <strong>PDF</strong> رسمية.
         </div>
-        <div class="flex items-center gap-2">
-          <button onclick="closeWarningModal()" class="px-4 py-2 rounded-xl text-xs bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--card)] transition">إغلاق</button>
-          <button onclick="triggerWarningPrint()" class="px-4 py-2 rounded-xl text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold transition flex items-center gap-1.5 shadow-sm">
-            <span>🖨️</span> طباعة الخطاب / حفظ PDF
+        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+          <button onclick="closeWarningModal()" class="flex-1 sm:flex-initial min-h-[40px] px-3.5 py-2 rounded-xl text-xs bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--card)] transition">إغلاق</button>
+          <button onclick="triggerWarningPrint()" class="flex-1 sm:flex-initial min-h-[40px] px-3.5 py-2 rounded-xl text-xs bg-amber-600 hover:bg-amber-700 active:scale-[0.98] text-white font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+            <span>🖨️</span> طباعة الخطاب
           </button>
-          <button onclick="issueNoticeNotification()" class="px-4 py-2 rounded-xl text-xs bg-rose-600 hover:bg-rose-700 text-white font-bold transition flex items-center gap-1.5 shadow-sm">
+          <button onclick="issueNoticeNotification()" class="w-full sm:w-auto min-h-[40px] px-4 py-2 rounded-xl text-xs bg-rose-600 hover:bg-rose-700 active:scale-[0.98] text-white font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
             <span>📧</span> إصدار وإشعار الطالب
           </button>
         </div>

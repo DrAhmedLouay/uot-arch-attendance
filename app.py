@@ -60,24 +60,42 @@ def generate_qr_image_cached(token):
     img.save(buf, format="PNG")
     return buf.getvalue()
 
-# 4. الهوية البصرية المعمارية والتصميم المتقدم (CSS RTL)
+# 4. الهوية البصرية المعمارية والتصميم المتقدم المتجاوب (Responsive CSS RTL for All Devices)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
     
+    :root {
+        --sat: env(safe-area-inset-top, 0px);
+        --sab: env(safe-area-inset-bottom, 0px);
+        --sal: env(safe-area-inset-left, 0px);
+        --sar: env(safe-area-inset-right, 0px);
+    }
+
     html, body, [class*="css"], .stMarkdown, .stSelectbox, .stTextInput, .stButton, div {
-        font-family: 'Tajawal', -apple-system, sans-serif !important;
+        font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         direction: rtl;
         text-align: right;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+
+    /* Main Streamlit App Container - Safe Area Insets for Modern Phones (iPhone & Android) */
+    .main .block-container {
+        padding-top: max(1.5rem, var(--sat)) !important;
+        padding-bottom: max(2.5rem, var(--sab)) !important;
+        padding-left: max(1rem, var(--sal)) !important;
+        padding-right: max(1rem, var(--sar)) !important;
+        max-width: 1350px;
     }
     
     /* Header Card */
     .arch-hero {
         background: linear-gradient(135deg, #451a03 0%, #78350f 50%, #b45309 100%);
         color: #ffffff;
-        padding: 26px 30px;
+        padding: 24px 28px;
         border-radius: 20px;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
         box-shadow: 0 10px 25px -5px rgba(120, 53, 15, 0.25);
         border: 1px solid rgba(255, 255, 255, 0.1);
         position: relative;
@@ -160,6 +178,109 @@ st.markdown("""
         padding: 24px;
         font-family: 'Tajawal', serif;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Minimum touch targets for mobile accessibility */
+    .stButton > button, [data-testid="baseButton-secondary"], [data-testid="baseButton-primary"] {
+        min-height: 44px;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        touch-action: manipulation;
+    }
+
+    /* ========================================================================= */
+    /* RESPONSIVE MEDIA QUERIES (Smartphones, Tablets, Laptops, Desktops)        */
+    /* ========================================================================= */
+    
+    /* Tablets and iPads (768px - 1024px) */
+    @media screen and (min-width: 769px) and (max-width: 1024px) {
+        .main .block-container {
+            padding-left: 1.5rem !important;
+            padding-right: 1.5rem !important;
+        }
+        .arch-hero {
+            padding: 20px 24px !important;
+        }
+        [data-testid="stMetricValue"] {
+            font-size: 24px !important;
+        }
+    }
+
+    /* Mobile Phones (iPhone 11/12/13/14/15/16, Samsung Galaxy, Pixel, Xiaomi < 768px) */
+    @media screen and (max-width: 768px) {
+        /* Force vertical column stacking on mobile to avoid squished side-by-side elements */
+        [data-testid="column"] {
+            width: 100% !important;
+            flex: 1 1 100% !important;
+            min-width: 100% !important;
+            margin-bottom: 0.75rem !important;
+        }
+
+        /* iOS Safari Fix: Input font-size >= 16px prevents intrusive zoom on tap */
+        input, select, textarea, [data-baseweb="input"] input, [data-baseweb="select"] input {
+            font-size: 16px !important;
+        }
+
+        .main .block-container {
+            padding-left: 0.85rem !important;
+            padding-right: 0.85rem !important;
+            padding-top: max(1rem, var(--sat)) !important;
+            padding-bottom: max(2rem, var(--sab)) !important;
+        }
+
+        .arch-hero {
+            padding: 18px 16px !important;
+            border-radius: 16px !important;
+            margin-bottom: 16px !important;
+        }
+        .arch-hero h1 {
+            font-size: 1.15rem !important;
+            line-height: 1.4 !important;
+        }
+        .arch-hero p {
+            font-size: 0.8rem !important;
+        }
+        .arch-hero::after {
+            display: none !important;
+        }
+
+        /* Responsive Metrics */
+        [data-testid="stMetricValue"] {
+            font-size: 22px !important;
+        }
+        [data-testid="stMetricLabel"] {
+            font-size: 12px !important;
+        }
+
+        /* DataTables and scrollable blocks on touch devices */
+        [data-testid="stDataFrame"], [data-testid="stTable"], .element-container:has(table) {
+            width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Notice paper padding */
+        .notice-paper {
+            padding: 16px !important;
+            border-radius: 12px !important;
+        }
+    }
+
+    /* Small Screen Phones (iPhone SE, iPhone Mini, compact Androids <= 480px) */
+    @media screen and (max-width: 480px) {
+        .main .block-container {
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+        }
+        .arch-hero {
+            padding: 14px 12px !important;
+        }
+        .arch-hero h1 {
+            font-size: 1.05rem !important;
+        }
+        .stButton > button {
+            width: 100% !important;
+        }
     }
 
     /* Print Stylesheet for Official Reports */

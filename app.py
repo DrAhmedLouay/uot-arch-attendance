@@ -161,6 +161,28 @@ st.markdown("""
         font-family: 'Tajawal', serif;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
+
+    /* Print Stylesheet for Official Reports */
+    @media print {
+        @page {
+            size: A4 portrait;
+            margin: 12mm 10mm;
+        }
+        header, [data-testid="stSidebar"], [data-testid="stHeader"], [data-testid="stToolbar"], footer, .stButton, button {
+            display: none !important;
+        }
+        .main .block-container {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .notice-paper {
+            border: 2px solid #000000 !important;
+            background: #ffffff !important;
+            color: #000000 !important;
+            box-shadow: none !important;
+            padding: 20px !important;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -437,8 +459,8 @@ if "Admin" in role:
         df_display = pd.DataFrame(table_rows)
         st.dataframe(df_display, use_container_width=True, hide_index=True)
         
-        # تصدير كشف Excel / CSV
-        c_exp1, c_exp2 = st.columns([1, 3])
+        # تصدير كشف Excel / CSV واستعراض كشف مجلس القسم
+        c_exp1, c_exp2 = st.columns([1.2, 1.8])
         with c_exp1:
             csv_data = df_display.to_csv(index=False).encode('utf-8-sig')
             st.download_button(
@@ -448,6 +470,23 @@ if "Admin" in role:
                 mime="text/csv",
                 use_container_width=True
             )
+        with c_exp2:
+            with st.expander("🖨️ استعراض وطباعة كشف مجلس القسم للغيابات (PDF)", expanded=False):
+                warned_council = df_students[df_students['pct'] >= 5.0]
+                if warned_council.empty:
+                    st.success("🎉 لا توجد حالات تجاوز لنسبة 5% حالياً. جميع الطلبة ضمن الموقف السليم.")
+                else:
+                    st.markdown(f"**الحالات المرفوعة لمجلس القسم للبت بالحرمان والإنذار ({len(warned_council)} باحثاً):**")
+                    st.dataframe(warned_council[['name', 'reg_num', 'branch_name', 'course_name', 'missed_hours', 'pct']], use_container_width=True, hide_index=True)
+                    import streamlit.components.v1 as components
+                    components.html("""
+                    <div style="direction: rtl; text-align: right;">
+                        <button onclick="window.parent.print()" style="background:#b45309; color:white; border:none; padding:8px 18px; border-radius:10px; font-weight:700; cursor:pointer; font-size:12px; font-family:sans-serif;">
+                            🖨️ طباعة كشف مجلس القسم / حفظ PDF
+                        </button>
+                    </div>
+                    """, height=45)
+
             
     # --- التبويب 2: التحليلات والرسوم البيانية ---
     with tab_analytics:
@@ -559,7 +598,15 @@ if "Admin" in role:
             </div>
             """, unsafe_allow_html=True)
             
-            st.button("🖨️ طباعة الخطاب الرسمي (PDF Print)", on_click=lambda: st.toast("تم تجهيز مستند الطباعة بنجاح!"))
+            import streamlit.components.v1 as components
+            components.html("""
+            <div style="direction: rtl; text-align: right; margin-top: 10px;">
+                <button onclick="window.parent.print()" style="background: linear-gradient(135deg, #b45309, #78350f); color: white; border: none; padding: 10px 24px; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 13px; font-family: 'Tajawal', sans-serif; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    🖨️ طباعة الخطاب الرسمي / حفظ كـ PDF (Print to PDF)
+                </button>
+            </div>
+            """, height=55)
+
 
 # ==============================================================================
 # 2. بوابة أستاذ المادة (INSTRUCTOR PORTAL) - 3 تبويبات

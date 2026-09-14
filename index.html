@@ -17,6 +17,149 @@
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.5; transform: scale(1.04); }
     }
+
+    /* ========================================================================= */
+    /* Comprehensive Print Stylesheet for Official Reports & Notices             */
+    /* ========================================================================= */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 12mm 10mm 12mm 10mm;
+      }
+      
+      html, body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-family: 'Tajawal', sans-serif !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* Hidden elements must never appear in print */
+      .hidden, [hidden] {
+        display: none !important;
+      }
+
+      /* Hide web shell, navigation, header, tabs, and interactive buttons */
+      header, nav, #adminView, #instructorView, #offlineToggleBtn,
+      #toastNotification, footer, .no-print, button, #securityTestModal {
+        display: none !important;
+      }
+
+      /* When printing Council Report */
+      body.printing-council #printModal,
+      body:not(.printing-warning) #printModal:not(.hidden) {
+        display: block !important;
+        position: static !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        box-shadow: none !important;
+      }
+
+      body.printing-council #printModal > div,
+      body:not(.printing-warning) #printModal:not(.hidden) > div {
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      body.printing-council #printModal .modal-header,
+      body.printing-council #printModal .modal-footer,
+      body:not(.printing-warning) #printModal:not(.hidden) .modal-header,
+      body:not(.printing-warning) #printModal:not(.hidden) .modal-footer {
+        display: none !important;
+      }
+
+      body.printing-council #warningNoticeModal {
+        display: none !important;
+      }
+
+      /* When printing Warning Notice */
+      body.printing-warning #warningNoticeModal,
+      body:not(.printing-council) #warningNoticeModal:not(.hidden) {
+        display: block !important;
+        position: static !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        box-shadow: none !important;
+      }
+
+      body.printing-warning #warningNoticeModal > div,
+      body:not(.printing-council) #warningNoticeModal:not(.hidden) > div {
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      body.printing-warning #warningNoticeModal .modal-header,
+      body.printing-warning #warningNoticeModal .modal-footer,
+      body:not(.printing-council) #warningNoticeModal:not(.hidden) .modal-header,
+      body:not(.printing-council) #warningNoticeModal:not(.hidden) .modal-footer {
+        display: none !important;
+      }
+
+      body.printing-warning #printModal {
+        display: none !important;
+      }
+
+      /* Paper containers formatting */
+      .official-print-paper {
+        max-height: none !important;
+        overflow: visible !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+
+      .official-print-paper table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin: 15px 0 !important;
+      }
+
+      .official-print-paper th,
+      .official-print-paper td {
+        border: 1px solid #1e293b !important;
+        color: #000000 !important;
+        padding: 6px 8px !important;
+        font-size: 9.5pt !important;
+      }
+
+      .official-print-paper th {
+        background-color: #f1f5f9 !important;
+        font-weight: 800 !important;
+      }
+
+      .official-print-paper tr {
+        page-break-inside: avoid !important;
+      }
+
+      .signatures-block {
+        page-break-inside: avoid !important;
+        margin-top: 30px !important;
+      }
+    }
   </style>
 </head>
 <body class="bg-[var(--background)] text-[var(--foreground)] antialiased min-h-screen p-3 md:p-6 selection:bg-amber-500 selection:text-white">
@@ -434,27 +577,42 @@
     </div>
   </div>
 
-  <!-- Print Modal Simulation -->
-  <div id="printModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 text-right">
-      <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
-        <h3 class="font-bold text-base text-[var(--foreground)]">نموذج استخراج تقرير الغياب الرسمي (PDF)</h3>
-        <button onclick="closePrintModal()" class="text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-sm font-bold">✕</button>
-      </div>
-      <div class="p-4 bg-[var(--background)] rounded-xl border border-[var(--border)] font-mono text-xs space-y-2">
-        <div class="text-center font-bold text-sm mb-2">جمهورية العراق - وزارة التعليم العالي والبحث العلمي</div>
-        <div class="text-center font-bold text-sm">الجامعة التكنولوجية - قسم هندسة العمارة / الدراسات العليا</div>
-        <div class="text-center text-xs text-[var(--muted-foreground)] mb-4">كشف بمواقف غيابات الطلبة الموجهة لمجلس القسم للبت بالحرمان</div>
-        <div id="printModalContent" class="space-y-1">
-          <!-- Populated by JS -->
+  <!-- Official Council Attendance Report Modal -->
+  <div id="printModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 md:p-6">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-4xl w-full p-5 md:p-6 shadow-2xl space-y-4 text-right max-h-[92vh] flex flex-col">
+      <div class="modal-header flex items-center justify-between border-b border-[var(--border)] pb-3 shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🖨️</span>
+          <div>
+            <h3 class="font-bold text-base text-[var(--foreground)]">كشف مواقف غيابات الدراسات العليا المرفوع لمجلس القسم</h3>
+            <p class="text-xs text-[var(--muted-foreground)]">معاينة المستند الرسمي المعتمد للطباعة وحفظ ملف الـ PDF</p>
+          </div>
         </div>
+        <button onclick="closePrintModal()" class="text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-sm font-bold p-1">✕</button>
       </div>
-      <div class="flex justify-end gap-2 pt-2">
-        <button onclick="closePrintModal()" class="px-4 py-2 rounded-xl text-xs bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)]">إغلاق</button>
-        <button onclick="alert('جاري توليد ملف PDF المعتمد وتنزيله...'); closePrintModal();" class="px-4 py-2 rounded-xl text-xs bg-amber-600 text-white font-bold">تحميل PDF رسمي</button>
+
+      <div id="printModalContent" class="overflow-y-auto grow p-5 md:p-7 bg-white text-slate-900 rounded-xl border border-slate-200 shadow-sm space-y-4 font-sans official-print-paper">
+        <!-- Injected by JS -->
+      </div>
+
+      <div class="modal-footer flex flex-wrap justify-between items-center gap-3 pt-3 border-t border-[var(--border)] shrink-0">
+        <div class="text-xs text-[var(--muted-foreground)] flex items-center gap-1.5">
+          <span>💡</span>
+          <span>يمكنك الحفظ مباشرة كملف <strong>PDF</strong> رسمي عبر اختيار <em>"Save as PDF / حفظ كـ PDF"</em> من نافذة الطباعة.</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="closePrintModal()" class="px-4 py-2.5 rounded-xl text-xs bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--card)] transition font-medium">إغلاق</button>
+          <button onclick="exportCouncilReportCSV()" class="px-4 py-2.5 rounded-xl text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition flex items-center gap-1.5 shadow-sm">
+            <span>📥</span> تصدير Excel
+          </button>
+          <button onclick="triggerCouncilPrint()" class="px-5 py-2.5 rounded-xl text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold transition flex items-center gap-1.5 shadow-md">
+            <span>🖨️</span> طباعة الكشف / حفظ كـ PDF
+          </button>
+        </div>
       </div>
     </div>
   </div>
+
 
   <!-- Triple Security Protocol Test Modal -->
   <div id="securityTestModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
@@ -549,26 +707,40 @@
   </div>
 
   <!-- Official Warning Notice Modal -->
-  <div id="warningNoticeModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 text-right">
-      <div class="flex items-center justify-between border-b border-[var(--border)] pb-3">
+  <div id="warningNoticeModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 md:p-6">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-2xl w-full p-5 md:p-6 shadow-2xl space-y-4 text-right max-h-[92vh] flex flex-col">
+      <div class="modal-header flex items-center justify-between border-b border-[var(--border)] pb-3 shrink-0">
         <div class="flex items-center gap-2">
           <span class="text-xl">📜</span>
-          <h3 class="font-bold text-base text-[var(--foreground)]">كتاب إنذار غياب رسمي صادر عن مجلس القسم</h3>
+          <div>
+            <h3 class="font-bold text-base text-[var(--foreground)]">كتاب إنذار غياب رسمي صادر عن مجلس القسم</h3>
+            <p class="text-xs text-[var(--muted-foreground)]">معاينة الخطاب الرسمي الموجه للطالب مع خيارات الطباعة والحفظ</p>
+          </div>
         </div>
-        <button onclick="closeWarningModal()" class="text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-sm font-bold">✕</button>
+        <button onclick="closeWarningModal()" class="text-[var(--muted-foreground)] hover:text-[var(--foreground)] text-sm font-bold p-1">✕</button>
       </div>
 
-      <div id="warningNoticeContent" class="p-5 bg-[var(--background)] rounded-xl border border-[var(--border)] text-xs leading-relaxed text-right space-y-3">
+      <div id="warningNoticeContent" class="overflow-y-auto grow p-5 md:p-7 bg-white text-slate-900 rounded-xl border border-slate-200 shadow-sm text-xs leading-relaxed text-right space-y-4 font-sans official-print-paper">
         <!-- Injected by JS -->
       </div>
 
-      <div class="flex justify-end gap-2 pt-2">
-        <button onclick="closeWarningModal()" class="px-4 py-2 rounded-xl text-xs bg-[var(--background)] border border-[var(--border)] text-[var(--muted-foreground)]">إغلاق</button>
-        <button onclick="alert('تم إرسال نسخة من كتاب الإنذار إلى البريد الجامعي للطالب، وتثبيته بملف المتابعة الأكاديمية.'); closeWarningModal();" class="px-4 py-2 rounded-xl text-xs bg-amber-600 text-white font-bold">إصدار وإشعار الطالب</button>
+      <div class="modal-footer flex flex-wrap justify-between items-center gap-3 pt-3 border-t border-[var(--border)] shrink-0">
+        <div class="text-xs text-[var(--muted-foreground)]">
+          💡 يمكنك طباعة هذا الخطاب أو حفظه بصيغة <strong>PDF</strong> رسمية.
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="closeWarningModal()" class="px-4 py-2 rounded-xl text-xs bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--card)] transition">إغلاق</button>
+          <button onclick="triggerWarningPrint()" class="px-4 py-2 rounded-xl text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold transition flex items-center gap-1.5 shadow-sm">
+            <span>🖨️</span> طباعة الخطاب / حفظ PDF
+          </button>
+          <button onclick="issueNoticeNotification()" class="px-4 py-2 rounded-xl text-xs bg-rose-600 hover:bg-rose-700 text-white font-bold transition flex items-center gap-1.5 shadow-sm">
+            <span>📧</span> إصدار وإشعار الطالب
+          </button>
+        </div>
       </div>
     </div>
   </div>
+
 
   <!-- Pure JavaScript QRCode Library (ISO/IEC 18004 Standard) -->
   <script>
@@ -1185,23 +1357,184 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
       const flagged = appState.students.filter(s => (s.missedHours / s.totalHours) * 100 >= 5);
       
+      let count5 = 0;
+      let count7 = 0;
+      let count10 = 0;
+
+      let rowsHtml = '';
       if (flagged.length === 0) {
-        content.innerHTML = '<div class="text-center py-4 text-emerald-600 font-bold">لا توجد حالات تجاوز لنسبة 5% حالياً. جميع الطلبة ضمن الحد المسموح.</div>';
+        rowsHtml = `
+          <tr>
+            <td colspan="9" class="py-8 text-center text-emerald-600 font-bold bg-emerald-50/50">
+              🎉 لا توجد حالات تجاوز لنسبة 5% حالياً. جميع طلبة الدراسات العليا ملتزمون بالحضور وضمن الحدود النظامية.
+            </td>
+          </tr>
+        `;
       } else {
-        flagged.forEach(s => {
+        flagged.forEach((s, idx) => {
           const pct = ((s.missedHours / s.totalHours) * 100).toFixed(1);
-          const badge = getStatusBadge(s.missedHours, s.totalHours);
-          const div = document.createElement('div');
-          div.className = "flex justify-between items-center py-1.5 border-b border-[var(--border)]";
-          div.innerHTML = `
-            <span><strong>${s.name}</strong> (${appState.branches[s.branch].name})</span>
-            <span class="font-bold ${pct >= 10 ? 'text-rose-600' : 'text-amber-600'}">غاب ${s.missedHours} س (${pct}%) - [${badge.label}]</span>
+          let statusBadgeClass = '';
+          let statusLabel = '';
+          if (pct >= 10.0) {
+            count10++;
+            statusBadgeClass = 'bg-rose-100 text-rose-800 border border-rose-300 font-black';
+            statusLabel = 'حرمان نهائي (تجاوز 10%) - يُرفع للمجلس';
+          } else if (pct >= 7.0) {
+            count7++;
+            statusBadgeClass = 'bg-orange-100 text-orange-800 border border-orange-300 font-bold';
+            statusLabel = 'إنذار نهائي (تجاوز 7%)';
+          } else {
+            count5++;
+            statusBadgeClass = 'bg-amber-100 text-amber-800 border border-amber-300 font-semibold';
+            statusLabel = 'إنذار أولي (تجاوز 5%)';
+          }
+
+          rowsHtml += `
+            <tr class="border-b border-slate-200">
+              <td class="py-2.5 px-2.5 text-center font-bold text-slate-700">${idx + 1}</td>
+              <td class="py-2.5 px-3 font-bold text-slate-900">${s.name}</td>
+              <td class="py-2.5 px-2.5 text-center font-mono text-xs text-slate-600">${s.regNum}</td>
+              <td class="py-2.5 px-3 text-slate-700 text-xs">${appState.branches[s.branch].name}</td>
+              <td class="py-2.5 px-3 text-slate-600 text-xs">${s.course}</td>
+              <td class="py-2.5 px-2.5 text-center font-mono text-slate-700">${s.totalHours} س</td>
+              <td class="py-2.5 px-2.5 text-center font-bold font-mono text-rose-700">${s.missedHours} س</td>
+              <td class="py-2.5 px-2.5 text-center font-bold font-mono ${pct >= 10 ? 'text-rose-800' : 'text-amber-800'}">${pct}%</td>
+              <td class="py-2.5 px-3 text-center"><span class="px-2.5 py-1 rounded-md text-[11px] ${statusBadgeClass}">${statusLabel}</span></td>
+            </tr>
           `;
-          content.appendChild(div);
         });
       }
 
+      content.innerHTML = `
+        <div id="councilPrintDoc" class="text-slate-900 space-y-4">
+          <!-- Institutional Header -->
+          <div class="text-center border-b-2 border-slate-900 pb-3">
+            <div class="text-xs font-bold text-slate-800">جمهورية العراق - وزارة التعليم العالي والبحث العلمي</div>
+            <div class="text-base font-extrabold text-amber-950 mt-0.5">الجامعة التكنولوجية - قسم هندسة العمارة</div>
+            <div class="text-xs font-semibold text-slate-600 mt-0.5">شعبة الدراسات العليا واللجنة الامتحانية</div>
+            <div class="flex justify-between items-center text-[11px] text-slate-500 mt-2.5 pt-1.5 border-t border-dashed border-slate-300">
+              <div><strong>العدد:</strong> د.ع / عمارة / 2026/148</div>
+              <div><strong>العام الدراسي:</strong> 2026-2027 (الفصل الدراسي)</div>
+              <div><strong>التاريخ:</strong> ${new Date().toLocaleDateString('ar-IQ')}</div>
+            </div>
+          </div>
+
+          <!-- Document Subject -->
+          <div class="text-center my-2">
+            <h2 class="text-sm md:text-base font-black text-slate-900 underline decoration-amber-600 underline-offset-4">
+              كشف بمواقف غيابات طلبة الدراسات العليا المرفوع لمجلس القسم الموقر للبت بالحرمان
+            </h2>
+            <p class="text-[11px] text-slate-600 mt-1">
+              عملاً بالتعليمات والضوابط الامتحانية النافذة لوزارة التعليم العالي والبحث العلمي (حرمان عند 10% من الساعات المقررة)
+            </p>
+          </div>
+
+          <!-- Summary KPI Cards for Council -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2 my-2 text-xs">
+            <div class="p-2 bg-slate-50 border border-slate-200 rounded-lg text-center">
+              <span class="text-slate-500 text-[11px] block">إجمالي طلبة الدراسات العليا</span>
+              <strong class="text-sm text-slate-900 font-bold">${appState.students.length} باحثاً</strong>
+            </div>
+            <div class="p-2 bg-amber-50 border border-amber-200 rounded-lg text-center">
+              <span class="text-amber-800 text-[11px] block">إنذار أولي (5%)</span>
+              <strong class="text-sm text-amber-900 font-bold">${count5} حالات</strong>
+            </div>
+            <div class="p-2 bg-orange-50 border border-orange-200 rounded-lg text-center">
+              <span class="text-orange-800 text-[11px] block">إنذار نهائي (7%)</span>
+              <strong class="text-sm text-orange-900 font-bold">${count7} حالات</strong>
+            </div>
+            <div class="p-2 bg-rose-50 border border-rose-200 rounded-lg text-center">
+              <span class="text-rose-800 text-[11px] block">حرمان نهائي (10% فأكثر)</span>
+              <strong class="text-sm text-rose-900 font-black">${count10} حالات</strong>
+            </div>
+          </div>
+
+          <!-- Official Table -->
+          <div class="overflow-x-auto my-3">
+            <table class="w-full text-right border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-100 text-slate-900 border-y-2 border-slate-300 font-bold">
+                  <th class="py-2.5 px-2.5 text-center">ت</th>
+                  <th class="py-2.5 px-3">اسم الطالب والباحث</th>
+                  <th class="py-2.5 px-2.5 text-center">الرقم الجامعي</th>
+                  <th class="py-2.5 px-3">الفرع الأكاديمي</th>
+                  <th class="py-2.5 px-3">المقرر الدراسي</th>
+                  <th class="py-2.5 px-2.5 text-center">الساعات</th>
+                  <th class="py-2.5 px-2.5 text-center">الغياب</th>
+                  <th class="py-2.5 px-2.5 text-center">النسبة</th>
+                  <th class="py-2.5 px-3 text-center">الموقف والتوصية لمجلس القسم</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                ${rowsHtml}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Official Signatures for Council -->
+          <div class="signatures-block mt-6 pt-3 border-t-2 border-slate-300 grid grid-cols-3 gap-4 text-center text-xs">
+            <div>
+              <div class="text-slate-600 font-medium">أستاذ ومسؤول المقرر</div>
+              <div class="mt-5 font-bold text-slate-800">التوقيع: .....................</div>
+            </div>
+            <div>
+              <div class="text-slate-600 font-medium">مقرر الدراسات العليا بالقسم</div>
+              <div class="mt-0.5 font-bold text-slate-900">أ.م.د. بسام عدنان</div>
+              <div class="mt-3 font-bold text-slate-800">التوقيع: .....................</div>
+            </div>
+            <div>
+              <div class="text-slate-600 font-medium">رئيس قسم هندسة العمارة</div>
+              <div class="mt-0.5 font-bold text-slate-900">أ.د. خليل إبراهيم</div>
+              <div class="mt-3 font-bold text-slate-800">التوقيع والختم: .....................</div>
+            </div>
+          </div>
+
+          <!-- Document Footer Attribution -->
+          <div class="mt-5 pt-2 border-t border-slate-200 text-center text-[10.5px] text-slate-500">
+            🏛️ الجامعة التكنولوجية - قسم هندسة العمارة | منصة حضور الدراسات العليا المعتمدة<br>
+            هذه المنصة قيد التطوير وبمبادرة شخصية من المهندس المعماري الدكتور أحمد لؤي أحمد
+          </div>
+        </div>
+      `;
+
       modal.classList.remove('hidden');
+    }
+
+    function triggerCouncilPrint() {
+      document.body.classList.add('printing-council');
+      window.print();
+      setTimeout(() => {
+        document.body.classList.remove('printing-council');
+      }, 800);
+    }
+
+    function triggerWarningPrint() {
+      document.body.classList.add('printing-warning');
+      window.print();
+      setTimeout(() => {
+        document.body.classList.remove('printing-warning');
+      }, 800);
+    }
+
+    function exportCouncilReportCSV() {
+      const flagged = appState.students.filter(s => (s.missedHours / s.totalHours) * 100 >= 5);
+      let csvContent = "\uFEFFت,الاسم,الرقم الجامعي,الفرع,المقرر,إجمالي الساعات,ساعات الغياب,النسبة المئوية,الموقف والتوصية لمجلس القسم\n";
+      
+      flagged.forEach((s, idx) => {
+        const pct = ((s.missedHours / s.totalHours) * 100).toFixed(1);
+        let status = 'إنذار أولي (5%)';
+        if (pct >= 10.0) status = 'حرمان نهائي من الامتحان (10% فأكثر)';
+        else if (pct >= 7.0) status = 'إنذار نهائي (7%)';
+        csvContent += `"${idx + 1}","${s.name}","${s.regNum}","${appState.branches[s.branch].name}","${s.course}","${s.totalHours}","${s.missedHours}","${pct}%","${status}"\n`;
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `كشف_مجلس_قسم_العمارة_للغيابات_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      showToast("📥 تم تصدير كشف المجلس", "تم تنزيل كشف الطلبة المرفوعين لمجلس القسم بصيغة Excel/CSV");
     }
 
     function closePrintModal() {
@@ -1212,7 +1545,11 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       const s = appState.students.find(std => std.id === studentId);
       if (s) {
         const pct = ((s.missedHours / s.totalHours) * 100).toFixed(1);
-        alert(`السجل الأكاديمي للطالب:\n\nالاسم: ${s.name}\nالرقم الجامعي: ${s.regNum}\nالفرع: ${appState.branches[s.branch].name}\nالمقرر: ${s.course}\nساعات الغياب: ${s.missedHours} من إجمالي ${s.totalHours} ساعة\nالنسبة المئوية: ${pct}%`);
+        const badge = getStatusBadge(s.missedHours, s.totalHours);
+        showToast(
+          `🎓 السجل الأكاديمي: ${s.name}`,
+          `الرقم: ${s.regNum} | الغياب: ${s.missedHours} س من ${s.totalHours} س (${pct}%) | الحالة: ${badge.label}`
+        );
       }
     }
 
@@ -1258,14 +1595,41 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             <span style="font-size: 10px; color: #64748b;">معاون العميد للشؤون العلمية والدراسات العليا<br>قسم هندسة العمارة - الجامعة التكنولوجية</span>
           </div>
         </div>
+
+        <div style="margin-top: 15px; padding-top: 8px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 10px; color: #64748b;">
+          🏛️ الجامعة التكنولوجية - قسم هندسة العمارة | منصة حضور الدراسات العليا المعتمدة<br>
+          هذه المنصة قيد التطوير وبمبادرة شخصية من المهندس المعماري الدكتور أحمد لؤي أحمد
+        </div>
       `;
 
       document.getElementById('warningNoticeModal').classList.remove('hidden');
     }
 
+    function issueNoticeNotification() {
+      showToast("📧 تم إشعار الطالب", "تم إرسال نسخة رسمية من كتاب الإنذار إلى البريد الجامعي للطالب وتوثيقه في أضبارة المتابعة الأكاديمية بمجلس القسم.");
+      closeWarningModal();
+    }
+
     function closeWarningModal() {
       document.getElementById('warningNoticeModal').classList.add('hidden');
     }
+
+    // Auto-detect print events
+    window.addEventListener('beforeprint', () => {
+      const printModal = document.getElementById('printModal');
+      const warnModal = document.getElementById('warningNoticeModal');
+      if (printModal && !printModal.classList.contains('hidden')) {
+        document.body.classList.add('printing-council');
+      } else if (warnModal && !warnModal.classList.contains('hidden')) {
+        document.body.classList.add('printing-warning');
+      }
+    });
+
+    window.addEventListener('afterprint', () => {
+      document.body.classList.remove('printing-council');
+      document.body.classList.remove('printing-warning');
+    });
+
 
     // Toast Helper
     function showToast(title, desc) {

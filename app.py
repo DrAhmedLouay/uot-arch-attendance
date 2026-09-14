@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-منظومة حضور وغياب طلبة الدراسات العليا - قسم هندسة العمارة / الجامعة التكنولوجية
+منظومة حضور وغياب طلبة الدراسات العليا - كلية هندسة العمارة / الجامعة التكنولوجية
 Postgraduate Attendance Management System - Department of Architecture Engineering (UOT)
 الإصدار المطور (Enterprise Edition) - مظهر معماري فاخر، تحليلات بيانية، ومكافحة احتيال ثلاثية
 """
@@ -25,7 +25,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. ثوابت الموقع الجغرافي (مبنى قسم هندسة العمارة - الجامعة التكنولوجية / بغداد)
+# 2. ثوابت الموقع الجغرافي (مبنى كلية هندسة العمارة - الجامعة التكنولوجية / بغداد)
 UOT_ARCH_LAT = 33.312800
 UOT_ARCH_LNG = 44.444400
 GEOFENCE_RADIUS_METERS = 80.0  # النطاق المسموح به حول قاعات واستوديوهات العمارة
@@ -527,7 +527,7 @@ if st.session_state.current_user is None:
                     الواجهة المركزية الموحدة لمنظومة حضور الدراسات العليا
                 </h1>
                 <p style="margin: 6px 0 0 0; font-size: 13px; opacity: 0.9;">
-                    قسم هندسة العمارة • بوابات الدخول المركزية (لوحة الإدارة • بوابة التدريسي • بوابة الطالب)
+                    كلية هندسة العمارة • بوابات الدخول المركزية (لوحة الإدارة • بوابة التدريسي • بوابة الطالب)
                 </p>
             </div>
             <div style="text-align: left; background: rgba(0,0,0,0.25); padding: 12px 18px; border-radius: 14px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15);">
@@ -717,7 +717,7 @@ if st.session_state.current_user is None:
     st.markdown("""
     <div style="margin-top: 40px; padding: 20px 16px; border-top: 2px solid #e2e8f0; text-align: center; color: #64748b; font-size: 13px; background: #ffffff; border-radius: 16px;">
         <div style="font-weight: 800; color: #b45309; margin-bottom: 4px; font-size: 13.5px;">
-            🏛️ الجامعة التكنولوجية - قسم هندسة العمارة | منصة حضور الدراسات العليا
+            🏛️ الجامعة التكنولوجية - كلية هندسة العمارة | منصة حضور الدراسات العليا
         </div>
         <div style="font-size: 12px; color: #334155; font-weight: 600;">
             هذه المنصة قيد التطوير وبمبادرة شخصية من <span style="font-weight: 800; color: #c2410c; background: #fff7ed; padding: 2px 8px; border-radius: 6px; border: 1px solid #fed7aa;">المهندس المعماري الدكتور أحمد لؤي أحمد</span>
@@ -796,7 +796,7 @@ st.markdown(f"""
                 </span>
             </div>
             <h1 style="margin: 0; font-weight: 900; font-size: 24px; letter-spacing: -0.5px;">
-                منظومة حضور وغياب الدراسات العليا - قسم هندسة العمارة
+                منظومة حضور وغياب الدراسات العليا - كلية هندسة العمارة
             </h1>
             <p style="margin: 6px 0 0 0; font-size: 13px; opacity: 0.9;">
                 الجلسة النشطة: <strong>{user_name}</strong> ({role_ar}) | البريد: <code>{user_email}</code>
@@ -999,7 +999,7 @@ if user_role == "ADMIN":
             <div class="notice-paper">
                 <div style="text-align: center; border-bottom: 2px solid #78350f; padding-bottom: 12px; margin-bottom: 16px;">
                     <h3 style="margin: 0; color: #451a03; font-weight: 900;">جمهورية العراق - وزارة التعليم العالي والبحث العلمي</h3>
-                    <h4 style="margin: 4px 0; color: #78350f;">الجامعة التكنولوجية - قسم هندسة العمارة / الدراسات العليا</h4>
+                    <h4 style="margin: 4px 0; color: #78350f;">الجامعة التكنولوجية - كلية هندسة العمارة / الدراسات العليا</h4>
                     <div style="font-size: 12px; color: #78716c;">العدد: د.ع / عمارة / {random.randint(100, 999)} | التاريخ: {datetime.date.today()}</div>
                 </div>
                 
@@ -1031,7 +1031,7 @@ if user_role == "ADMIN":
                     <div style="text-align: center; font-size: 13px;">
                         <strong>أ.د. سعد خضير عباس</strong><br>
                         معاون العميد للشؤون العلمية والدراسات العليا<br>
-                        قسم هندسة العمارة - الجامعة التكنولوجية
+                        كلية هندسة العمارة - الجامعة التكنولوجية
                     </div>
                 </div>
             </div>
@@ -1629,7 +1629,7 @@ else:
                 s_lat, s_lng = 33.280000, 44.400000
                 
             dist = haversine_distance(UOT_ARCH_LAT, UOT_ARCH_LNG, s_lat, s_lng)
-            st.caption(f"المسافة من مبنى قسم هندسة العمارة: **{dist:.1f} متراً** (الحد المسموح: {GEOFENCE_RADIUS_METERS}م)")
+            st.caption(f"المسافة من مبنى كلية هندسة العمارة: **{dist:.1f} متراً** (الحد المسموح: {GEOFENCE_RADIUS_METERS}م)")
             
             st.markdown("<br>", unsafe_allow_html=True)
             if st.button("🚀 تأكيد الحضور الآن", type="primary", use_container_width=True):
@@ -1712,7 +1712,7 @@ else:
 st.markdown("""
 <div style="margin-top: 50px; padding: 22px 16px; border-top: 2px solid #e2e8f0; text-align: center; color: #64748b; font-size: 13px; background: #ffffff; border-radius: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
     <div style="font-weight: 800; color: #b45309; margin-bottom: 6px; font-size: 14px;">
-        🏛️ الجامعة التكنولوجية - قسم هندسة العمارة | منصة حضور الدراسات العليا
+        🏛️ الجامعة التكنولوجية - كلية هندسة العمارة | منصة حضور الدراسات العليا
     </div>
     <div style="font-size: 12.5px; color: #334155; font-weight: 600;">
         هذه المنصة قيد التطوير وبمبادرة شخصية من <span style="font-weight: 800; color: #c2410c; background: #fff7ed; padding: 2px 8px; border-radius: 6px; border: 1px solid #fed7aa;">المهندس المعماري الدكتور أحمد لؤي أحمد</span>

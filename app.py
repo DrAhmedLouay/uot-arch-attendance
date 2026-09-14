@@ -89,14 +89,14 @@ st.markdown("""
         max-width: 1350px;
     }
     
-    /* Header Card */
+    /* Header Card - Deep Architectural Slate */
     .arch-hero {
-        background: linear-gradient(135deg, #451a03 0%, #78350f 50%, #b45309 100%);
+        background: linear-gradient(135deg, #1e293b 0%, #334155 60%, #1e293b 100%);
         color: #ffffff;
         padding: 24px 28px;
         border-radius: 20px;
         margin-bottom: 20px;
-        box-shadow: 0 10px 25px -5px rgba(120, 53, 15, 0.25);
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
         border: 1px solid rgba(255, 255, 255, 0.1);
         position: relative;
         overflow: hidden;
@@ -131,7 +131,7 @@ st.markdown("""
     
     [data-testid="stMetricValue"] {
         font-weight: 900 !important;
-        color: #b45309 !important;
+        color: #0f172a !important;
         font-size: 28px !important;
         text-align: right !important;
     }
@@ -555,9 +555,9 @@ if st.session_state.current_user is None:
     col_c1, col_c2, col_c3 = st.columns(3)
 
     with col_c1:
-        c1_border = "#f59e0b" if is_a else "#e2e8f0"
-        c1_bg = "rgba(245, 158, 11, 0.08)" if is_a else "#ffffff"
-        c1_badge = '<span style="background:#f59e0b; color:#fff; padding:2px 8px; border-radius:9999px; font-size:10.5px; font-weight:800;">البوابة المحددة ✓</span>' if is_a else '<span style="background:#f1f5f9; color:#64748b; padding:2px 8px; border-radius:9999px; font-size:10.5px;">لوحة الإدارة</span>'
+        c1_border = "#78350f" if is_a else "#e2e8f0"
+        c1_bg = "rgba(120, 53, 15, 0.05)" if is_a else "#ffffff"
+        c1_badge = '<span style="background:#78350f; color:#fff; padding:2px 8px; border-radius:9999px; font-size:10.5px; font-weight:800;">البوابة المحددة ✓</span>' if is_a else '<span style="background:#f1f5f9; color:#64748b; padding:2px 8px; border-radius:9999px; font-size:10.5px;">لوحة الإدارة</span>'
         st.markdown(f"""
         <div style="border: 2px solid {c1_border}; background: {c1_bg}; border-radius: 16px; padding: 16px; min-height: 160px; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -573,9 +573,9 @@ if st.session_state.current_user is None:
             st.rerun()
 
     with col_c2:
-        c2_border = "#3b82f6" if is_i else "#e2e8f0"
-        c2_bg = "rgba(59, 130, 246, 0.08)" if is_i else "#ffffff"
-        c2_badge = '<span style="background:#3b82f6; color:#fff; padding:2px 8px; border-radius:9999px; font-size:10.5px; font-weight:800;">البوابة المحددة ✓</span>' if is_i else '<span style="background:#f1f5f9; color:#64748b; padding:2px 8px; border-radius:9999px; font-size:10.5px;">بوابة التدريسي</span>'
+        c2_border = "#1e3a8a" if is_i else "#e2e8f0"
+        c2_bg = "rgba(30, 58, 138, 0.05)" if is_i else "#ffffff"
+        c2_badge = '<span style="background:#1e3a8a; color:#fff; padding:2px 8px; border-radius:9999px; font-size:10.5px; font-weight:800;">البوابة المحددة ✓</span>' if is_i else '<span style="background:#f1f5f9; color:#64748b; padding:2px 8px; border-radius:9999px; font-size:10.5px;">بوابة التدريسي</span>'
         st.markdown(f"""
         <div style="border: 2px solid {c2_border}; background: {c2_bg}; border-radius: 16px; padding: 16px; min-height: 160px; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -591,9 +591,9 @@ if st.session_state.current_user is None:
             st.rerun()
 
     with col_c3:
-        c3_border = "#10b981" if is_s else "#e2e8f0"
-        c3_bg = "rgba(16, 185, 129, 0.08)" if is_s else "#ffffff"
-        c3_badge = '<span style="background:#10b981; color:#fff; padding:2px 8px; border-radius:9999px; font-size:10.5px; font-weight:800;">البوابة المحددة ✓</span>' if is_s else '<span style="background:#f1f5f9; color:#64748b; padding:2px 8px; border-radius:9999px; font-size:10.5px;">بوابة الطالب</span>'
+        c3_border = "#047857" if is_s else "#e2e8f0"
+        c3_bg = "rgba(4, 120, 87, 0.05)" if is_s else "#ffffff"
+        c3_badge = '<span style="background:#047857; color:#fff; padding:2px 8px; border-radius:9999px; font-size:10.5px; font-weight:800;">البوابة المحددة ✓</span>' if is_s else '<span style="background:#f1f5f9; color:#64748b; padding:2px 8px; border-radius:9999px; font-size:10.5px;">بوابة الطالب</span>'
         st.markdown(f"""
         <div style="border: 2px solid {c3_border}; background: {c3_bg}; border-radius: 16px; padding: 16px; min-height: 160px; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -612,7 +612,7 @@ if st.session_state.current_user is None:
 
     # نموذج تسجيل الدخول الموحد
     portal_label = "لوحة الإدارة (Admin)" if is_a else ("بوابة التدريسي (Instructor)" if is_i else "بوابة الطالب (Student)")
-    portal_color = "#b45309" if is_a else ("#2563eb" if is_i else "#059669")
+    portal_color = "#78350f" if is_a else ("#1e3a8a" if is_i else "#047857")
     
     col_form_c, col_demo_c = st.columns([1.4, 1])
 
@@ -719,7 +719,7 @@ user_email = current_user['email']
 user_linked = current_user.get('linked_id', '')
 user_title = current_user.get('title', '')
 
-role_color = "#b45309" if user_role == "ADMIN" else ("#2563eb" if user_role == "INSTRUCTOR" else "#059669")
+role_color = "#78350f" if user_role == "ADMIN" else ("#1e3a8a" if user_role == "INSTRUCTOR" else "#047857")
 role_icon = "🏛️" if user_role == "ADMIN" else ("👨‍🏫" if user_role == "INSTRUCTOR" else "📱")
 role_ar = "مدير النظام (Admin)" if user_role == "ADMIN" else ("عضو هيئة تدريسية (Instructor)" if user_role == "INSTRUCTOR" else "طالب دراسات عليا (Student)")
 

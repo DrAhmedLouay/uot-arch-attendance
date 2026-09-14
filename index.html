@@ -43,7 +43,7 @@
       }
 
       /* Hide web shell, navigation, header, tabs, and interactive buttons */
-      header, nav, #adminView, #instructorView, #studentView, #portalGateway, #offlineToggleBtn,
+      header, nav, #adminView, #instructorView, #studentView, #portalGateway, #authGateway, #offlineToggleBtn,
       #toastNotification, footer, .no-print, button, #securityTestModal {
         display: none !important;
       }
@@ -187,9 +187,21 @@
         </div>
       </div>
 
-      <!-- Role Switcher & Live Status -->
-      <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
-        <div class="flex items-center gap-1 bg-[var(--background)] p-1.5 rounded-xl border border-[var(--border)]">
+      <!-- Authentication & Profile Controls -->
+      <div id="headerAuthControls" class="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end">
+        <!-- Logged-in State (Initially hidden) -->
+        <div id="userProfileHeader" class="hidden flex items-center gap-2">
+          <div class="bg-[var(--background)] px-3 py-1.5 rounded-xl border border-[var(--border)] text-xs text-right">
+            <div id="headerUserName" class="font-extrabold text-[var(--foreground)]">اسم المستخدم</div>
+            <div id="headerUserRole" class="text-[10px] text-amber-600 font-bold">الدور والصلاحية</div>
+          </div>
+          <button onclick="logoutUser()" class="px-3 py-2 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition flex items-center gap-1 shadow-sm">
+            <span>🚪</span> تسجيل الخروج
+          </button>
+        </div>
+
+        <!-- Role Switcher (Visible only to Admin for QA/Testing) -->
+        <div id="adminRoleSwitcher" class="hidden flex items-center gap-1 bg-[var(--background)] p-1.5 rounded-xl border border-[var(--border)]">
           <button id="btnRoleAdmin" onclick="switchRole('admin')" class="px-3.5 py-2 rounded-lg text-xs md:text-sm font-semibold transition-all duration-200 bg-amber-600 text-white shadow-sm">
             لوحة الإدارة (Admin)
           </button>
@@ -211,100 +223,144 @@
   </header>
 
   <!-- ========================================================================= -->
-  <!-- PORTAL SELECTION GATEWAY (واجهة الاختيارات الثلاثة الرئيسية لنظام الحضور) -->
+  <!-- CENTRAL AUTHENTICATION & LOGIN GATEWAY (الواجهة المركزية الموحدة لتسجيل الدخول) -->
   <!-- ========================================================================= -->
-  <section id="portalGateway" class="mb-6">
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-[var(--border)]">
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-amber-500/10 text-amber-600 border border-amber-500/20">
-              🏛️ البوابة الرئيسية الموحدة
-            </span>
-            <span class="text-xs text-[var(--muted-foreground)]">اختر الشاشة للانتقال الفوري</span>
-          </div>
-          <h2 class="text-base md:text-lg font-extrabold text-[var(--foreground)] mt-1">
-            بوابات منظومة حضور الدراسات العليا - هندسة العمارة
-          </h2>
-          <p class="text-xs text-[var(--muted-foreground)]">
-            ثلاث بوابات إلكترونية متكاملة تدعم بروتوكول الأمان الثلاثي وتعليمات وضوابط وزارة التعليم العالي
-          </p>
+  <section id="authGateway" class="mb-6">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl md:rounded-3xl p-4 md:p-7 shadow-sm">
+      <!-- Top Title -->
+      <div class="text-center max-w-2xl mx-auto mb-6">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-extrabold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/25 mb-2">
+          <span>🏛️</span> الواجهة المركزية الموحدة لتسجيل الدخول
         </div>
-        <div class="flex items-center gap-2 self-start md:self-auto text-xs font-semibold text-[var(--muted-foreground)] bg-[var(--background)] px-3 py-1.5 rounded-xl border border-[var(--border)]">
-          <span>البوابة النشطة:</span>
-          <strong id="activeRoleBadge" class="text-amber-600 font-bold">لوحة الإدارة (Admin)</strong>
-        </div>
+        <h2 class="text-xl md:text-2xl font-extrabold text-[var(--foreground)]">
+          بوابات منظومة حضور الدراسات العليا - قسم هندسة العمارة
+        </h2>
+        <p class="text-xs md:text-sm text-[var(--muted-foreground)] mt-1">
+          يتم الدخول إلى المنظومة وتحديد الصلاحيات عبر اسم المستخدم (البريد الإلكتروني) ورمز الدخول (Password)
+        </p>
       </div>
 
-      <!-- The 3 Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-        
+      <!-- 3 Portal Selection Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <!-- Option 1: Admin Dashboard -->
-        <div id="portalCardAdmin" onclick="switchRole('admin')" class="group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-gradient-to-b from-amber-500/10 to-transparent border-amber-500 shadow-sm">
+        <div id="authCardAdmin" onclick="selectAuthRole('admin')" class="group relative cursor-pointer rounded-2xl p-5 border-2 transition-all duration-300 hover:shadow-md bg-gradient-to-b from-amber-500/15 to-transparent border-amber-500 shadow-sm text-right">
           <div class="flex items-start justify-between">
-            <div class="w-11 h-11 rounded-xl bg-amber-500/15 text-amber-700 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-700 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
               🏛️
             </div>
-            <span id="badgeAdmin" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500 text-white shadow-sm">
-              نشط حالياً ✓
+            <span id="authBadgeAdmin" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500 text-white shadow-sm">
+              محدد للدخول ✓
             </span>
           </div>
-          <h3 class="font-extrabold text-sm md:text-base text-[var(--foreground)] mt-3 group-hover:text-amber-600 transition-colors">
-            لوحة الإدارة (Admin)
+          <h3 class="font-extrabold text-base text-[var(--foreground)] mt-3">
+            1. لوحة الإدارة (Admin)
           </h3>
           <p class="text-xs text-[var(--muted-foreground)] mt-1 leading-relaxed">
-            متابعة شاملة لطلبة الدراسات العليا في الفروع الأربعة، نسب الغياب، رصيد الإنذارات (5% و 7%)، قرارات الحرمان (10%)، وطباعة كشوفات مجلس القسم والكتب الرسمية.
+            صلاحيات كاملة لإدارة الدراسات العليا: إضافة وحذف الطلبة والتدريسيين، إضافة المواد الدراسية، متابعة الحضور والغياب، وإصدار كشوفات مجلس القسم.
           </p>
-          <div class="mt-3.5 pt-2.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-bold text-amber-700">
-            <span>دخول لوحة الإدارة</span>
+          <div class="mt-3.5 pt-2.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-bold text-amber-700 dark:text-amber-400">
+            <span>اختيار بوابة الإدارة</span>
             <span class="group-hover:translate-x-[-4px] transition-transform">←</span>
           </div>
         </div>
 
         <!-- Option 2: Instructor Portal -->
-        <div id="portalCardInstructor" onclick="switchRole('instructor')" class="group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-[var(--background)] border-[var(--border)] hover:border-blue-500/60">
+        <div id="authCardInstructor" onclick="selectAuthRole('instructor')" class="group relative cursor-pointer rounded-2xl p-5 border-2 transition-all duration-300 hover:shadow-md bg-[var(--background)] border-[var(--border)] hover:border-blue-500/60 text-right">
           <div class="flex items-start justify-between">
-            <div class="w-11 h-11 rounded-xl bg-blue-500/15 text-blue-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+            <div class="w-12 h-12 rounded-xl bg-blue-500/15 text-blue-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
               👨‍🏫
             </div>
-            <span id="badgeInstructor" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]">
+            <span id="authBadgeInstructor" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]">
               بوابة التدريسي
             </span>
           </div>
-          <h3 class="font-extrabold text-sm md:text-base text-[var(--foreground)] mt-3 group-hover:text-blue-600 transition-colors">
-            بوابة التدريسي (Instructor)
+          <h3 class="font-extrabold text-base text-[var(--foreground)] mt-3">
+            2. بوابة التدريسي (Instructor)
           </h3>
           <p class="text-xs text-[var(--muted-foreground)] mt-1 leading-relaxed">
-            شاشة العارض بالقاعة (Projector) لتوليد رمز الـ QR المتجدد كل 8 ثوانٍ، قائمة النداء والتحضير السريع، التسجيل اللامتزامن، وإدخال الإجازات الطبية والأعذار.
+            صلاحيات أستاذ المادة: تقتصر فقط على المقرر المكلف به؛ شاشة عارض القاعة (Projector) للـ QR المتجدد كل 8 ثوانٍ، النداء السريع، وتوثيق الأعذار.
           </p>
           <div class="mt-3.5 pt-2.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-bold text-blue-600">
-            <span>دخول بوابة التدريسي</span>
+            <span>اختيار بوابة التدريسي</span>
             <span class="group-hover:translate-x-[-4px] transition-transform">←</span>
           </div>
         </div>
 
         <!-- Option 3: Student Portal -->
-        <div id="portalCardStudent" onclick="switchRole('student')" class="group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-[var(--background)] border-[var(--border)] hover:border-emerald-500/60">
+        <div id="authCardStudent" onclick="selectAuthRole('student')" class="group relative cursor-pointer rounded-2xl p-5 border-2 transition-all duration-300 hover:shadow-md bg-[var(--background)] border-[var(--border)] hover:border-emerald-500/60 text-right">
           <div class="flex items-start justify-between">
-            <div class="w-11 h-11 rounded-xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
               📱
             </div>
-            <span id="badgeStudent" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]">
+            <span id="authBadgeStudent" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]">
               بوابة الطالب
             </span>
           </div>
-          <h3 class="font-extrabold text-sm md:text-base text-[var(--foreground)] mt-3 group-hover:text-emerald-600 transition-colors">
-            بوابة الطالب (Student)
+          <h3 class="font-extrabold text-base text-[var(--foreground)] mt-3">
+            3. بوابة الطالب (Student)
           </h3>
           <p class="text-xs text-[var(--muted-foreground)] mt-1 leading-relaxed">
-            مسح كود الحضور الحي داخل القاعة، الفحص التلقائي للموقع الجغرافي (GPS محيط 80م) وبصمة الهاتف، وكشف الموقف الأكاديمي ورصيد الساعات المتبقية حتى الإنذار.
+            صلاحيات الطالب الشخصية: مسح كود الحضور اللحظي داخل القاعة مع فحص الـ GPS والبصمة، وكشف موقفه الأكاديمي ورصيد ساعات الأمان حتى الإنذار.
           </p>
           <div class="mt-3.5 pt-2.5 border-t border-[var(--border)] flex items-center justify-between text-xs font-bold text-emerald-600">
-            <span>دخول بوابة الطالب</span>
+            <span>اختيار بوابة الطالب</span>
             <span class="group-hover:translate-x-[-4px] transition-transform">←</span>
           </div>
         </div>
+      </div>
 
+      <!-- Login Form Box -->
+      <div class="max-w-xl mx-auto bg-[var(--background)] border border-[var(--border)] rounded-2xl p-5 md:p-6 shadow-sm">
+        <div class="flex items-center justify-between border-b border-[var(--border)] pb-3 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🔑</span>
+            <div>
+              <h4 class="font-extrabold text-sm text-[var(--foreground)]">نموذج تسجيل الدخول المعتمد</h4>
+              <p class="text-[11px] text-[var(--muted-foreground)]">البوابة المستهدفة: <strong id="selectedPortalTargetText" class="text-amber-600 font-bold">لوحة الإدارة (Admin)</strong></p>
+            </div>
+          </div>
+          <span class="text-[11px] font-mono text-[var(--muted-foreground)] bg-[var(--card)] px-2.5 py-1 rounded-lg border border-[var(--border)]">RBAC Auth</span>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-3.5 text-right">
+          <div>
+            <label class="block text-xs font-bold text-[var(--foreground)] mb-1">اسم المستخدم / البريد الإلكتروني الجامعي:</label>
+            <input type="text" id="inputAuthEmail" required placeholder="admin@uot.edu.iq أو اسم المستخدم..." value="admin@uot.edu.iq" class="w-full text-xs bg-[var(--card)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] font-mono focus:outline-none focus:ring-2 focus:ring-amber-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[var(--foreground)] mb-1">رمز الدخول (Password):</label>
+            <input type="password" id="inputAuthPassword" required placeholder="••••••••" value="admin123" class="w-full text-xs bg-[var(--card)] border border-[var(--border)] rounded-xl px-3.5 py-2.5 text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-amber-500">
+          </div>
+
+          <div id="authErrorMessage" class="hidden p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 text-xs font-bold text-center"></div>
+
+          <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white font-extrabold text-xs md:text-sm shadow-md hover:shadow-lg transition flex items-center justify-center gap-2">
+            <span>🚀</span>
+            <span>تسجيل الدخول ومتابعة الصلاحيات</span>
+          </button>
+        </form>
+
+        <!-- Quick Demo Accounts (1-Click Test) -->
+        <div class="mt-5 pt-4 border-t border-[var(--border)]">
+          <div class="text-[11px] font-bold text-[var(--muted-foreground)] mb-2.5 text-center">
+            ⚡ حسابات تجريبية سريعة بنقرة واحدة (للفحص والتجربة المباشرة):
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button type="button" onclick="quickLoginAs('admin')" class="px-2.5 py-2 rounded-xl text-[11px] font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30 transition text-center flex flex-col items-center">
+              <span>🏛️ دخول كـ Admin</span>
+              <span class="text-[9px] opacity-75">admin@uot.edu.iq</span>
+            </button>
+            <button type="button" onclick="quickLoginAs('instructor')" class="px-2.5 py-2 rounded-xl text-[11px] font-bold bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-500/30 transition text-center flex flex-col items-center">
+              <span>👨‍🏫 دخول كـ تدريسي</span>
+              <span class="text-[9px] opacity-75">د. لمياء الدوري</span>
+            </button>
+            <button type="button" onclick="quickLoginAs('student')" class="px-2.5 py-2 rounded-xl text-[11px] font-bold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 transition text-center flex flex-col items-center">
+              <span>📱 دخول كـ طالب</span>
+              <span class="text-[9px] opacity-75">سارة ليث العبيدي</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -313,130 +369,338 @@
   <!-- 1. ADMIN DASHBOARD VIEW -->
   <!-- ========================================================================= -->
   <section id="adminView" class="space-y-6">
-    <!-- Quick Statistics KPI Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-medium text-[var(--muted-foreground)]">إجمالي طلبة الدراسات العليا</span>
-          <span class="p-2 rounded-xl bg-blue-500/10 text-blue-600">🎓</span>
+    <!-- Admin Sub-Navigation Tabs -->
+    <div class="flex items-center gap-2 border-b border-[var(--border)] pb-3">
+      <button id="adminTabRosterBtn" onclick="switchAdminSubTab('roster')" class="px-4 py-2 rounded-xl text-xs md:text-sm font-bold bg-amber-600 text-white shadow-sm transition">
+        📋 كشوفات الحضور ومتابعة الفروع
+      </button>
+      <button id="adminTabMasterDataBtn" onclick="switchAdminSubTab('master_data')" class="px-4 py-2 rounded-xl text-xs md:text-sm font-bold text-[var(--muted-foreground)] bg-[var(--card)] border border-[var(--border)] hover:text-[var(--foreground)] transition">
+        ⚙️ إدارة الهيئة التدريسية والطلبة والمقررات (Master Data)
+      </button>
+    </div>
+
+    <!-- 1.1 ROSTER SUB-TAB (Attendance & Warnings Tracking) -->
+    <div id="adminSubTabRoster" class="space-y-6">
+      <!-- Quick Statistics KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-[var(--muted-foreground)]">إجمالي طلبة الدراسات العليا</span>
+            <span class="p-2 rounded-xl bg-blue-500/10 text-blue-600">🎓</span>
+          </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <span class="text-3xl font-extrabold text-[var(--foreground)]" id="kpiTotalStudents">31</span>
+            <span class="text-xs text-[var(--muted-foreground)]">طالباً مسجلاً</span>
+          </div>
+          <div class="mt-2 text-xs text-[var(--muted-foreground)] flex items-center gap-1">
+            <span>4 فروع أكاديمية متخصصة</span>
+          </div>
         </div>
-        <div class="mt-3 flex items-baseline gap-2">
-          <span class="text-3xl font-extrabold text-[var(--foreground)]" id="kpiTotalStudents">31</span>
-          <span class="text-xs text-[var(--muted-foreground)]">طالباً مسجلاً</span>
+
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-[var(--muted-foreground)]">متوسط نسبة الالتزام بالحضور</span>
+            <span class="p-2 rounded-xl bg-emerald-500/10 text-emerald-600">📈</span>
+          </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <span class="text-3xl font-extrabold text-emerald-600" id="kpiAttendanceRate">94.2%</span>
+            <span class="text-xs text-emerald-700 bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.5 rounded">مستوى ممتاز</span>
+          </div>
+          <div class="mt-2 text-xs text-[var(--muted-foreground)]">
+            محسوبة وفق الساعات المعتمدة بالفصل
+          </div>
         </div>
-        <div class="mt-2 text-xs text-[var(--muted-foreground)] flex items-center gap-1">
-          <span>4 فروع أكاديمية متخصصة</span>
+
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-[var(--muted-foreground)]">تنبيهات الإنذار (5% - 7%)</span>
+            <span class="p-2 rounded-xl bg-amber-500/10 text-amber-600">⚠️</span>
+          </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <span class="text-3xl font-extrabold text-amber-600" id="kpiWarningCount">3</span>
+            <span class="text-xs text-[var(--muted-foreground)]">حالات إنذار أولي</span>
+          </div>
+          <div class="mt-2 text-xs text-amber-600">
+            تنبيه مباشر للتدريسي ومقرر الفرع
+          </div>
+        </div>
+
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-[var(--muted-foreground)]">حالات الحرمان (تجاوز 10%)</span>
+            <span class="p-2 rounded-xl bg-rose-500/10 text-rose-600">🛑</span>
+          </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <span class="text-3xl font-extrabold text-rose-600" id="kpiDeprivedCount">1</span>
+            <span class="text-xs text-rose-600 bg-rose-100 dark:bg-rose-950 px-1.5 py-0.5 rounded">إجراء وزاري</span>
+          </div>
+          <div class="mt-2 text-xs text-[var(--muted-foreground)]">
+            يُعرض على مجلس القسم لاتخاذ القرار
+          </div>
         </div>
       </div>
 
+      <!-- Department Branches Filter Tabs -->
       <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-medium text-[var(--muted-foreground)]">متوسط نسبة الالتزام بالحضور</span>
-          <span class="p-2 rounded-xl bg-emerald-500/10 text-emerald-600">📈</span>
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[var(--border)]">
+          <div>
+            <h2 class="text-lg font-bold text-[var(--foreground)]">سجل متابعة الحضور والإنذارات حسب الفروع الأكاديمية</h2>
+            <p class="text-xs text-[var(--muted-foreground)]">تتبع غيابات وساعات الاستوديوهات والمحاضرات النظرية بدقة</p>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <button onclick="exportToCSV()" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-[var(--background)] border border-[var(--border)] hover:bg-amber-500/10 hover:text-amber-600 transition flex items-center gap-1.5">
+              <span>📥</span> تصدير Excel
+            </button>
+            <button onclick="printOfficialReport()" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-amber-600 text-white hover:bg-amber-700 transition flex items-center gap-1.5 shadow-sm">
+              <span>🖨️</span> طباعة كشف مجلس القسم
+            </button>
+          </div>
         </div>
-        <div class="mt-3 flex items-baseline gap-2">
-          <span class="text-3xl font-extrabold text-emerald-600" id="kpiAttendanceRate">94.2%</span>
-          <span class="text-xs text-emerald-700 bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.5 rounded">مستوى ممتاز</span>
-        </div>
-        <div class="mt-2 text-xs text-[var(--muted-foreground)]">
-          محسوبة وفق الساعات المعتمدة بالفصل
-        </div>
-      </div>
 
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-medium text-[var(--muted-foreground)]">تنبيهات الإنذار (5% - 7%)</span>
-          <span class="p-2 rounded-xl bg-amber-500/10 text-amber-600">⚠️</span>
+        <!-- Tabs for 4 Branches -->
+        <div class="flex flex-wrap gap-2 mt-4">
+          <button onclick="filterBranch('ALL')" class="branch-tab px-4 py-2 rounded-xl text-xs font-bold transition bg-amber-600 text-white" data-branch="ALL">
+            كافة الدراسات العليا (31)
+          </button>
+          <button onclick="filterBranch('ARCH_TECH')" class="branch-tab px-4 py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="ARCH_TECH">
+            📐 ماجستير: تكنولوجيا العمارة (8)
+          </button>
+          <button onclick="filterBranch('ARCH_DESIGN')" class="branch-tab px-4 py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="ARCH_DESIGN">
+            🏛️ ماجستير: التصميم المعماري (10)
+          </button>
+          <button onclick="filterBranch('URBAN_DESIGN')" class="branch-tab px-4 py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="URBAN_DESIGN">
+            🏙️ ماجستير: التصميم الحضري (7)
+          </button>
+          <button onclick="filterBranch('PHD_ARCH')" class="branch-tab px-4 py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="PHD_ARCH">
+            🎖️ دكتوراه: هندسة العمارة (6)
+          </button>
         </div>
-        <div class="mt-3 flex items-baseline gap-2">
-          <span class="text-3xl font-extrabold text-amber-600" id="kpiWarningCount">3</span>
-          <span class="text-xs text-[var(--muted-foreground)]">حالات إنذار أولي</span>
-        </div>
-        <div class="mt-2 text-xs text-amber-600">
-          تنبيه مباشر للتدريسي ومقرر الفرع
-        </div>
-      </div>
 
-      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-medium text-[var(--muted-foreground)]">حالات الحرمان (تجاوز 10%)</span>
-          <span class="p-2 rounded-xl bg-rose-500/10 text-rose-600">🛑</span>
+        <!-- Search Bar & Filters -->
+        <div class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <input type="text" id="adminSearchInput" oninput="renderAdminDashboard()" placeholder="🔍 بحث فوري بالاسم، الرقم الجامعي، أو المقرر الدراسي..." class="w-full sm:w-80 px-3.5 py-2 rounded-xl bg-[var(--background)] border border-[var(--border)] text-xs text-[var(--foreground)] focus:ring-2 focus:ring-amber-500 focus:outline-none">
+          <div class="text-xs text-[var(--muted-foreground)]">
+            يتم احتساب الإنذار عند <strong class="text-amber-600">5%</strong>، والحرمان عند <strong class="text-rose-600">10%</strong> من إجمالي الساعات
+          </div>
         </div>
-        <div class="mt-3 flex items-baseline gap-2">
-          <span class="text-3xl font-extrabold text-rose-600" id="kpiDeprivedCount">1</span>
-          <span class="text-xs text-rose-600 bg-rose-100 dark:bg-rose-950 px-1.5 py-0.5 rounded">إجراء وزاري</span>
-        </div>
-        <div class="mt-2 text-xs text-[var(--muted-foreground)]">
-          يُعرض على مجلس القسم لاتخاذ القرار
+
+        <!-- Students Table -->
+        <div class="overflow-x-auto mt-3">
+          <table class="w-full text-right text-sm">
+            <thead class="text-xs text-[var(--muted-foreground)] bg-[var(--background)] border-y border-[var(--border)]">
+              <tr>
+                <th class="py-3 px-4">الطالب / الرقم الجامعي</th>
+                <th class="py-3 px-3">الفرع الأكاديمي</th>
+                <th class="py-3 px-3">المقرر الدراسي</th>
+                <th class="py-3 px-3">إجمالي الساعات</th>
+                <th class="py-3 px-3">ساعات الغياب</th>
+                <th class="py-3 px-3">نسبة الغياب</th>
+                <th class="py-3 px-3">المتبقي للإنذار (5%)</th>
+                <th class="py-3 px-3">الموقف الأكاديمي</th>
+                <th class="py-3 px-4 text-center">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="adminStudentsTableBody" class="divide-y divide-[var(--border)]">
+              <!-- Dynamic rows populated by JavaScript -->
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
 
-    <!-- Department Branches Filter Tabs -->
-    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm">
-      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[var(--border)]">
-        <div>
-          <h2 class="text-lg font-bold text-[var(--foreground)]">سجل متابعة الحضور والإنذارات حسب الفروع الأكاديمية</h2>
-          <p class="text-xs text-[var(--muted-foreground)]">تتبع غيابات وساعات الاستوديوهات والمحاضرات النظرية بدقة</p>
+    <!-- 1.2 MASTER DATA MANAGEMENT SUB-TAB (Add/Delete Students, Instructors, Courses) -->
+    <div id="adminSubTabMasterData" class="hidden space-y-6">
+      <!-- 2.1 Students CRUD Management -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
+          <div>
+            <h3 class="font-bold text-base text-[var(--foreground)]">🎓 إدارة قيود طلبة الدراسات العليا (إضافة وحذف)</h3>
+            <p class="text-xs text-[var(--muted-foreground)]">تسجيل باحث جديد أو حذف قيود الطلبة من قواعد بيانات القسم</p>
+          </div>
+          <span class="text-xs font-bold text-amber-600 bg-amber-500/10 px-3 py-1 rounded-xl border border-amber-500/20">صلاحية إدارة القسم فقط</span>
         </div>
-        
-        <div class="flex items-center gap-2">
-          <button onclick="exportToCSV()" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-[var(--background)] border border-[var(--border)] hover:bg-amber-500/10 hover:text-amber-600 transition flex items-center gap-1.5">
-            <span>📥</span> تصدير Excel
-          </button>
-          <button onclick="printOfficialReport()" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-amber-600 text-white hover:bg-amber-700 transition flex items-center gap-1.5 shadow-sm">
-            <span>🖨️</span> طباعة كشف مجلس القسم
-          </button>
+
+        <!-- Add Student Form -->
+        <form id="formAddStudent" onsubmit="addStudentMaster(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] text-xs">
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">اسم الطالب الرباعي:</label>
+            <input type="text" id="mStudentName" required placeholder="مثال: أحمد عبد الحسين علي" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)] focus:ring-1 focus:ring-amber-500">
+          </div>
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">الرقم الجامعي / الإحصائي:</label>
+            <input type="text" id="mStudentReg" required placeholder="مثال: M-TECH-26-05" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)] font-mono focus:ring-1 focus:ring-amber-500">
+          </div>
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">الفرع الأكاديمي:</label>
+            <select id="mStudentBranch" onchange="updateCourseOptionsForBranch(this.value)" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+              <option value="ARCH_TECH">ماجستير: تكنولوجيا العمارة</option>
+              <option value="ARCH_DESIGN">ماجستير: التصميم المعماري</option>
+              <option value="URBAN_DESIGN">ماجستير: التصميم الحضري</option>
+              <option value="PHD_ARCH">دكتوراه: هندسة العمارة</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">المقرر / الاستوديو:</label>
+            <select id="mStudentCourse" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+              <option value="الإنشاء المتقدم وتكنولوجيا الأغلفة">الإنشاء المتقدم وتكنولوجيا الأغلفة (30س)</option>
+              <option value="استوديو التصميم المعماري المتقدم">استوديو التصميم المعماري المتقدم (60س)</option>
+              <option value="استوديو التجديد الحضري وفضاءات المدن">استوديو التجديد الحضري وفضاءات المدن (60س)</option>
+              <option value="فلسفة مناهج البحث المعماري (سمنار)">فلسفة مناهج البحث المعماري (سمنار) (30س)</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <button type="submit" class="w-full py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold transition flex items-center justify-center gap-1 shadow-sm">
+              <span>➕</span> إضافة الطالب
+            </button>
+          </div>
+        </form>
+
+        <!-- Master Students Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs">
+            <thead class="text-[var(--muted-foreground)] bg-[var(--background)] border-y border-[var(--border)]">
+              <tr>
+                <th class="py-2.5 px-3">الرقم الجامعي</th>
+                <th class="py-2.5 px-3">اسم الطالب</th>
+                <th class="py-2.5 px-3">الفرع الأكاديمي</th>
+                <th class="py-2.5 px-3">المقرر الدراسي</th>
+                <th class="py-2.5 px-3">الساعات</th>
+                <th class="py-2.5 px-3 text-center">إجراء الإدارة</th>
+              </tr>
+            </thead>
+            <tbody id="masterStudentsTableBody" class="divide-y divide-[var(--border)]">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <!-- Tabs for 4 Branches -->
-      <div class="flex flex-wrap gap-2 mt-4">
-        <button onclick="filterBranch('ALL')" class="branch-tab px-4 py-2 rounded-xl text-xs font-bold transition bg-amber-600 text-white" data-branch="ALL">
-          كافة الدراسات العليا (31)
-        </button>
-        <button onclick="filterBranch('ARCH_TECH')" class="branch-tab px-4 py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="ARCH_TECH">
-          📐 ماجستير: تكنولوجيا العمارة (8)
-        </button>
-        <button onclick="filterBranch('ARCH_DESIGN')" class="branch-tab px-4 py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="ARCH_DESIGN">
-          🏛️ ماجستير: التصميم المعماري (10)
-        </button>
-        <button onclick="filterBranch('URBAN_DESIGN')" class="branch-tab px-4 py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="URBAN_DESIGN">
-          🏙️ ماجستير: التصميم الحضري (7)
-        </button>
-        <button onclick="filterBranch('PHD_ARCH')" class="branch-tab px-4 py-2 rounded-xl text-xs font-medium text-[var(--muted-foreground)] bg-[var(--background)] border border-[var(--border)] hover:text-[var(--foreground)]" data-branch="PHD_ARCH">
-          🎖️ دكتوراه: هندسة العمارة (6)
-        </button>
-      </div>
+      <!-- 2.2 Instructors CRUD Management -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
+          <div>
+            <h3 class="font-bold text-base text-[var(--foreground)]">👨‍🏫 إدارة الهيئة التدريسية ومقرري الدراسات العليا</h3>
+            <p class="text-xs text-[var(--muted-foreground)]">إضافة تدريسي جديد وتكليفه بالمقررات واستوديوهات التصميم المعماري</p>
+          </div>
+          <span class="text-xs font-bold text-blue-600 bg-blue-500/10 px-3 py-1 rounded-xl border border-blue-500/20">صلاحية إدارة القسم</span>
+        </div>
 
-      <!-- Search Bar & Filters -->
-      <div class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <input type="text" id="adminSearchInput" oninput="renderAdminDashboard()" placeholder="🔍 بحث فوري بالاسم، الرقم الجامعي، أو المقرر الدراسي..." class="w-full sm:w-80 px-3.5 py-2 rounded-xl bg-[var(--background)] border border-[var(--border)] text-xs text-[var(--foreground)] focus:ring-2 focus:ring-amber-500 focus:outline-none">
-        <div class="text-xs text-[var(--muted-foreground)]">
-          يتم احتساب الإنذار عند <strong class="text-amber-600">5%</strong>، والحرمان عند <strong class="text-rose-600">10%</strong> من إجمالي الساعات
+        <!-- Add Instructor Form -->
+        <form id="formAddInstructor" onsubmit="addInstructorMaster(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] text-xs">
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">اسم التدريسي واللقب:</label>
+            <input type="text" id="mInstName" required placeholder="مثال: أ.م.د. علي عبد الرسول" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+          </div>
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">اللقب والوصف:</label>
+            <input type="text" id="mInstTitle" required placeholder="مثال: أستاذ مشارك - النظريات البيئية" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+          </div>
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">الفرع الأكاديمي:</label>
+            <select id="mInstBranch" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+              <option value="ARCH_DESIGN">ماجستير: التصميم المعماري</option>
+              <option value="ARCH_TECH">ماجستير: تكنولوجيا العمارة</option>
+              <option value="URBAN_DESIGN">ماجستير: التصميم الحضري</option>
+              <option value="PHD_ARCH">دكتوراه: هندسة العمارة</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">البريد الإلكتروني:</label>
+            <input type="email" id="mInstEmail" required placeholder="name@uot.edu.iq" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)] font-mono">
+          </div>
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">كلمة المرور:</label>
+            <input type="text" id="mInstPassword" required placeholder="arch2026" value="arch2026" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)] font-mono">
+          </div>
+          <div class="flex items-end">
+            <button type="submit" class="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition flex items-center justify-center gap-1 shadow-sm">
+              <span>➕</span> إضافة التدريسي
+            </button>
+          </div>
+        </form>
+
+        <!-- Master Instructors Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs">
+            <thead class="text-[var(--muted-foreground)] bg-[var(--background)] border-y border-[var(--border)]">
+              <tr>
+                <th class="py-2.5 px-3">التدريسي واللقب العلمي</th>
+                <th class="py-2.5 px-3">الفرع الأكاديمي</th>
+                <th class="py-2.5 px-3">المقرر المكلف به</th>
+                <th class="py-2.5 px-3">البريد الإلكتروني</th>
+                <th class="py-2.5 px-3 text-center">إجراء الإدارة</th>
+              </tr>
+            </thead>
+            <tbody id="masterInstructorsTableBody" class="divide-y divide-[var(--border)]">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <!-- Students Table -->
-      <div class="overflow-x-auto mt-3">
-        <table class="w-full text-right text-sm">
-          <thead class="text-xs text-[var(--muted-foreground)] bg-[var(--background)] border-y border-[var(--border)]">
-            <tr>
-              <th class="py-3 px-4">الطالب / الرقم الجامعي</th>
-              <th class="py-3 px-3">الفرع الأكاديمي</th>
-              <th class="py-3 px-3">المقرر الدراسي</th>
-              <th class="py-3 px-3">إجمالي الساعات</th>
-              <th class="py-3 px-3">ساعات الغياب</th>
-              <th class="py-3 px-3">نسبة الغياب</th>
-              <th class="py-3 px-3">المتبقي للإنذار (5%)</th>
-              <th class="py-3 px-3">الموقف الأكاديمي</th>
-              <th class="py-3 px-4 text-center">إجراءات</th>
-            </tr>
-          </thead>
-          <tbody id="adminStudentsTableBody" class="divide-y divide-[var(--border)]">
-            <!-- Dynamic rows populated by JavaScript -->
-          </tbody>
-        </table>
+      <!-- 2.3 Courses & Studios CRUD Management -->
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
+          <div>
+            <h3 class="font-bold text-base text-[var(--foreground)]">📐 إدارة المواد الدراسية واستوديوهات العمارة</h3>
+            <p class="text-xs text-[var(--muted-foreground)]">إضافة وتعديل مقررات الماجستير والدكتوراه وتحديد ساعاتها الأسبوعية</p>
+          </div>
+          <span class="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-3 py-1 rounded-xl border border-emerald-500/20">الخطة الدراسية</span>
+        </div>
+
+        <!-- Add Course Form -->
+        <form id="formAddCourse" onsubmit="addCourseMaster(event)" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 bg-[var(--background)] p-4 rounded-xl border border-[var(--border)] text-xs">
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">رمز المقرر (Code):</label>
+            <input type="text" id="mCourseCode" required placeholder="مثال: DES-705" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)] font-mono">
+          </div>
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">اسم المقرر / الاستوديو:</label>
+            <input type="text" id="mCourseTitle" required placeholder="مثال: استوديو الإسكان المستدام" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+          </div>
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">الفرع الأكاديمي:</label>
+            <select id="mCourseBranch" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+              <option value="ARCH_DESIGN">ماجستير: التصميم المعماري</option>
+              <option value="ARCH_TECH">ماجستير: تكنولوجيا العمارة</option>
+              <option value="URBAN_DESIGN">ماجستير: التصميم الحضري</option>
+              <option value="PHD_ARCH">دكتوراه: هندسة العمارة</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">الساعات الأسبوعية:</label>
+            <input type="number" id="mCourseWeekly" required min="1" max="10" value="4" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+          </div>
+          <div>
+            <label class="block font-bold text-[var(--foreground)] mb-1">إجمالي الساعات بالفصل:</label>
+            <input type="number" id="mCourseTotal" required min="10" max="120" value="60" class="w-full bg-[var(--card)] border border-[var(--border)] rounded-lg p-2 text-[var(--foreground)]">
+          </div>
+          <div class="flex items-end">
+            <button type="submit" class="w-full py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition flex items-center justify-center gap-1 shadow-sm">
+              <span>➕</span> إضافة المقرر
+            </button>
+          </div>
+        </form>
+
+        <!-- Master Courses Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-right text-xs">
+            <thead class="text-[var(--muted-foreground)] bg-[var(--background)] border-y border-[var(--border)]">
+              <tr>
+                <th class="py-2.5 px-3">رمز المقرر</th>
+                <th class="py-2.5 px-3">اسم المادة / الاستوديو</th>
+                <th class="py-2.5 px-3">الفرع الأكاديمي</th>
+                <th class="py-2.5 px-3">الساعات الأسبوعية</th>
+                <th class="py-2.5 px-3">إجمالي ساعات الفصل</th>
+                <th class="py-2.5 px-3 text-center">إجراء الإدارة</th>
+              </tr>
+            </thead>
+            <tbody id="masterCoursesTableBody" class="divide-y divide-[var(--border)]">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </section>
@@ -1117,6 +1381,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
   <script>
     // System Data Model
     const appState = {
+      currentUser: null,
+      selectedAuthRole: 'admin',
       currentRole: 'admin',
       isOffline: false,
       selectedBranch: 'ALL',
@@ -1133,11 +1399,30 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         'PHD_ARCH': { name: 'دكتوراه: هندسة العمارة', icon: '🎖️' }
       },
 
+      courses: [
+        { code: 'TECH-701', title: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', branch: 'ARCH_TECH', weeklyHours: 2, totalHours: 30, instructor: 'م.د. أحمد باسل العزاوي' },
+        { code: 'DES-702', title: 'استوديو التصميم المعماري المتقدم', branch: 'ARCH_DESIGN', weeklyHours: 4, totalHours: 60, instructor: 'أ.م.د. لمياء مهدي الدوري' },
+        { code: 'URB-703', title: 'استوديو التجديد الحضري وفضاءات المدن', branch: 'URBAN_DESIGN', weeklyHours: 4, totalHours: 60, instructor: 'أ.د. رغد هاشم الكرخي' },
+        { code: 'PHD-801', title: 'فلسفة مناهج البحث المعماري (سمنار)', branch: 'PHD_ARCH', weeklyHours: 2, totalHours: 30, instructor: 'أ.د. حيدر صباح النعيمي' }
+      ],
+
       instructors: [
         { id: 'inst-01', name: 'أ.م.د. لمياء مهدي الدوري', title: 'أستاذ مشارك - استوديو التصميم المعماري المتقدم', branch: 'ARCH_DESIGN', course: 'استوديو التصميم المعماري المتقدم', courseHours: 60 },
         { id: 'inst-02', name: 'م.د. أحمد باسل العزاوي', title: 'مدرس دكتور - تكنولوجيا وإنشاء الأغلفة المعمارية', branch: 'ARCH_TECH', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة', courseHours: 30 },
         { id: 'inst-03', name: 'أ.د. رغد هاشم الكرخي', title: 'أستاذ دكتور - استوديو التصميم والتجديد الحضري', branch: 'URBAN_DESIGN', course: 'استوديو التجديد الحضري وفضاءات المدن', courseHours: 60 },
         { id: 'inst-04', name: 'أ.د. حيدر صباح النعيمي', title: 'أستاذ دكتور - مناهج البحث المعماري المتقدم', branch: 'PHD_ARCH', course: 'فلسفة مناهج البحث المعماري (سمنار)', courseHours: 30 }
+      ],
+
+      users: [
+        { id: 'usr-admin', email: 'admin@uot.edu.iq', password: 'admin123', role: 'admin', name: 'أ.د. رئيس القسم / إدارة الدراسات العليا', title: 'مسؤول الدراسات العليا' },
+        { id: 'usr-inst-01', email: 'lamia.mahdi@uot.edu.iq', password: 'arch2026', role: 'instructor', name: 'أ.م.د. لمياء مهدي الدوري', title: 'أستاذ مقرر التصميم المعماري', instructorId: 'inst-01', course: 'استوديو التصميم المعماري المتقدم' },
+        { id: 'usr-inst-02', email: 'ahmed.basel@uot.edu.iq', password: 'arch2026', role: 'instructor', name: 'م.د. أحمد باسل العزاوي', title: 'أستاذ مقرر تكنولوجيا العمارة', instructorId: 'inst-02', course: 'الإنشاء المتقدم وتكنولوجيا الأغلفة' },
+        { id: 'usr-inst-03', email: 'raghad.hashim@uot.edu.iq', password: 'arch2026', role: 'instructor', name: 'أ.د. رغد هاشم الكرخي', title: 'أستاذ مقرر التصميم الحضري', instructorId: 'inst-03', course: 'استوديو التجديد الحضري وفضاءات المدن' },
+        { id: 'usr-inst-04', email: 'haider.sabah@uot.edu.iq', password: 'arch2026', role: 'instructor', name: 'أ.د. حيدر صباح النعيمي', title: 'أستاذ سمنار الدكتوراه', instructorId: 'inst-04', course: 'فلسفة مناهج البحث المعماري (سمنار)' },
+        { id: 'usr-std-101', email: 'std.haider@uot.edu.iq', password: 'student123', role: 'student', name: 'حيدر كريم الشمري', title: 'طالب ماجستير', studentId: 'std-101', regNum: 'M-TECH-26-01', branch: 'ARCH_TECH' },
+        { id: 'usr-std-202', email: 'std.sara@uot.edu.iq', password: 'student123', role: 'student', name: 'سارة ليث العبيدي', title: 'طالبة ماجستير', studentId: 'std-202', regNum: 'M-DES-26-02', branch: 'ARCH_DESIGN' },
+        { id: 'usr-std-301', email: 'std.omar@uot.edu.iq', password: 'student123', role: 'student', name: 'عمر طارق السعدي', title: 'طالب ماجستير', studentId: 'std-301', regNum: 'M-URB-26-01', branch: 'URBAN_DESIGN' },
+        { id: 'usr-std-401', email: 'std.ali@uot.edu.iq', password: 'student123', role: 'student', name: 'د. علي جاسم الهاشمي', title: 'طالب دكتوراه', studentId: 'std-401', regNum: 'D-ARCH-26-01', branch: 'PHD_ARCH' }
       ],
 
       students: [
@@ -1178,8 +1463,176 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       return { label: 'طبيعي ومستقر', class: 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/30', level: 'NORMAL' };
     }
 
+    // =========================================================================
+    // Authentication & Role-Based Access Control (RBAC) Logic
+    // =========================================================================
+    function initAuthSession() {
+      loadMasterData();
+      const savedUser = sessionStorage.getItem('uot_arch_session_user');
+      if (savedUser) {
+        try {
+          appState.currentUser = JSON.parse(savedUser);
+        } catch(e) {
+          appState.currentUser = null;
+        }
+      }
+      applyCurrentUserSession();
+    }
+
+    function applyCurrentUserSession() {
+      const authGateway = document.getElementById('authGateway');
+      const userProfileHeader = document.getElementById('userProfileHeader');
+      const adminRoleSwitcher = document.getElementById('adminRoleSwitcher');
+      const headerUserName = document.getElementById('headerUserName');
+      const headerUserRole = document.getElementById('headerUserRole');
+
+      const adminView = document.getElementById('adminView');
+      const instructorView = document.getElementById('instructorView');
+      const studentView = document.getElementById('studentView');
+
+      if (!appState.currentUser) {
+        // Not logged in: show auth gateway only
+        if (authGateway) authGateway.classList.remove('hidden');
+        if (userProfileHeader) userProfileHeader.classList.add('hidden');
+        if (adminRoleSwitcher) adminRoleSwitcher.classList.add('hidden');
+        if (adminView) adminView.classList.add('hidden');
+        if (instructorView) instructorView.classList.add('hidden');
+        if (studentView) studentView.classList.add('hidden');
+        selectAuthRole(appState.selectedAuthRole || 'admin');
+        return;
+      }
+
+      // Logged in successfully
+      if (authGateway) authGateway.classList.add('hidden');
+      if (userProfileHeader) {
+        userProfileHeader.classList.remove('hidden');
+        if (headerUserName) headerUserName.innerText = appState.currentUser.name;
+        if (headerUserRole) {
+          const roleMap = {
+            'admin': '🏛️ إدارة الدراسات العليا (Admin)',
+            'instructor': '👨‍🏫 أستاذ مقرر معتمد (Instructor)',
+            'student': '📱 باحث / طالب دراسات عليا (Student)'
+          };
+          headerUserRole.innerText = roleMap[appState.currentUser.role] || appState.currentUser.role;
+        }
+      }
+
+      if (appState.currentUser.role === 'admin') {
+        if (adminRoleSwitcher) adminRoleSwitcher.classList.remove('hidden');
+        switchRole('admin');
+        renderMasterDataTables();
+      } else if (appState.currentUser.role === 'instructor') {
+        if (adminRoleSwitcher) adminRoleSwitcher.classList.add('hidden');
+        appState.currentInstructorId = appState.currentUser.instructorId || 'inst-01';
+        switchRole('instructor');
+        const instSelect = document.getElementById('instructorSelect');
+        if (instSelect) {
+          instSelect.value = appState.currentInstructorId;
+          instSelect.disabled = true;
+          instSelect.title = "مقيد بالصلاحيات المسندة لحساب التدريسي المسجل";
+        }
+      } else if (appState.currentUser.role === 'student') {
+        if (adminRoleSwitcher) adminRoleSwitcher.classList.add('hidden');
+        switchRole('student');
+        const stdSelect = document.getElementById('studentSelectCheckin');
+        if (stdSelect) {
+          stdSelect.value = appState.currentUser.studentId;
+          stdSelect.disabled = true;
+          stdSelect.title = "حساب الطالب المسجل حصراً";
+          onStudentSelectChange(appState.currentUser.studentId);
+        }
+      }
+    }
+
+    function selectAuthRole(role) {
+      appState.selectedAuthRole = role;
+      const cardAdmin = document.getElementById('authCardAdmin');
+      const cardInstructor = document.getElementById('authCardInstructor');
+      const cardStudent = document.getElementById('authCardStudent');
+
+      const badgeAdmin = document.getElementById('authBadgeAdmin');
+      const badgeInstructor = document.getElementById('authBadgeInstructor');
+      const badgeStudent = document.getElementById('authBadgeStudent');
+
+      const targetText = document.getElementById('selectedPortalTargetText');
+      const emailInput = document.getElementById('inputAuthEmail');
+      const passInput = document.getElementById('inputAuthPassword');
+      const errMsg = document.getElementById('authErrorMessage');
+      if (errMsg) errMsg.classList.add('hidden');
+
+      const cardBase = "group relative cursor-pointer rounded-2xl p-5 border-2 transition-all duration-300 hover:shadow-md bg-[var(--background)] border-[var(--border)] text-right";
+      const badgeBase = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]";
+
+      if (cardAdmin) cardAdmin.className = `${cardBase} hover:border-amber-500/60`;
+      if (cardInstructor) cardInstructor.className = `${cardBase} hover:border-blue-500/60`;
+      if (cardStudent) cardStudent.className = `${cardBase} hover:border-emerald-500/60`;
+
+      if (badgeAdmin) { badgeAdmin.className = badgeBase; badgeAdmin.innerText = "بوابة الإدارة"; }
+      if (badgeInstructor) { badgeInstructor.className = badgeBase; badgeInstructor.innerText = "بوابة التدريسي"; }
+      if (badgeStudent) { badgeStudent.className = badgeBase; badgeStudent.innerText = "بوابة الطالب"; }
+
+      if (role === 'admin') {
+        if (cardAdmin) cardAdmin.className = "group relative cursor-pointer rounded-2xl p-5 border-2 transition-all duration-300 hover:shadow-md bg-gradient-to-b from-amber-500/15 to-transparent border-amber-500 shadow-sm text-right";
+        if (badgeAdmin) { badgeAdmin.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500 text-white shadow-sm"; badgeAdmin.innerText = "محدد للدخول ✓"; }
+        if (targetText) { targetText.className = "text-amber-600 font-bold"; targetText.innerText = "لوحة الإدارة (Admin)"; }
+        if (emailInput) emailInput.value = "admin@uot.edu.iq";
+        if (passInput) passInput.value = "admin123";
+      } else if (role === 'instructor') {
+        if (cardInstructor) cardInstructor.className = "group relative cursor-pointer rounded-2xl p-5 border-2 transition-all duration-300 hover:shadow-md bg-gradient-to-b from-blue-500/15 to-transparent border-blue-500 shadow-sm text-right";
+        if (badgeInstructor) { badgeInstructor.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-600 text-white shadow-sm"; badgeInstructor.innerText = "محدد للدخول ✓"; }
+        if (targetText) { targetText.className = "text-blue-600 font-bold"; targetText.innerText = "بوابة التدريسي (Instructor)"; }
+        if (emailInput) emailInput.value = "lamia.mahdi@uot.edu.iq";
+        if (passInput) passInput.value = "arch2026";
+      } else if (role === 'student') {
+        if (cardStudent) cardStudent.className = "group relative cursor-pointer rounded-2xl p-5 border-2 transition-all duration-300 hover:shadow-md bg-gradient-to-b from-emerald-500/15 to-transparent border-emerald-500 shadow-sm text-right";
+        if (badgeStudent) { badgeStudent.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white shadow-sm"; badgeStudent.innerText = "محدد للدخول ✓"; }
+        if (targetText) { targetText.className = "text-emerald-600 font-bold"; targetText.innerText = "بوابة الطالب (Student)"; }
+        if (emailInput) emailInput.value = "std.sara@uot.edu.iq";
+        if (passInput) passInput.value = "student123";
+      }
+    }
+
+    function handleLoginSubmit(event) {
+      if (event) event.preventDefault();
+      const email = document.getElementById('inputAuthEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('inputAuthPassword').value;
+      const errMsg = document.getElementById('authErrorMessage');
+
+      const foundUser = appState.users.find(u => (u.email.toLowerCase() === email || u.id === email) && u.password === pass);
+
+      if (!foundUser) {
+        if (errMsg) {
+          errMsg.innerText = "🛑 بيانات الدخول غير صحيحة! يرجى التحقق من اسم المستخدم / البريد وكلمة المرور.";
+          errMsg.classList.remove('hidden');
+        }
+        return;
+      }
+
+      appState.currentUser = foundUser;
+      sessionStorage.setItem('uot_arch_session_user', JSON.stringify(foundUser));
+      if (errMsg) errMsg.classList.add('hidden');
+      applyCurrentUserSession();
+    }
+
+    function quickLoginAs(role) {
+      selectAuthRole(role);
+      handleLoginSubmit(null);
+    }
+
+    function logoutUser() {
+      sessionStorage.removeItem('uot_arch_session_user');
+      appState.currentUser = null;
+      applyCurrentUserSession();
+    }
+
     // Switch Role (Admin / Instructor / Student)
     function switchRole(role) {
+      // If user is logged in and not admin, disallow switching to other roles
+      if (appState.currentUser && appState.currentUser.role !== 'admin' && appState.currentUser.role !== role) {
+        alert("🛑 عذراً! حسابك الحالي مقيد بصلاحيات محددة، لا يمكنك الدخول إلى شاشات أخرى.");
+        return;
+      }
+
       appState.currentRole = role;
       const adminView = document.getElementById('adminView');
       const instructorView = document.getElementById('instructorView');
@@ -1189,62 +1642,310 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       const btnInstructor = document.getElementById('btnRoleInstructor');
       const btnStudent = document.getElementById('btnRoleStudent');
 
-      const cardAdmin = document.getElementById('portalCardAdmin');
-      const cardInstructor = document.getElementById('portalCardInstructor');
-      const cardStudent = document.getElementById('portalCardStudent');
-
-      const badgeAdmin = document.getElementById('badgeAdmin');
-      const badgeInstructor = document.getElementById('badgeInstructor');
-      const badgeStudent = document.getElementById('badgeStudent');
-
-      const activeRoleBadge = document.getElementById('activeRoleBadge');
-
       // Hide all views first
-      adminView.classList.add('hidden');
-      instructorView.classList.add('hidden');
+      if (adminView) adminView.classList.add('hidden');
+      if (instructorView) instructorView.classList.add('hidden');
       if (studentView) studentView.classList.add('hidden');
 
       // Reset top buttons
       const btnBase = "px-3.5 py-2 rounded-lg text-xs md:text-sm transition-all duration-200";
       const btnInactive = `${btnBase} font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)]`;
-      btnAdmin.className = btnInactive;
-      btnInstructor.className = btnInactive;
+      if (btnAdmin) btnAdmin.className = btnInactive;
+      if (btnInstructor) btnInstructor.className = btnInactive;
       if (btnStudent) btnStudent.className = btnInactive;
 
-      // Reset portal gateway cards
-      const cardBase = "group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-[var(--background)] border-[var(--border)]";
-      if (cardAdmin) cardAdmin.className = `${cardBase} hover:border-amber-500/60`;
-      if (cardInstructor) cardInstructor.className = `${cardBase} hover:border-blue-500/60`;
-      if (cardStudent) cardStudent.className = `${cardBase} hover:border-emerald-500/60`;
-
-      const badgeBase = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)]";
-      if (badgeAdmin) { badgeAdmin.className = badgeBase; badgeAdmin.innerText = "بوابة الإدارة"; }
-      if (badgeInstructor) { badgeInstructor.className = badgeBase; badgeInstructor.innerText = "بوابة التدريسي"; }
-      if (badgeStudent) { badgeStudent.className = badgeBase; badgeStudent.innerText = "بوابة الطالب"; }
-
       if (role === 'admin') {
-        adminView.classList.remove('hidden');
-        btnAdmin.className = `${btnBase} font-semibold bg-amber-600 text-white shadow-sm`;
-        if (cardAdmin) cardAdmin.className = "group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-gradient-to-b from-amber-500/10 to-transparent border-amber-500 shadow-sm";
-        if (badgeAdmin) { badgeAdmin.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500 text-white shadow-sm"; badgeAdmin.innerText = "نشط حالياً ✓"; }
-        if (activeRoleBadge) { activeRoleBadge.className = "text-amber-600 font-bold"; activeRoleBadge.innerText = "لوحة الإدارة (Admin)"; }
+        if (adminView) adminView.classList.remove('hidden');
+        if (btnAdmin) btnAdmin.className = `${btnBase} font-semibold bg-amber-600 text-white shadow-sm`;
         renderAdminDashboard();
+        renderMasterDataTables();
       } else if (role === 'instructor') {
-        instructorView.classList.remove('hidden');
-        btnInstructor.className = `${btnBase} font-semibold bg-blue-600 text-white shadow-sm`;
-        if (cardInstructor) cardInstructor.className = "group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-gradient-to-b from-blue-500/10 to-transparent border-blue-500 shadow-sm";
-        if (badgeInstructor) { badgeInstructor.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-600 text-white shadow-sm"; badgeInstructor.innerText = "نشط حالياً ✓"; }
-        if (activeRoleBadge) { activeRoleBadge.className = "text-blue-600 font-bold"; activeRoleBadge.innerText = "بوابة التدريسي (Instructor)"; }
+        if (instructorView) instructorView.classList.remove('hidden');
+        if (btnInstructor) btnInstructor.className = `${btnBase} font-semibold bg-blue-600 text-white shadow-sm`;
         renderInstructorPortal();
         updateActiveTokenAndQr();
       } else if (role === 'student') {
         if (studentView) studentView.classList.remove('hidden');
         if (btnStudent) btnStudent.className = `${btnBase} font-semibold bg-emerald-600 text-white shadow-sm`;
-        if (cardStudent) cardStudent.className = "group relative cursor-pointer rounded-2xl p-4 md:p-5 border-2 transition-all duration-300 hover:shadow-md bg-gradient-to-b from-emerald-500/10 to-transparent border-emerald-500 shadow-sm";
-        if (badgeStudent) { badgeStudent.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white shadow-sm"; badgeStudent.innerText = "نشط حالياً ✓"; }
-        if (activeRoleBadge) { activeRoleBadge.className = "text-emerald-600 font-bold"; activeRoleBadge.innerText = "بوابة الطالب (Student)"; }
         renderStudentPortal();
       }
+    }
+
+    // =========================================================================
+    // Admin Sub-Tabs & Master Data Management (CRUD)
+    // =========================================================================
+    function switchAdminSubTab(tab) {
+      const rosterDiv = document.getElementById('adminSubTabRoster');
+      const masterDiv = document.getElementById('adminSubTabMasterData');
+      const rosterBtn = document.getElementById('adminTabRosterBtn');
+      const masterBtn = document.getElementById('adminTabMasterDataBtn');
+
+      if (tab === 'roster') {
+        if (rosterDiv) rosterDiv.classList.remove('hidden');
+        if (masterDiv) masterDiv.classList.add('hidden');
+        if (rosterBtn) rosterBtn.className = "px-4 py-2 rounded-xl text-xs md:text-sm font-bold bg-amber-600 text-white shadow-sm transition";
+        if (masterBtn) masterBtn.className = "px-4 py-2 rounded-xl text-xs md:text-sm font-bold text-[var(--muted-foreground)] bg-[var(--card)] border border-[var(--border)] hover:text-[var(--foreground)] transition";
+        renderAdminDashboard();
+      } else {
+        if (rosterDiv) rosterDiv.classList.add('hidden');
+        if (masterDiv) masterDiv.classList.remove('hidden');
+        if (masterBtn) masterBtn.className = "px-4 py-2 rounded-xl text-xs md:text-sm font-bold bg-amber-600 text-white shadow-sm transition";
+        if (rosterBtn) rosterBtn.className = "px-4 py-2 rounded-xl text-xs md:text-sm font-bold text-[var(--muted-foreground)] bg-[var(--card)] border border-[var(--border)] hover:text-[var(--foreground)] transition";
+        renderMasterDataTables();
+      }
+    }
+
+    function renderMasterDataTables() {
+      // 1. Students Table
+      const stdBody = document.getElementById('masterStudentsTableBody');
+      if (stdBody) {
+        stdBody.innerHTML = '';
+        appState.students.forEach(s => {
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-[var(--background)] transition";
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 font-mono font-bold">${s.regNum}</td>
+            <td class="py-2.5 px-3 font-bold">${s.name}</td>
+            <td class="py-2.5 px-3 text-[var(--muted-foreground)]">${appState.branches[s.branch]?.name || s.branch}</td>
+            <td class="py-2.5 px-3">${s.course}</td>
+            <td class="py-2.5 px-3 font-bold">${s.totalHours}س</td>
+            <td class="py-2.5 px-3 text-center">
+              <button onclick="deleteStudentMaster('${s.id}')" class="px-2.5 py-1 rounded-lg text-rose-600 hover:bg-rose-50 border border-rose-200 transition font-bold text-[11px]">
+                🗑️ حذف
+              </button>
+            </td>
+          `;
+          stdBody.appendChild(tr);
+        });
+      }
+
+      // 2. Instructors Table
+      const instBody = document.getElementById('masterInstructorsTableBody');
+      if (instBody) {
+        instBody.innerHTML = '';
+        appState.instructors.forEach(inst => {
+          const userObj = appState.users.find(u => u.instructorId === inst.id);
+          const email = userObj ? userObj.email : 'uot.edu.iq';
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-[var(--background)] transition";
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 font-bold">${inst.name} <span class="text-[10px] text-[var(--muted-foreground)] block">${inst.title}</span></td>
+            <td class="py-2.5 px-3 text-[var(--muted-foreground)]">${appState.branches[inst.branch]?.name || inst.branch}</td>
+            <td class="py-2.5 px-3 font-medium">${inst.course}</td>
+            <td class="py-2.5 px-3 font-mono text-[var(--muted-foreground)]">${email}</td>
+            <td class="py-2.5 px-3 text-center">
+              <button onclick="deleteInstructorMaster('${inst.id}')" class="px-2.5 py-1 rounded-lg text-rose-600 hover:bg-rose-50 border border-rose-200 transition font-bold text-[11px]">
+                🗑️ حذف
+              </button>
+            </td>
+          `;
+          instBody.appendChild(tr);
+        });
+      }
+
+      // 3. Courses Table
+      const crsBody = document.getElementById('masterCoursesTableBody');
+      if (crsBody) {
+        crsBody.innerHTML = '';
+        appState.courses.forEach(c => {
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-[var(--background)] transition";
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 font-mono font-bold text-amber-700 dark:text-amber-400">${c.code}</td>
+            <td class="py-2.5 px-3 font-bold">${c.title}</td>
+            <td class="py-2.5 px-3 text-[var(--muted-foreground)]">${appState.branches[c.branch]?.name || c.branch}</td>
+            <td class="py-2.5 px-3 font-bold">${c.weeklyHours} ساعات</td>
+            <td class="py-2.5 px-3">${c.totalHours} ساعة</td>
+            <td class="py-2.5 px-3 text-center">
+              <button onclick="deleteCourseMaster('${c.code}')" class="px-2.5 py-1 rounded-lg text-rose-600 hover:bg-rose-50 border border-rose-200 transition font-bold text-[11px]">
+                🗑️ حذف
+              </button>
+            </td>
+          `;
+          crsBody.appendChild(tr);
+        });
+      }
+    }
+
+    function updateCourseOptionsForBranch(branch) {
+      const courseSel = document.getElementById('mStudentCourse');
+      if (!courseSel) return;
+      courseSel.innerHTML = '';
+      const matching = appState.courses.filter(c => c.branch === branch);
+      if (matching.length > 0) {
+        matching.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.title;
+          opt.innerText = `${c.title} (${c.totalHours}س)`;
+          courseSel.appendChild(opt);
+        });
+      } else {
+        const opt = document.createElement('option');
+        opt.value = "مقرر تخصصي في الفرع";
+        opt.innerText = "مقرر تخصصي في الفرع (60س)";
+        courseSel.appendChild(opt);
+      }
+    }
+
+    function addStudentMaster(e) {
+      e.preventDefault();
+      const name = document.getElementById('mStudentName').value.trim();
+      const reg = document.getElementById('mStudentReg').value.trim();
+      const branch = document.getElementById('mStudentBranch').value;
+      const course = document.getElementById('mStudentCourse').value;
+      const totalHours = (branch === 'ARCH_TECH' || branch === 'PHD_ARCH') ? 30 : 60;
+      const newId = 'std-' + Date.now().toString().slice(-4);
+
+      const newStudent = {
+        id: newId,
+        name: name,
+        regNum: reg,
+        branch: branch,
+        course: course,
+        totalHours: totalHours,
+        missedHours: 0,
+        currentSessionStatus: 'ABSENT'
+      };
+
+      appState.students.unshift(newStudent);
+
+      // Add student user account
+      const username = 'std.' + reg.toLowerCase().replace(/[^a-z0-9]/g, '');
+      appState.users.push({
+        id: 'usr-' + newId,
+        email: username + '@uot.edu.iq',
+        password: 'student123',
+        role: 'student',
+        name: name,
+        title: 'طالب دراسات عليا',
+        studentId: newId,
+        regNum: reg,
+        branch: branch
+      });
+
+      saveMasterData();
+      renderMasterDataTables();
+      renderAdminDashboard();
+      e.target.reset();
+      alert(`🎉 تم إضافة الطالب [${name}] بنجاح!\nالبريد التجريبي: ${username}@uot.edu.iq\nكلمة المرور: student123`);
+    }
+
+    function deleteStudentMaster(id) {
+      const s = appState.students.find(x => x.id === id);
+      if (!s) return;
+      if (!confirm(`هل أنت متأكد من حذف قيد الطالب [${s.name}] نهائياً من سجلات القسم؟`)) return;
+
+      appState.students = appState.students.filter(x => x.id !== id);
+      appState.users = appState.users.filter(x => x.studentId !== id);
+      saveMasterData();
+      renderMasterDataTables();
+      renderAdminDashboard();
+    }
+
+    function addInstructorMaster(e) {
+      e.preventDefault();
+      const name = document.getElementById('mInstName').value.trim();
+      const title = document.getElementById('mInstTitle').value.trim();
+      const branch = document.getElementById('mInstBranch').value;
+      const email = document.getElementById('mInstEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('mInstPassword').value.trim();
+      const newId = 'inst-' + Date.now().toString().slice(-4);
+
+      const defaultCourses = {
+        'ARCH_TECH': 'الإنشاء المتقدم وتكنولوجيا الأغلفة',
+        'ARCH_DESIGN': 'استوديو التصميم المعماري المتقدم',
+        'URBAN_DESIGN': 'استوديو التجديد الحضري وفضاءات المدن',
+        'PHD_ARCH': 'فلسفة مناهج البحث المعماري (سمنار)'
+      };
+
+      const newInst = {
+        id: newId,
+        name: name,
+        title: title,
+        branch: branch,
+        course: defaultCourses[branch] || 'استوديو معماري',
+        courseHours: 60
+      };
+
+      appState.instructors.unshift(newInst);
+      appState.users.push({
+        id: 'usr-' + newId,
+        email: email,
+        password: pass,
+        role: 'instructor',
+        name: name,
+        title: title,
+        instructorId: newId,
+        course: newInst.course
+      });
+
+      saveMasterData();
+      renderMasterDataTables();
+      e.target.reset();
+      alert(`🎉 تم إضافة التدريسي [${name}] بنجاح!\nالبريد: ${email}\nكلمة المرور: ${pass}`);
+    }
+
+    function deleteInstructorMaster(id) {
+      const inst = appState.instructors.find(x => x.id === id);
+      if (!inst) return;
+      if (!confirm(`هل أنت متأكد من حذف التدريسي [${inst.name}] من الهيئة التدريسية؟`)) return;
+
+      appState.instructors = appState.instructors.filter(x => x.id !== id);
+      appState.users = appState.users.filter(x => x.instructorId !== id);
+      saveMasterData();
+      renderMasterDataTables();
+    }
+
+    function addCourseMaster(e) {
+      e.preventDefault();
+      const code = document.getElementById('mCourseCode').value.trim().toUpperCase();
+      const title = document.getElementById('mCourseTitle').value.trim();
+      const branch = document.getElementById('mCourseBranch').value;
+      const weekly = parseInt(document.getElementById('mCourseWeekly').value) || 4;
+      const total = parseInt(document.getElementById('mCourseTotal').value) || 60;
+
+      appState.courses.unshift({
+        code: code,
+        title: title,
+        branch: branch,
+        weeklyHours: weekly,
+        totalHours: total,
+        instructor: 'هيئة الدراسات العليا'
+      });
+
+      saveMasterData();
+      renderMasterDataTables();
+      e.target.reset();
+      alert(`🎉 تم إضافة المادة الدراسية [${title} - ${code}] بنجاح!`);
+    }
+
+    function deleteCourseMaster(code) {
+      if (!confirm(`هل أنت متأكد من حذف المقرر [${code}] من الخطة الدراسية؟`)) return;
+      appState.courses = appState.courses.filter(x => x.code !== code);
+      saveMasterData();
+      renderMasterDataTables();
+    }
+
+    function saveMasterData() {
+      try {
+        localStorage.setItem('uot_arch_students', JSON.stringify(appState.students));
+        localStorage.setItem('uot_arch_instructors', JSON.stringify(appState.instructors));
+        localStorage.setItem('uot_arch_courses', JSON.stringify(appState.courses));
+        localStorage.setItem('uot_arch_users', JSON.stringify(appState.users));
+      } catch(e) {}
+    }
+
+    function loadMasterData() {
+      try {
+        const s = localStorage.getItem('uot_arch_students');
+        if (s) appState.students = JSON.parse(s);
+        const inst = localStorage.getItem('uot_arch_instructors');
+        if (inst) appState.instructors = JSON.parse(inst);
+        const c = localStorage.getItem('uot_arch_courses');
+        if (c) appState.courses = JSON.parse(c);
+        const u = localStorage.getItem('uot_arch_users');
+        if (u) appState.users = JSON.parse(u);
+      } catch(e) {}
     }
 
     // Render Student Portal
@@ -2234,23 +2935,25 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       }, 3500);
     }
 
-    // Auto-detect phone camera check-in via QR query parameters or role parameter
+    // Auto-detect phone camera check-in via QR query parameters or initialize session
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const roleParam = urlParams.get('role');
       const token = urlParams.get('token');
 
+      initAuthSession();
+
       if (urlParams.get('action') === 'checkin' || token || roleParam === 'student') {
-        switchRole('student');
+        if (!appState.currentUser) {
+          quickLoginAs('student');
+        } else if (appState.currentUser.role === 'admin') {
+          switchRole('student');
+        }
         if (token) {
           const input = document.getElementById('studentTokenInput');
           if (input) input.value = token;
         }
-        showToast("📱 تم مسح رمز الحضور الحي", "تم تحويلك مباشرة إلى بوابة الطالب لتوثيق الحضور وتأكيد الموقع");
-      } else if (roleParam === 'instructor') {
-        switchRole('instructor');
-      } else {
-        switchRole('admin');
+        showToast("📱 تم مسح رمز الحضور الحي", "تم فتح بوابة الطالب لتوثيق الحضور وتأكيد الموقع");
       }
     });
 

@@ -241,6 +241,29 @@ def init_db():
     )
     """)
     
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS instructors (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        branch_code TEXT NOT NULL,
+        course_code TEXT NOT NULL,
+        title TEXT NOT NULL
+    )
+    """)
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        role TEXT NOT NULL,
+        full_name TEXT NOT NULL,
+        linked_id TEXT,
+        title TEXT
+    )
+    """)
+
     # فحص وإضافة أي أعمدة جديدة تلقائياً (Schema Auto-Migration)
     cur.execute("PRAGMA table_info(attendance_logs)")
     existing_cols = [col[1] for col in cur.fetchall()]
@@ -292,6 +315,33 @@ def init_db():
             ('std-403', 'D-ARCH-26-03', 'د. مهند رياض الحمداني', 'PHD_ARCH', 'PHD-801', 30, 2.0)
         ]
         cur.executemany("INSERT INTO students VALUES (?, ?, ?, ?, ?, ?, ?)", students_data)
+
+    # التحقق وتعبئة الهيئة التدريسية إن كانت فارغة
+    cur.execute("SELECT COUNT(*) FROM instructors")
+    if cur.fetchone()[0] == 0:
+        inst_seed = [
+            ('inst-01', 'أ.م.د. لمياء مهدي الدوري', 'lamia.mahdi@uot.edu.iq', 'ARCH_DESIGN', 'DES-702', 'أستاذ مشارك دكتور'),
+            ('inst-02', 'م.د. أحمد باسل العزاوي', 'ahmed.basel@uot.edu.iq', 'ARCH_TECH', 'TECH-701', 'مدرس دكتور'),
+            ('inst-03', 'أ.د. رغد هاشم الكرخي', 'raghad.hashem@uot.edu.iq', 'URBAN_DESIGN', 'URB-703', 'أستاذ دكتور'),
+            ('inst-04', 'أ.د. حيدر صباح النعيمي', 'haider.sabah@uot.edu.iq', 'PHD_ARCH', 'PHD-801', 'أستاذ دكتور')
+        ]
+        cur.executemany("INSERT INTO instructors VALUES (?, ?, ?, ?, ?, ?)", inst_seed)
+
+    # التحقق وتعبئة مستخدمي المنصة (RBAC Accounts)
+    cur.execute("SELECT COUNT(*) FROM users")
+    if cur.fetchone()[0] == 0:
+        users_seed = [
+            ('usr-admin', 'admin@uot.edu.iq', 'admin123', 'ADMIN', 'أ.د. رئيس القسم / إدارة الدراسات العليا', 'ALL', 'مسؤول الدراسات العليا'),
+            ('usr-inst-01', 'lamia.mahdi@uot.edu.iq', 'arch2026', 'INSTRUCTOR', 'أ.م.د. لمياء مهدي الدوري', 'DES-702', 'أستاذ مقرر التصميم المعماري'),
+            ('usr-inst-02', 'ahmed.basel@uot.edu.iq', 'arch2026', 'INSTRUCTOR', 'م.د. أحمد باسل العزاوي', 'TECH-701', 'أستاذ مقرر تكنولوجيا العمارة'),
+            ('usr-inst-03', 'raghad.hashem@uot.edu.iq', 'arch2026', 'INSTRUCTOR', 'أ.د. رغد هاشم الكرخي', 'URB-703', 'أستاذ مقرر التصميم الحضري'),
+            ('usr-inst-04', 'haider.sabah@uot.edu.iq', 'arch2026', 'INSTRUCTOR', 'أ.د. حيدر صباح النعيمي', 'PHD-801', 'أستاذ سمنار الدكتوراه'),
+            ('usr-std-101', 'std.haider@uot.edu.iq', 'student123', 'STUDENT', 'حيدر كريم الشمري', 'std-101', 'طالب ماجستير تكنولوجيا العمارة'),
+            ('usr-std-202', 'std.sara@uot.edu.iq', 'student123', 'STUDENT', 'سارة ليث العبيدي', 'std-202', 'طالبة ماجستير التصميم المعماري'),
+            ('usr-std-301', 'std.omar@uot.edu.iq', 'student123', 'STUDENT', 'عمر طارق السعدي', 'std-301', 'طالب ماجستير التصميم الحضري'),
+            ('usr-std-401', 'std.ali@uot.edu.iq', 'student123', 'STUDENT', 'د. علي جاسم الهاشمي', 'std-401', 'طالب دكتوراه هندسة العمارة')
+        ]
+        cur.executemany("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?)", users_seed)
         
     conn.commit()
     conn.close()
@@ -317,59 +367,269 @@ def calculate_warning(missed_hours, total_hours):
         return "إنذار أولي (5%) ⚠️", pct, hours_to_5, hours_to_10
     return "طبيعي ومستقر ✅", pct, hours_to_5, hours_to_10
 
-# 5. الترويسة الرئيسية المعمارية الفاخرة
-st.markdown("""
-<div class="arch-hero">
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-        <div>
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                <span class="sec-pill" style="background: rgba(255,255,255,0.2); color:#fff; border:none;">
-                    🏛️ الجامعة التكنولوجية - بغداد
-                </span>
-                <span class="sec-pill" style="background: rgba(255,255,255,0.2); color:#fff; border:none;">
-                    العام الأكاديمي 2026-2027
-                </span>
+# 5. إدارة جلسات المستخدمين وبوابة الدخول المركزية الموحدة (Authentication & Session State)
+if "current_user" not in st.session_state:
+    st.session_state.current_user = None
+
+if "selected_auth_portal" not in st.session_state:
+    st.session_state.selected_auth_portal = "ADMIN"
+
+# إذا لم يسجل المستخدم دخوله بعد، نعرض الواجهة المركزية الموحدة للتسجيل
+if st.session_state.current_user is None:
+    st.markdown("""
+    <div class="arch-hero">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                    <span class="sec-pill" style="background: rgba(255,255,255,0.2); color:#fff; border:none;">
+                        🏛️ الجامعة التكنولوجية - بغداد
+                    </span>
+                    <span class="sec-pill" style="background: rgba(255,255,255,0.2); color:#fff; border:none;">
+                        العام الأكاديمي 2026-2027
+                    </span>
+                </div>
+                <h1 style="margin: 0; font-weight: 900; font-size: 26px; letter-spacing: -0.5px;">
+                    الواجهة المركزية الموحدة لمنظومة حضور الدراسات العليا
+                </h1>
+                <p style="margin: 6px 0 0 0; font-size: 13px; opacity: 0.9;">
+                    قسم هندسة العمارة • بوابات الدخول المركزية (لوحة الإدارة • بوابة التدريسي • بوابة الطالب)
+                </p>
             </div>
-            <h1 style="margin: 0; font-weight: 900; font-size: 26px; letter-spacing: -0.5px;">
-                منظومة حضور وغياب الدراسات العليا - قسم هندسة العمارة
-            </h1>
-            <p style="margin: 6px 0 0 0; font-size: 13px; opacity: 0.9;">
-                ماجستير: تكنولوجيا العمارة • التصميم المعماري • التصميم الحضري | دكتوراه هندسة العمارة
-            </p>
-        </div>
-        <div style="text-align: left; background: rgba(0,0,0,0.25); padding: 12px 18px; border-radius: 14px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15);">
-            <div style="font-size: 11px; opacity: 0.8;">نظام الأمان النشط</div>
-            <div style="font-weight: 800; font-size: 14px; color: #fbbf24;">🛡️ بروتوكول الحماية الثلاثي</div>
-            <div style="font-size: 11px; opacity: 0.85;">QR متغير • GPS محيط 80م • جهاز موحد</div>
+            <div style="text-align: left; background: rgba(0,0,0,0.25); padding: 12px 18px; border-radius: 14px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15);">
+                <div style="font-size: 11px; opacity: 0.8;">نظام الأمان وصلاحيات الوصول</div>
+                <div style="font-weight: 800; font-size: 14px; color: #fbbf24;">🔐 بوابة موثقة برمز الدخول</div>
+                <div style="font-size: 11px; opacity: 0.85;">صلاحيات مفصولة بدقة وحماية بيانات كاملة</div>
+            </div>
         </div>
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-ROLE_ADMIN = "🏛️ لوحة الإدارة (Admin Dashboard)"
-ROLE_INSTRUCTOR = "👨‍🏫 بوابة التدريسي (Instructor Portal)"
-ROLE_STUDENT = "📱 بوابة الطالب (Student Portal)"
-ROLE_LIST = [ROLE_ADMIN, ROLE_INSTRUCTOR, ROLE_STUDENT]
+    with st.sidebar:
+        st.image("https://upload.wikimedia.org/wikipedia/ar/thumb/0/07/University_of_Technology_Iraq_logo.png/250px-University_of_Technology_Iraq_logo.png", width=105)
+        st.markdown("### 🔐 تسجيل الدخول المركزي")
+        st.caption("الرجاء اختيار بوابتك وإدخال البريد الإلكتروني الرسمي ورمز الدخول المعتمد.")
+        st.divider()
+        st.markdown("#### 📐 الفروع الأكاديمية للدراسات العليا:")
+        st.markdown("- **تكنولوجيا العمارة:** الإنشاء والأغلفة")
+        st.markdown("- **التصميم المعماري:** استوديو العمارة المتقدم")
+        st.markdown("- **التصميم الحضري:** الفضاءات وتجديد المدن")
+        st.markdown("- **دكتوراه هندسة العمارة:** فلسفة البحث المعماري")
+        st.divider()
+        st.caption("المنصة متوافقة تماماً مع تعليمات وضوابط الدراسات العليا النافذة لوزارة التعليم العالي والبحث العلمي العراقية.")
+        st.info("💡 **هذه المنصة قيد التطوير وبمبادرة شخصية من المهندس المعماري الدكتور أحمد لؤي أحمد**")
 
-if "active_portal_role" not in st.session_state:
-    st.session_state.active_portal_role = ROLE_ADMIN
+    # بطاقات اختيار البوابة المركزية الثلاث
+    sel_p = st.session_state.selected_auth_portal
+    is_a = (sel_p == "ADMIN")
+    is_i = (sel_p == "INSTRUCTOR")
+    is_s = (sel_p == "STUDENT")
 
-# 6. الشريط الجانبي
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h2 style="font-size: 20px; font-weight: 800; color: #1e293b; margin-bottom: 4px;">اختر البوابة المطلوب الدخول إليها:</h2>
+        <p style="font-size: 13px; color: #64748b; margin: 0;">يتم ضبط بيئة العمل وتحديد الصلاحيات تلقائياً حسب نوع الحساب المسجل</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col_c1, col_c2, col_c3 = st.columns(3)
+
+    with col_c1:
+        c1_border = "#f59e0b" if is_a else "#e2e8f0"
+        c1_bg = "rgba(245, 158, 11, 0.08)" if is_a else "#ffffff"
+        c1_badge = '<span style="background:#f59e0b; color:#fff; padding:2px 8px; border-radius:9999px; font-size:10.5px; font-weight:800;">البوابة المحددة ✓</span>' if is_a else '<span style="background:#f1f5f9; color:#64748b; padding:2px 8px; border-radius:9999px; font-size:10.5px;">لوحة الإدارة</span>'
+        st.markdown(f"""
+        <div style="border: 2px solid {c1_border}; background: {c1_bg}; border-radius: 16px; padding: 16px; min-height: 160px; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size: 26px;">🏛️</span>
+                {c1_badge}
+            </div>
+            <h3 style="margin: 10px 0 4px 0; font-size: 15px; font-weight: 800; color: #1e293b;">1. لوحة الإدارة (Admin)</h3>
+            <p style="margin: 0; font-size: 11.5px; color: #64748b; line-height: 1.5;">إدارة شاملة لطلبة الفروع، إضافة وحذف التدريسيين والطلبة والمواد، نسب الغياب، وقرارات الحرمان وطباعة المجلس.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("تحديد بوابة الإدارة 🏛️", key="btn_sel_admin", use_container_width=True, type="primary" if is_a else "secondary"):
+            st.session_state.selected_auth_portal = "ADMIN"
+            st.rerun()
+
+    with col_c2:
+        c2_border = "#3b82f6" if is_i else "#e2e8f0"
+        c2_bg = "rgba(59, 130, 246, 0.08)" if is_i else "#ffffff"
+        c2_badge = '<span style="background:#3b82f6; color:#fff; padding:2px 8px; border-radius:9999px; font-size:10.5px; font-weight:800;">البوابة المحددة ✓</span>' if is_i else '<span style="background:#f1f5f9; color:#64748b; padding:2px 8px; border-radius:9999px; font-size:10.5px;">بوابة التدريسي</span>'
+        st.markdown(f"""
+        <div style="border: 2px solid {c2_border}; background: {c2_bg}; border-radius: 16px; padding: 16px; min-height: 160px; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size: 26px;">👨‍🏫</span>
+                {c2_badge}
+            </div>
+            <h3 style="margin: 10px 0 4px 0; font-size: 15px; font-weight: 800; color: #1e293b;">2. بوابة التدريسي (Instructor)</h3>
+            <p style="margin: 0; font-size: 11.5px; color: #64748b; line-height: 1.5;">مقيدة حصرياً بالمقرر المكلف به: شاشة الـ QR المتجدد كل 8 ثوانٍ، قائمة النداء والتحضير، وتوثيق الأعذار والإجازات.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("تحديد بوابة التدريسي 👨‍🏫", key="btn_sel_inst", use_container_width=True, type="primary" if is_i else "secondary"):
+            st.session_state.selected_auth_portal = "INSTRUCTOR"
+            st.rerun()
+
+    with col_c3:
+        c3_border = "#10b981" if is_s else "#e2e8f0"
+        c3_bg = "rgba(16, 185, 129, 0.08)" if is_s else "#ffffff"
+        c3_badge = '<span style="background:#10b981; color:#fff; padding:2px 8px; border-radius:9999px; font-size:10.5px; font-weight:800;">البوابة المحددة ✓</span>' if is_s else '<span style="background:#f1f5f9; color:#64748b; padding:2px 8px; border-radius:9999px; font-size:10.5px;">بوابة الطالب</span>'
+        st.markdown(f"""
+        <div style="border: 2px solid {c3_border}; background: {c3_bg}; border-radius: 16px; padding: 16px; min-height: 160px; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size: 26px;">📱</span>
+                {c3_badge}
+            </div>
+            <h3 style="margin: 10px 0 4px 0; font-size: 15px; font-weight: 800; color: #1e293b;">3. بوابة الطالب (Student)</h3>
+            <p style="margin: 0; font-size: 11.5px; color: #64748b; line-height: 1.5;">مقيدة بملف الطالب الشخصي: مسح كود الجلسة بالكاميرا، التحقق من GPS ومحيط القسم 80م، وبطاقة رصيد الإنذارات.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("تحديد بوابة الطالب 📱", key="btn_sel_std", use_container_width=True, type="primary" if is_s else "secondary"):
+            st.session_state.selected_auth_portal = "STUDENT"
+            st.rerun()
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # نموذج تسجيل الدخول الموحد
+    portal_label = "لوحة الإدارة (Admin)" if is_a else ("بوابة التدريسي (Instructor)" if is_i else "بوابة الطالب (Student)")
+    portal_color = "#b45309" if is_a else ("#2563eb" if is_i else "#059669")
+    
+    col_form_c, col_demo_c = st.columns([1.4, 1])
+
+    with col_form_c:
+        st.markdown(f"""
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:18px; padding:20px 24px; box-shadow:0 4px 12px rgba(0,0,0,0.03);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                <span style="background:{portal_color}; color:#ffffff; padding:4px 12px; border-radius:9999px; font-size:12px; font-weight:800;">
+                    {portal_label}
+                </span>
+                <span style="font-size:13px; font-weight:700; color:#1e293b;">نموذج الدخول الرسمي المعتمد</span>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        default_email = "admin@uot.edu.iq" if is_a else ("lamia.mahdi@uot.edu.iq" if is_i else "std.sara@uot.edu.iq")
+        default_pass = "admin123" if is_a else ("arch2026" if is_i else "student123")
+
+        with st.form("auth_login_form"):
+            in_email = st.text_input("البريد الإلكتروني الجامعي أو اسم المستخدم:", value=default_email)
+            in_pass = st.text_input("رمز الدخول (Password):", value=default_pass, type="password")
+            submit_login = st.form_submit_button("🔑 تسجيل الدخول إلى المنصة", use_container_width=True, type="primary")
+
+        if submit_login:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT id, email, password, role, full_name, linked_id, title FROM users WHERE email = ? AND password = ?", (in_email.strip(), in_pass.strip()))
+            user_row = cur.fetchone()
+            conn.close()
+
+            if user_row:
+                st.session_state.current_user = {
+                    'id': user_row[0],
+                    'email': user_row[1],
+                    'role': user_row[3],
+                    'full_name': user_row[4],
+                    'linked_id': user_row[5],
+                    'title': user_row[6]
+                }
+                st.success(f"🎉 مرحباً بك يا {user_row[4]}! جاري تحويلك...")
+                st.rerun()
+            else:
+                st.error("❌ بيانات الدخول غير صحيحة! يرجى التحقق من البريد الإلكتروني ورمز المرور.")
+        
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    with col_demo_c:
+        st.markdown("""
+        <div style="background:#fafaf9; border:1px solid #e7e5e4; border-radius:18px; padding:20px; box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+            <div style="font-size:14px; font-weight:800; color:#1e293b; margin-bottom:8px;">⚡ تجربة الدخول السريع (Demo 1-Click):</div>
+            <p style="font-size:12px; color:#64748b; margin-bottom:14px; line-height:1.5;">يمكنك بنقرة واحدة اختيار أي حساب تجريبي لاختبار الصلاحيات مباشرة:</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        if st.button("🏛️ دخول فوري كـ Admin (رئيس القسم)", key="q_admin_btn", use_container_width=True):
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT id, email, password, role, full_name, linked_id, title FROM users WHERE email = 'admin@uot.edu.iq'")
+            row = cur.fetchone()
+            conn.close()
+            if row:
+                st.session_state.current_user = {'id': row[0], 'email': row[1], 'role': row[3], 'full_name': row[4], 'linked_id': row[5], 'title': row[6]}
+                st.rerun()
+
+        if st.button("👨‍🏫 دخول كـ تدريسي (د. لمياء مهدي - تصميم)", key="q_inst_btn", use_container_width=True):
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT id, email, password, role, full_name, linked_id, title FROM users WHERE email = 'lamia.mahdi@uot.edu.iq'")
+            row = cur.fetchone()
+            conn.close()
+            if row:
+                st.session_state.current_user = {'id': row[0], 'email': row[1], 'role': row[3], 'full_name': row[4], 'linked_id': row[5], 'title': row[6]}
+                st.rerun()
+
+        if st.button("📱 دخول كـ طالبة (سارة ليث - تصميم معماري)", key="q_std_btn", use_container_width=True):
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT id, email, password, role, full_name, linked_id, title FROM users WHERE email = 'std.sara@uot.edu.iq'")
+            row = cur.fetchone()
+            conn.close()
+            if row:
+                st.session_state.current_user = {'id': row[0], 'email': row[1], 'role': row[3], 'full_name': row[4], 'linked_id': row[5], 'title': row[6]}
+                st.rerun()
+
+    # التذييل الرسمي لبوابة الدخول
+    st.markdown("""
+    <div style="margin-top: 40px; padding: 20px 16px; border-top: 2px solid #e2e8f0; text-align: center; color: #64748b; font-size: 13px; background: #ffffff; border-radius: 16px;">
+        <div style="font-weight: 800; color: #b45309; margin-bottom: 4px; font-size: 13.5px;">
+            🏛️ الجامعة التكنولوجية - قسم هندسة العمارة | منصة حضور الدراسات العليا
+        </div>
+        <div style="font-size: 12px; color: #334155; font-weight: 600;">
+            هذه المنصة قيد التطوير وبمبادرة شخصية من المهندس المعماري الدكتور أحمد لؤي أحمد
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    st.stop()
+
+# ==============================================================================
+# المستخدم مسجل الدخول حالياً (Authenticated Session Context)
+# ==============================================================================
+current_user = st.session_state.current_user
+user_role = current_user['role']
+user_name = current_user['full_name']
+user_email = current_user['email']
+user_linked = current_user.get('linked_id', '')
+user_title = current_user.get('title', '')
+
+role_color = "#b45309" if user_role == "ADMIN" else ("#2563eb" if user_role == "INSTRUCTOR" else "#059669")
+role_icon = "🏛️" if user_role == "ADMIN" else ("👨‍🏫" if user_role == "INSTRUCTOR" else "📱")
+role_ar = "مدير النظام (Admin)" if user_role == "ADMIN" else ("عضو هيئة تدريسية (Instructor)" if user_role == "INSTRUCTOR" else "طالب دراسات عليا (Student)")
+
+# إعداد الشريط الجانبي للمستخدم المسجل
 with st.sidebar:
     st.image("https://upload.wikimedia.org/wikipedia/ar/thumb/0/07/University_of_Technology_Iraq_logo.png/250px-University_of_Technology_Iraq_logo.png", width=105)
-    st.markdown("### 🎛️ بوابة التنقل والصلاحيات")
     
-    current_idx = ROLE_LIST.index(st.session_state.active_portal_role) if st.session_state.active_portal_role in ROLE_LIST else 0
-    selected_role = st.radio(
-        "اختر الشاشة النشطة:",
-        ROLE_LIST,
-        index=current_idx,
-        key="sidebar_role_select"
-    )
-    if selected_role != st.session_state.active_portal_role:
-        st.session_state.active_portal_role = selected_role
+    st.markdown(f"""
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px; margin-top: 10px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.03);">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+            <span style="font-size: 22px;">{role_icon}</span>
+            <div>
+                <div style="font-size: 13.5px; font-weight: 800; color: #1e293b; line-height: 1.2;">{user_name}</div>
+                <div style="font-size: 11px; color: #64748b;">{user_title}</div>
+            </div>
+        </div>
+        <div style="margin-top: 6px;">
+            <span style="background: {role_color}; color: #ffffff; padding: 2px 10px; border-radius: 9999px; font-size: 11px; font-weight: 800;">
+                {role_ar}
+            </span>
+        </div>
+        <div style="font-size: 11px; color: #94a3b8; margin-top: 6px; word-break: break-all;">
+            📧 {user_email}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("🚪 تسجيل الخروج (Logout)", key="sidebar_logout_btn", use_container_width=True):
+        st.session_state.current_user = None
         st.rerun()
-    
+
     st.divider()
     st.markdown("#### 📐 الفروع الأكاديمية للدراسات العليا:")
     st.markdown("- **تكنولوجيا العمارة:** الإنشاء والأغلفة")
@@ -381,110 +641,39 @@ with st.sidebar:
     st.caption("المنصة متوافقة تماماً مع تعليمات وضوابط الدراسات العليا النافذة لوزارة التعليم العالي والبحث العلمي العراقية.")
     st.info("💡 **هذه المنصة قيد التطوير وبمبادرة شخصية من المهندس المعماري الدكتور أحمد لؤي أحمد**")
 
-
-# ==============================================================================
-# واجهة الاختيارات الثلاثة الرئيسية لنظام الحضور (3-PORTAL SELECTION GATEWAY)
-# ==============================================================================
-current_role = st.session_state.active_portal_role
-is_admin = ("Admin" in current_role)
-is_instructor = ("Instructor" in current_role)
-is_student = ("Student" in current_role)
-active_portal_name = "لوحة الإدارة (Admin)" if is_admin else ("بوابة التدريسي (Instructor)" if is_instructor else "بوابة الطالب (Student)")
-
+# الترويسة الرئيسية المعمارية بعد تسجيل الدخول
 st.markdown(f"""
-<div style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 4px 15px -3px rgba(0,0,0,0.04);">
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+<div class="arch-hero">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
         <div>
-            <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(217, 119, 6, 0.12); color: #b45309; padding: 4px 14px; border-radius: 9999px; font-size: 12px; font-weight: 800; border: 1px solid rgba(217, 119, 6, 0.25);">
-                <span>🏛️</span> الواجهة المركزية الموحدة
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                <span class="sec-pill" style="background: rgba(255,255,255,0.2); color:#fff; border:none;">
+                    🏛️ الجامعة التكنولوجية - بغداد
+                </span>
+                <span class="sec-pill" style="background: rgba(255,255,255,0.2); color:#fff; border:none;">
+                    العام الأكاديمي 2026-2027
+                </span>
             </div>
-            <h2 style="margin: 8px 0 2px 0; font-size: 19px; font-weight: 800; color: #1e293b; letter-spacing: -0.3px;">
-                بوابات منظومة الحضور الثلاث - قسم هندسة العمارة
-            </h2>
-            <p style="margin: 0; font-size: 13px; color: #64748b;">
-                اختر البوابة المناسبة لعرض وظائفها وصلاحياتها مباشرة (الإدارة • التدريسي • الطالب)
+            <h1 style="margin: 0; font-weight: 900; font-size: 24px; letter-spacing: -0.5px;">
+                منظومة حضور وغياب الدراسات العليا - قسم هندسة العمارة
+            </h1>
+            <p style="margin: 6px 0 0 0; font-size: 13px; opacity: 0.9;">
+                الجلسة النشطة: <strong>{user_name}</strong> ({role_ar}) | البريد: <code>{user_email}</code>
             </p>
         </div>
-        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px 16px; font-size: 12.5px; color: #334155; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-            البوابة النشطة حالياً: <strong style="color: #b45309;">{active_portal_name}</strong>
+        <div style="text-align: left; background: rgba(0,0,0,0.25); padding: 10px 16px; border-radius: 14px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15);">
+            <div style="font-size: 11px; opacity: 0.8;">الصلاحية المفعلة</div>
+            <div style="font-weight: 800; font-size: 14px; color: #fbbf24;">{role_icon} {role_ar}</div>
+            <div style="font-size: 11px; opacity: 0.85;">🔒 عزل البيانات والتحكم بالصلاحيات مفعل</div>
         </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-col_g1, col_g2, col_g3 = st.columns(3)
-
-with col_g1:
-    admin_border = "#f59e0b" if is_admin else "#e2e8f0"
-    admin_bg = "linear-gradient(180deg, rgba(245, 158, 11, 0.08) 0%, rgba(255, 255, 255, 1) 100%)" if is_admin else "#ffffff"
-    admin_badge = '<span style="background:#f59e0b; color:#ffffff; padding:2px 10px; border-radius:9999px; font-size:11px; font-weight:800;">نشط حالياً ✓</span>' if is_admin else '<span style="background:#f1f5f9; color:#64748b; padding:2px 10px; border-radius:9999px; font-size:11px; font-weight:700;">لوحة الإدارة</span>'
-    st.markdown(f"""
-    <div style="border: 2px solid {admin_border}; background: {admin_bg}; border-radius: 18px; padding: 18px; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-        <div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="font-size: 26px; background: rgba(245, 158, 11, 0.15); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">🏛️</div>
-                {admin_badge}
-            </div>
-            <h3 style="margin: 12px 0 4px 0; font-size: 16px; font-weight: 800; color: #1e293b;">1. لوحة الإدارة (Admin)</h3>
-            <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.5;">متابعة طلبة الفروع الأربعة، نسب الغياب، رصيد الإنذارات (5% و 7%)، قرارات الحرمان (10%)، وطباعة كشف المجلس.</p>
-        </div>
-        <div style="font-size: 11.5px; font-weight: 700; color: #b45309; text-align: left; margin-top: 10px;">صلاحيات إدارة القسم ←</div>
-    </div>
-    """, unsafe_allow_html=True)
-    if st.button("دخول لوحة الإدارة (Admin)", key="gate_admin_btn", use_container_width=True, type="primary" if is_admin else "secondary"):
-        st.session_state.active_portal_role = ROLE_ADMIN
-        st.rerun()
-
-with col_g2:
-    inst_border = "#3b82f6" if is_instructor else "#e2e8f0"
-    inst_bg = "linear-gradient(180deg, rgba(59, 130, 246, 0.08) 0%, rgba(255, 255, 255, 1) 100%)" if is_instructor else "#ffffff"
-    inst_badge = '<span style="background:#3b82f6; color:#ffffff; padding:2px 10px; border-radius:9999px; font-size:11px; font-weight:800;">نشط حالياً ✓</span>' if is_instructor else '<span style="background:#f1f5f9; color:#64748b; padding:2px 10px; border-radius:9999px; font-size:11px; font-weight:700;">بوابة التدريسي</span>'
-    st.markdown(f"""
-    <div style="border: 2px solid {inst_border}; background: {inst_bg}; border-radius: 18px; padding: 18px; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-        <div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="font-size: 26px; background: rgba(59, 130, 246, 0.15); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">👨‍🏫</div>
-                {inst_badge}
-            </div>
-            <h3 style="margin: 12px 0 4px 0; font-size: 16px; font-weight: 800; color: #1e293b;">2. بوابة التدريسي (Instructor)</h3>
-            <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.5;">شاشة العارض (Projector) لتوليد الـ QR المتجدد كل 8 ثوانٍ، التحضير السريع بالقاعة، وإدخال الأعذار الرسمية.</p>
-        </div>
-        <div style="font-size: 11.5px; font-weight: 700; color: #2563eb; text-align: left; margin-top: 10px;">شاشة القاعة والنداء ←</div>
-    </div>
-    """, unsafe_allow_html=True)
-    if st.button("دخول بوابة التدريسي (Instructor)", key="gate_inst_btn", use_container_width=True, type="primary" if is_instructor else "secondary"):
-        st.session_state.active_portal_role = ROLE_INSTRUCTOR
-        st.rerun()
-
-with col_g3:
-    std_border = "#10b981" if is_student else "#e2e8f0"
-    std_bg = "linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, rgba(255, 255, 255, 1) 100%)" if is_student else "#ffffff"
-    std_badge = '<span style="background:#10b981; color:#ffffff; padding:2px 10px; border-radius:9999px; font-size:11px; font-weight:800;">نشط حالياً ✓</span>' if is_student else '<span style="background:#f1f5f9; color:#64748b; padding:2px 10px; border-radius:9999px; font-size:11px; font-weight:700;">بوابة الطالب</span>'
-    st.markdown(f"""
-    <div style="border: 2px solid {std_border}; background: {std_bg}; border-radius: 18px; padding: 18px; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-        <div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="font-size: 26px; background: rgba(16, 185, 129, 0.15); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">📱</div>
-                {std_badge}
-            </div>
-            <h3 style="margin: 12px 0 4px 0; font-size: 16px; font-weight: 800; color: #1e293b;">3. بوابة الطالب (Student)</h3>
-            <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.5;">مسح كود الحضور اللحظي، التحقق من التواجد الجغرافي وبصمة الهاتف، وكشف رصيد الغيابات وهامش الأمان.</p>
-        </div>
-        <div style="font-size: 11.5px; font-weight: 700; color: #059669; text-align: left; margin-top: 10px;">تسجيل الحضور والاستعلام ←</div>
-    </div>
-    """, unsafe_allow_html=True)
-    if st.button("دخول بوابة الطالب (Student)", key="gate_student_btn", use_container_width=True, type="primary" if is_student else "secondary"):
-        st.session_state.active_portal_role = ROLE_STUDENT
-        st.rerun()
-
-st.markdown("<hr style='margin: 22px 0 26px 0; border: 0; border-top: 1px solid #e2e8f0;'>", unsafe_allow_html=True)
-
-role = st.session_state.active_portal_role
-
 # ==============================================================================
 # 1. لوحة إدارة الدراسات العليا (ADMIN DASHBOARD) - 4 تبويبات متطورة
 # ==============================================================================
-if "Admin" in role:
+if user_role == "ADMIN":
     conn = get_db_connection()
     df_students = pd.read_sql_query("""
     SELECT s.id, s.reg_num, s.name, b.name_ar AS branch_name, s.branch_code, c.title_ar AS course_name, s.total_hours, s.missed_hours
@@ -512,12 +701,13 @@ if "Admin" in role:
         
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # التبويبات الأربعة المتطورة للإدارة
-    tab_roster, tab_analytics, tab_security, tab_letters = st.tabs([
+    # التبويبات الخمسة المتطورة للإدارة
+    tab_roster, tab_analytics, tab_security, tab_letters, tab_master = st.tabs([
         "📋 سجل الغيابات والمتابعة الأكاديمية",
         "📊 التحليلات البيانية ومؤشرات الالتزام",
         "🛡️ سجل التدقيق الأمني ومكافحة الغش",
-        "📜 مولّد خطابات الإنذار والحرمان الرسمية"
+        "📜 مولّد خطابات الإنذار والحرمان الرسمية",
+        "⚙️ إدارة الهيئة التدريسية والطلبة والمقررات (Master Data)"
     ])
     
     # --- التبويب 1: سجل الغيابات والمتابعة ---
@@ -715,32 +905,307 @@ if "Admin" in role:
             </div>
             """, height=55)
 
+    # --- التبويب 5: إدارة البيانات الأساسية (Master Data Management) ---
+    with tab_master:
+        st.markdown("#### ⚙️ إدارة الهيئة التدريسية والطلبة والمواد الدراسية (Master Data Management)")
+        st.caption("يتيح هذا التبويب لمدير النظام (Admin) إضافة وحذف الطلبة والأساتذة والمقررات الدراسية وتحديث السجلات المركزية مباشرة.")
+
+        sub_std, sub_inst, sub_crs = st.tabs([
+            "👨‍🎓 إدارة شؤون الطلبة (Students)",
+            "👨‍🏫 إدارة الهيئة التدريسية (Instructors)",
+            "📚 إدارة المقررات والاستوديوهات (Courses)"
+        ])
+
+        # 1. إدارة الطلبة
+        with sub_std:
+            st.markdown("##### ➕ إضافة طالب دراسات عليا جديد:")
+            conn = get_db_connection()
+            br_list = pd.read_sql_query("SELECT code, name_ar FROM branches", conn)
+            cr_list = pd.read_sql_query("SELECT code, title_ar FROM courses", conn)
+            conn.close()
+
+            br_opts = dict(zip(br_list['name_ar'], br_list['code']))
+            cr_opts = dict(zip(cr_list['title_ar'], cr_list['code']))
+
+            with st.form("form_add_student"):
+                c_s1, c_s2 = st.columns(2)
+                with c_s1:
+                    new_std_name = st.text_input("اسم الطالب الرباعي:", placeholder="مثال: حيدر أحمد علي")
+                    new_std_regnum = st.text_input("الرقم الجامعي / القيد:", placeholder="مثال: M-TECH-26-05")
+                with c_s2:
+                    sel_br_name = st.selectbox("الفرع الأكاديمي التخصصي:", list(br_opts.keys()))
+                    sel_cr_title = st.selectbox("المقرر الدراسي المسجل به:", list(cr_opts.keys()))
+                
+                c_s3, c_s4 = st.columns(2)
+                with c_s3:
+                    new_std_hours = st.number_input("إجمالي ساعات المقرر للفصل الدراسي:", min_value=15, max_value=120, value=60, step=15)
+                with c_s4:
+                    new_std_email = st.text_input("البريد الإلكتروني الجامعي للطالب:", placeholder="مثال: std.new@uot.edu.iq")
+                
+                btn_add_std = st.form_submit_button("➕ حفظ وتسجيل الطالب في المنصة", use_container_width=True, type="primary")
+
+            if btn_add_std:
+                if not new_std_name.strip() or not new_std_regnum.strip():
+                    st.error("يرجى ملء اسم الطالب ورقمه الجامعي.")
+                else:
+                    new_id = f"std-{random.randint(1000, 9999)}"
+                    sel_branch_code = br_opts[sel_br_name]
+                    sel_course_code = cr_opts[sel_cr_title]
+                    student_email = new_std_email.strip() if new_std_email.strip() else f"{new_std_regnum.lower()}@uot.edu.iq"
+
+                    conn = get_db_connection()
+                    cur = conn.cursor()
+                    cur.execute("""
+                    INSERT INTO students (id, reg_num, name, branch_code, course_code, total_hours, missed_hours)
+                    VALUES (?, ?, ?, ?, ?, ?, 0.0)
+                    """, (new_id, new_std_regnum.strip(), new_std_name.strip(), sel_branch_code, sel_course_code, new_std_hours))
+                    
+                    cur.execute("""
+                    INSERT OR REPLACE INTO users (id, email, password, role, full_name, linked_id, title)
+                    VALUES (?, ?, 'student123', 'STUDENT', ?, ?, ?)
+                    """, (f"usr-{new_id}", student_email, new_std_name.strip(), new_id, f"طالب دراسات عليا - {sel_br_name}"))
+                    
+                    conn.commit()
+                    conn.close()
+                    st.success(f"🎉 تم إضافة الطالب [{new_std_name}] بنجاح، وتفعيل حسابه بالبريد [{student_email}]!")
+                    st.rerun()
+
+            st.markdown("---")
+            st.markdown("##### 🗑️ قائمة الطلبة وإمكانية الحذف:")
+            conn = get_db_connection()
+            all_stds = pd.read_sql_query("""
+            SELECT s.id, s.reg_num, s.name, b.name_ar as branch, c.title_ar as course, s.total_hours, s.missed_hours 
+            FROM students s 
+            JOIN branches b ON s.branch_code = b.code 
+            JOIN courses c ON s.course_code = c.code
+            ORDER BY s.rowid DESC
+            """, conn)
+            conn.close()
+
+            if not all_stds.empty:
+                st.dataframe(all_stds[['reg_num', 'name', 'branch', 'course', 'total_hours', 'missed_hours']], use_container_width=True, hide_index=True)
+                
+                col_del_s1, col_del_s2 = st.columns([2.5, 1])
+                with col_del_s1:
+                    std_del_options = {f"{r['name']} ({r['reg_num']}) - {r['course']}": r['id'] for _, r in all_stds.iterrows()}
+                    selected_del_std_label = st.selectbox("اختر الطالب المراد حذفه نهائياً من المنصة:", list(std_del_options.keys()), key="del_std_select")
+                    target_std_id = std_del_options[selected_del_std_label]
+                with col_del_s2:
+                    st.write("")
+                    st.write("")
+                    if st.button("🗑️ حذف الطالب المحدد", key="del_std_btn", use_container_width=True, type="secondary"):
+                        conn = get_db_connection()
+                        cur = conn.cursor()
+                        cur.execute("DELETE FROM students WHERE id = ?", (target_std_id,))
+                        cur.execute("DELETE FROM users WHERE linked_id = ?", (target_std_id,))
+                        cur.execute("DELETE FROM attendance_logs WHERE student_id = ?", (target_std_id,))
+                        conn.commit()
+                        conn.close()
+                        st.warning(f"تم حذف الطالب [{selected_del_std_label}] وسجلاته من المنصة.")
+                        st.rerun()
+
+        # 2. إدارة الهيئة التدريسية
+        with sub_inst:
+            st.markdown("##### ➕ إضافة عضو هيئة تدريسية جديد:")
+            with st.form("form_add_instructor"):
+                c_i1, c_i2 = st.columns(2)
+                with c_i1:
+                    new_inst_name = st.text_input("اسم الأستاذ / التدريسي:", placeholder="مثال: أ.د. عمر فاروق السعدي")
+                    new_inst_title = st.text_input("اللقب العلمي / التخصص:", placeholder="مثال: أستاذ دكتور - استوديو التصميم المعماري")
+                with c_i2:
+                    new_inst_email = st.text_input("البريد الإلكتروني الجامعي:", placeholder="مثال: omar.farouq@uot.edu.iq")
+                    new_inst_pass = st.text_input("رمز الدخول (Password):", value="arch2026", type="password")
+                
+                c_i3, c_i4 = st.columns(2)
+                with c_i3:
+                    inst_br_sel = st.selectbox("الفرع الأكاديمي التابع له:", list(br_opts.keys()), key="inst_br_sel")
+                with c_i4:
+                    inst_cr_sel = st.selectbox("المقرر الدراسي المكلف بتدريسه:", list(cr_opts.keys()), key="inst_cr_sel")
+                    
+                btn_add_inst = st.form_submit_button("➕ حفظ وتعيين التدريسي في المنصة", use_container_width=True, type="primary")
+
+            if btn_add_inst:
+                if not new_inst_name.strip() or not new_inst_email.strip():
+                    st.error("يرجى ملء اسم التدريسي وبريده الإلكتروني.")
+                else:
+                    new_inst_id = f"inst-{random.randint(100, 999)}"
+                    sel_branch_code = br_opts[inst_br_sel]
+                    sel_course_code = cr_opts[inst_cr_sel]
+
+                    conn = get_db_connection()
+                    cur = conn.cursor()
+                    cur.execute("""
+                    INSERT INTO instructors (id, name, email, branch_code, course_code, title)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    """, (new_inst_id, new_inst_name.strip(), new_inst_email.strip(), sel_branch_code, sel_course_code, new_inst_title.strip()))
+                    
+                    cur.execute("""
+                    INSERT OR REPLACE INTO users (id, email, password, role, full_name, linked_id, title)
+                    VALUES (?, ?, ?, 'INSTRUCTOR', ?, ?, ?)
+                    """, (f"usr-{new_inst_id}", new_inst_email.strip(), new_inst_pass.strip(), new_inst_name.strip(), sel_course_code, new_inst_title.strip()))
+                    
+                    # تحديث اسم التدريسي في جدول المقررات
+                    cur.execute("UPDATE courses SET instructor_name = ? WHERE code = ?", (new_inst_name.strip(), sel_course_code))
+                    conn.commit()
+                    conn.close()
+                    st.success(f"🎉 تم تعيين التدريسي [{new_inst_name}] بنجاح على مقرر [{sel_course_code}]!")
+                    st.rerun()
+
+            st.markdown("---")
+            st.markdown("##### 🗑️ قائمة أعضاء الهيئة التدريسية وإمكانية الحذف:")
+            conn = get_db_connection()
+            all_insts = pd.read_sql_query("""
+            SELECT i.id, i.name, i.title, i.email, b.name_ar as branch, c.title_ar as course, i.course_code
+            FROM instructors i
+            LEFT JOIN branches b ON i.branch_code = b.code
+            LEFT JOIN courses c ON i.course_code = c.code
+            """, conn)
+            conn.close()
+
+            if not all_insts.empty:
+                st.dataframe(all_insts[['name', 'title', 'email', 'branch', 'course']], use_container_width=True, hide_index=True)
+                
+                col_del_i1, col_del_i2 = st.columns([2.5, 1])
+                with col_del_i1:
+                    inst_del_options = {f"{r['name']} ({r['title']}) - {r['course']}": r['id'] for _, r in all_insts.iterrows()}
+                    selected_del_inst_label = st.selectbox("اختر التدريسي المراد حذفه من المنصة:", list(inst_del_options.keys()), key="del_inst_select")
+                    target_inst_id = inst_del_options[selected_del_inst_label]
+                with col_del_i2:
+                    st.write("")
+                    st.write("")
+                    if st.button("🗑️ حذف التدريسي المحدد", key="del_inst_btn", use_container_width=True, type="secondary"):
+                        conn = get_db_connection()
+                        cur = conn.cursor()
+                        cur.execute("DELETE FROM instructors WHERE id = ?", (target_inst_id,))
+                        cur.execute("DELETE FROM users WHERE id = ?", (f"usr-{target_inst_id}",))
+                        conn.commit()
+                        conn.close()
+                        st.warning(f"تم حذف التدريسي [{selected_del_inst_label}] بنجاح.")
+                        st.rerun()
+
+        # 3. إدارة المقررات الدراسية
+        with sub_crs:
+            st.markdown("##### ➕ إضافة مادة / مقرر دراسي جديد:")
+            with st.form("form_add_course"):
+                c_c1, c_c2 = st.columns(2)
+                with c_c1:
+                    new_crs_code = st.text_input("رمز المقرر (Course Code):", placeholder="مثال: DES-705 أو URB-704").upper()
+                    new_crs_title = st.text_input("عنوان المقرر واستوديو العمارة:", placeholder="مثال: استوديو الإسكان المستدام وتنسيق المواقع")
+                with c_c2:
+                    new_crs_branch = st.selectbox("الفرع الأكاديمي:", list(br_opts.keys()), key="crs_br_sel")
+                    new_crs_inst = st.text_input("الأستاذ المسؤول عن المقرر:", placeholder="مثال: أ.د. رغد هاشم الكرخي")
+                    
+                c_c3, c_c4 = st.columns(2)
+                with c_c3:
+                    new_crs_total = st.number_input("إجمالي الساعات الفصلية:", min_value=15, max_value=120, value=60, step=15)
+                with c_c4:
+                    new_crs_weekly = st.number_input("الساعات الأسبوعية المعتمدة:", min_value=1, max_value=8, value=4, step=1)
+                    
+                btn_add_crs = st.form_submit_button("➕ حفظ وإدراج المقرر في الخطة الدراسية", use_container_width=True, type="primary")
+
+            if btn_add_crs:
+                if not new_crs_code.strip() or not new_crs_title.strip():
+                    st.error("يرجى ملء رمز المقرر وعنوانه.")
+                else:
+                    sel_branch_code = br_opts[new_crs_branch]
+                    conn = get_db_connection()
+                    cur = conn.cursor()
+                    cur.execute("""
+                    INSERT OR REPLACE INTO courses (code, title_ar, branch_code, total_hours, weekly_hours, instructor_name)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    """, (new_crs_code.strip(), new_crs_title.strip(), sel_branch_code, new_crs_total, new_crs_weekly, new_crs_inst.strip()))
+                    conn.commit()
+                    conn.close()
+                    st.success(f"🎉 تم إضافة المادة الدراسية [{new_crs_title} - {new_crs_code}] بنجاح!")
+                    st.rerun()
+
+            st.markdown("---")
+            st.markdown("##### 🗑️ قائمة المقررات الدراسية وإمكانية الحذف:")
+            conn = get_db_connection()
+            all_courses = pd.read_sql_query("""
+            SELECT c.code, c.title_ar, b.name_ar as branch, c.instructor_name, c.total_hours, c.weekly_hours
+            FROM courses c
+            JOIN branches b ON c.branch_code = b.code
+            ORDER BY c.code
+            """, conn)
+            conn.close()
+
+            if not all_courses.empty:
+                st.dataframe(all_courses[['code', 'title_ar', 'branch', 'instructor_name', 'total_hours', 'weekly_hours']], use_container_width=True, hide_index=True)
+                
+                col_del_c1, col_del_c2 = st.columns([2.5, 1])
+                with col_del_c1:
+                    crs_del_options = {f"{r['code']} - {r['title_ar']} ({r['instructor_name']})": r['code'] for _, r in all_courses.iterrows()}
+                    selected_del_crs_label = st.selectbox("اختر المقرر المراد حذفه من الخطة الدراسية:", list(crs_del_options.keys()), key="del_crs_select")
+                    target_crs_code = crs_del_options[selected_del_crs_label]
+                with col_del_c2:
+                    st.write("")
+                    st.write("")
+                    if st.button("🗑️ حذف المقرر المحدد", key="del_crs_btn", use_container_width=True, type="secondary"):
+                        conn = get_db_connection()
+                        cur = conn.cursor()
+                        cur.execute("DELETE FROM courses WHERE code = ?", (target_crs_code,))
+                        conn.commit()
+                        conn.close()
+                        st.warning(f"تم حذف المقرر [{selected_del_crs_label}] من المنصة.")
+                        st.rerun()
+
 
 # ==============================================================================
 # 2. بوابة أستاذ المادة (INSTRUCTOR PORTAL) - 3 تبويبات
 # ==============================================================================
-elif "Instructor" in role:
+elif user_role == "INSTRUCTOR":
+    inst_course_code = user_linked if (user_linked and user_linked != "ALL") else "DES-702"
     conn = get_db_connection()
-    courses_df = pd.read_sql_query("""
+    c_info = pd.read_sql_query("""
     SELECT c.code, c.title_ar, c.branch_code, b.name_ar AS branch_name, c.instructor_name, c.weekly_hours
     FROM courses c JOIN branches b ON c.branch_code = b.code
-    """, conn)
+    WHERE c.code = ?
+    """, conn, params=(inst_course_code,))
     conn.close()
-    
-    course_options = {f"{r['instructor_name']} - {r['title_ar']} ({r['branch_name']})": r['code'] for _, r in courses_df.iterrows()}
-    
-    # بطاقة معلومات الجلسة
-    with st.container():
-        sc1, sc2, sc3 = st.columns([2, 1, 1])
-        with sc1:
-            selected_course_label = st.selectbox("المقرر الدراسي واستوديو العمارة:", list(course_options.keys()))
-            selected_course_code = course_options[selected_course_label]
-        with sc2:
-            session_date = st.date_input("تاريخ الجلسة:", datetime.date.today())
-        with sc3:
-            session_type = st.selectbox("نوع المحاضرة وساعاتها:", ["استوديو تصميم معماري (4 ساعات)", "محاضرة نظرية (ساعتان)", "سمنار دكتوراه (3 ساعات)"])
-            session_hours = 4.0 if "4" in session_type else (3.0 if "3" in session_type else 2.0)
-            
+
+    if not c_info.empty:
+        c_title = c_info.iloc[0]['title_ar']
+        c_branch = c_info.iloc[0]['branch_name']
+        c_inst = c_info.iloc[0]['instructor_name']
+        c_hours = c_info.iloc[0]['weekly_hours']
+    else:
+        c_title = "استوديو التصميم المعماري المتقدم"
+        c_branch = "ماجستير: التصميم المعماري"
+        c_inst = user_name
+        c_hours = 4
+
+    selected_course_code = inst_course_code
+
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(255, 255, 255, 1) 100%); border: 1px solid #bfdbfe; border-radius: 16px; padding: 18px 22px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <span style="background: #2563eb; color: #ffffff; padding: 3px 12px; border-radius: 9999px; font-size: 11px; font-weight: 800;">
+                    🔒 المقرر الأكاديمي المخصص حصرياً
+                </span>
+                <h2 style="margin: 8px 0 2px 0; font-size: 19px; font-weight: 800; color: #1e3a8a;">
+                    {c_title} ({selected_course_code})
+                </h2>
+                <div style="font-size: 13px; color: #64748b;">
+                    الفرع الأكاديمي: <strong>{c_branch}</strong> | أستاذ المقرر: <strong>{c_inst}</strong> | الساعات الأسبوعية: <strong>{c_hours} ساعات</strong>
+                </div>
+            </div>
+            <div style="background: #eff6ff; border: 1px solid #dbeafe; border-radius: 12px; padding: 8px 16px; font-size: 12.5px; color: #1e40af; font-weight: 700;">
+                صلاحية التدريسي: مقيدة بطلبة وقاعة هذا المقرر فقط 🛡️
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # بطاقة معلومات الجلسة المحاضرة
+    sc2, sc3 = st.columns([1, 1])
+    with sc2:
+        session_date = st.date_input("تاريخ الجلسة:", datetime.date.today())
+    with sc3:
+        session_type = st.selectbox("نوع المحاضرة وساعاتها:", ["استوديو تصميم معماري (4 ساعات)", "محاضرة نظرية (ساعتان)", "سمنار دكتوراه (3 ساعات)"])
+        session_hours = 4.0 if "4" in session_type else (3.0 if "3" in session_type else 2.0)
+        
     conn = get_db_connection()
     students_in_course = pd.read_sql_query("SELECT id, reg_num, name, total_hours, missed_hours FROM students WHERE course_code = ?", conn, params=(selected_course_code,))
     conn.close()
@@ -918,8 +1383,60 @@ elif "Instructor" in role:
 # 3. بوابة مسح وحضور الطالب (STUDENT CHECK-IN & FRAUD LAB)
 # ==============================================================================
 else:
-    st.subheader("📱 بوابة الطالب: مسح الحضور واختبار الأمان الثلاثي")
-    st.markdown("هذه الواجهة تمثل شاشة الهاتف المحمول للطالب عند مسح الـ QR أو فحص موقفه الأكاديمي الشخصي.")
+    # بوابة الطالب - مقيدة بحساب الطالب المسجل فقط
+    student_id = user_linked if (user_linked and user_linked != "ALL") else "std-202"
+    conn = get_db_connection()
+    std_info = pd.read_sql_query("""
+    SELECT s.*, b.name_ar AS branch_name, c.title_ar AS course_name, c.instructor_name 
+    FROM students s 
+    JOIN branches b ON s.branch_code = b.code 
+    JOIN courses c ON s.course_code = c.code 
+    WHERE s.id = ?
+    """, conn, params=(student_id,))
+    conn.close()
+
+    if not std_info.empty:
+        std_row = std_info.iloc[0]
+        sel_student_id = std_row['id']
+        sel_student_name = std_row['name']
+        sel_student_regnum = std_row['reg_num']
+        active_course = std_row['course_code']
+        active_course_name = std_row['course_name']
+        branch_name = std_row['branch_name']
+        inst_name = std_row['instructor_name']
+        tot_hours = std_row['total_hours']
+        mis_hours = std_row['missed_hours']
+    else:
+        sel_student_id = student_id
+        sel_student_name = user_name
+        sel_student_regnum = "STD-2026"
+        active_course = "DES-702"
+        active_course_name = "استوديو التصميم المعماري المتقدم"
+        branch_name = "ماجستير التصميم المعماري"
+        inst_name = "أ.م.د. لمياء مهدي الدوري"
+        tot_hours = 60
+        mis_hours = 4.0
+
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(255, 255, 255, 1) 100%); border: 1px solid #a7f3d0; border-radius: 16px; padding: 18px 22px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <span style="background: #059669; color: #ffffff; padding: 3px 12px; border-radius: 9999px; font-size: 11px; font-weight: 800;">
+                    🔒 حساب الطالب المعتمد
+                </span>
+                <h2 style="margin: 8px 0 2px 0; font-size: 19px; font-weight: 800; color: #065f46;">
+                    {sel_student_name} ({sel_student_regnum})
+                </h2>
+                <div style="font-size: 13px; color: #64748b;">
+                    الفرع الأكاديمي: <strong>{branch_name}</strong> | المقرر المسجل به: <strong>{active_course_name} ({active_course})</strong> | أستاذ المقرر: <strong>{inst_name}</strong>
+                </div>
+            </div>
+            <div style="background: #ecfdf5; border: 1px solid #d1fae5; border-radius: 12px; padding: 8px 16px; font-size: 12.5px; color: #047857; font-weight: 700;">
+                الصلاحية: مقيدة بسجل الطالب وبياناته الشخصية 📱
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     
     st_tab_scan, tab_my_profile = st.tabs([
         "📱 مسح كود الـ QR والتأكيد",
@@ -927,33 +1444,33 @@ else:
     ])
     
     with st_tab_scan:
-        active_token = st.session_state.get('active_qr_token', 'UOT-ARCH-DES-702-EXPIRED')
-        active_course = st.session_state.get('active_course_code', 'DES-702')
+        active_token = st.session_state.get('active_qr_token', f'UOT-ARCH-{active_course}-EXPIRED')
         active_date = st.session_state.get('active_session_date', str(datetime.date.today()))
-        
-        conn = get_db_connection()
-        students_df = pd.read_sql_query("SELECT id, name, reg_num, course_code, total_hours, missed_hours FROM students WHERE course_code = ?", conn, params=(active_course,))
-        conn.close()
         
         col_scan_in, col_scan_test = st.columns([1.5, 1])
         
         with col_scan_in:
             st.markdown("##### 1. تحديد هوية الطالب والجهاز:")
-            std_opt = st.selectbox("الطالب المسجل:", [f"{r['name']} ({r['reg_num']})" for _, r in students_df.iterrows()])
-            sel_student_id = students_df[students_df['name'] == std_opt.split(' (')[0]].iloc[0]['id']
-            sel_student_name = std_opt.split(' (')[0]
+            st.markdown(f"""
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 14px; margin-bottom:12px;">
+                <div style="font-size:11px; color:#64748b;">الطالب المصادق عليه:</div>
+                <div style="font-size:14.5px; font-weight:800; color:#1e293b;">{sel_student_name} ({sel_student_regnum})</div>
+                <div style="font-size:11.5px; color:#059669;">المقرر: {active_course_name} ({active_course})</div>
+            </div>
+            """, unsafe_allow_html=True)
             
+            first_name = sel_student_name.split()[0]
             device_input = st.selectbox(
                 "بصمة الجهاز المكتشفة (Device Fingerprint):",
                 [
-                    "iPhone-15-Ahmed-UID-991",
+                    f"iPhone-15-{first_name}-UID-991",
                     "Galaxy-S24-Zainab-UID-442",
                     "iPhone-13-Mustafa-UID-113",
                     "جهاز مستخدم مسبقاً (محاكاة هاتف زميل) ➔ iPhone-15-Ahmed-UID-991"
                 ],
                 index=0
             )
-            device_id = "iPhone-15-Ahmed-UID-991" if "iPhone-15-Ahmed" in device_input else device_input
+            device_id = f"iPhone-15-{first_name}-UID-991" if f"iPhone-15-{first_name}" in device_input else device_input
             
             st.markdown("##### 2. رمز الحضور الممسوح:")
             scanned_code = st.text_input("كود الجلسة (الممسوح بالكاميرا):", value=active_token)
@@ -1033,21 +1550,20 @@ else:
             """)
             
     with tab_my_profile:
-        st.markdown("#### 🎓 كشف الموقف الأكاديمي ورصيد الغيابات الشخصي")
-        st_profile_name = st.selectbox("اختر اسم الطالب للاستعلام:", students_df['name'].tolist())
-        p_row = students_df[students_df['name'] == st_profile_name].iloc[0]
+        st.markdown(f"#### 🎓 كشف الموقف الأكاديمي ورصيد الغيابات للطالب: **{sel_student_name}**")
+        st.caption(f"الرقم الجامعي: {sel_student_regnum} | الفرع الأكاديمي: {branch_name} | المقرر: {active_course_name} ({active_course})")
         
-        status_txt, pct, to_5, to_10 = calculate_warning(p_row['missed_hours'], p_row['total_hours'])
+        status_txt, pct, to_5, to_10 = calculate_warning(mis_hours, tot_hours)
         
         col_p1, col_p2, col_p3 = st.columns(3)
         with col_p1:
-            st.metric("ساعات الغياب المسجلة", f"{p_row['missed_hours']} س", f"من إجمالي {p_row['total_hours']} س")
+            st.metric("ساعات الغياب المسجلة", f"{mis_hours} س", f"من إجمالي {tot_hours} س")
         with col_p2:
             st.metric("نسبة الغياب التراكمية", f"{pct:.1f}%", status_txt)
         with col_p3:
             st.metric("رصيد الأمان حتى الإنذار (5%)", f"{to_5:.1f} ساعة", "هامش الأمان الأكاديمي")
             
-        st.progress((100 - pct) / 100, text=f"نسبة الالتزام بالحضور: {(100 - pct):.1f}%")
+        st.progress(max(0.0, min(1.0, (100 - pct) / 100)), text=f"نسبة الالتزام بالحضور: {(100 - pct):.1f}%")
 
 # ==============================================================================
 # تذييل الصفحة الرسمي لكافة شاشات المنصة (FOOTER)
